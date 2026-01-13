@@ -50,6 +50,41 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+        
+        modelBuilder.Entity<UserModel>(options =>
+        {
+            options.HasKey(e => e.Id);
+            
+            options.Property(e => e.FullName)
+                .HasMaxLength(250)
+                .IsRequired(false);
+            
+            options.Property(e => e.ImageProfileUrl)
+                .HasMaxLength(1000)
+                .IsRequired(false);
+            
+            options.Property(e => e.RefreshToken)
+                .HasMaxLength(400)
+                .IsRequired(false);
+            
+            options.Property(e => e.RefreshTokenExpiryTime)
+                .IsRequired(false);
+            
+            options.Property(e => e.UpdatedAt)
+                .IsRequired(false);
+            
+            
+        });
+
+        modelBuilder.Entity<UserModel>().ToTable("app_users");
+        modelBuilder.Entity<RoleModel>().ToTable("app_roles");
+        modelBuilder.Entity<IdentityUserClaim<string>>().ToTable("app_user_claims");
+        modelBuilder.Entity<IdentityUserRole<string>>().ToTable("app_user_roles");
+        modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("app_user_logins");
+        modelBuilder.Entity<IdentityRoleClaim<string>>().ToTable("app_role_claims");
+        modelBuilder.Entity<IdentityUserToken<string>>().ToTable("app_user_tokens");
+        
     }
 
 }
