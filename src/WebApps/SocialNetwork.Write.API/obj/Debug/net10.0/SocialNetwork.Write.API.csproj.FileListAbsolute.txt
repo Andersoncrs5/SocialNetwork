@@ -202,3 +202,5 @@
 /home/darkness/Área de trabalho/backend/projects/c#/SocialNetwork/src/WebApps/SocialNetwork.Write.API/obj/Debug/net10.0/SocialNetwork.Write.API.pdb
 /home/darkness/Área de trabalho/backend/projects/c#/SocialNetwork/src/WebApps/SocialNetwork.Write.API/obj/Debug/net10.0/SocialNetwork.Write.API.genruntimeconfig.cache
 /home/darkness/Área de trabalho/backend/projects/c#/SocialNetwork/src/WebApps/SocialNetwork.Write.API/obj/Debug/net10.0/ref/SocialNetwork.Write.API.dll
+/home/darkness/Área de trabalho/backend/projects/c#/SocialNetwork/src/WebApps/SocialNetwork.Write.API/bin/Debug/net10.0/MySqlConnector.dll
+/home/darkness/Área de trabalho/backend/projects/c#/SocialNetwork/src/WebApps/SocialNetwork.Write.API/bin/Debug/net10.0/Pomelo.EntityFrameworkCore.MySql.dll
