@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Identity;
+using SocialNetwork.Contracts.Attributes.Globals;
 using SocialNetwork.Write.API.Models;
 
 namespace SocialNetwork.Write.API.Repositories.Interfaces;
 
 public interface IUserRepository
 {
-    Task<UserModel?> GetByIdAsync(string id);
-    Task<bool> ExistsByIdAsync(string id);
+    Task<UserModel?> GetByIdAsync([IsId] string id);
+    Task<bool> ExistsByIdAsync([IsId] string id);
     Task<UserModel?> GetByEmail(string email);
     Task<bool> ExistsByEmail(string email);
     Task<bool> CheckPassword(UserModel user, string password);
