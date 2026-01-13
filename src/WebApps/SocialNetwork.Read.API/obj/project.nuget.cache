@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "P5h35USo/6Q=",
+  "success": true,
+  "projectFilePath": "/home/darkness/Área de trabalho/backend/projects/c#/SocialNetwork/src/WebApps/SocialNetwork.Read.API/SocialNetwork.Read.API.csproj",
+  "expectedPackageFiles": [
+    "/home/darkness/.nuget/packages/microsoft.aspnetcore.openapi/10.0.0/microsoft.aspnetcore.openapi.10.0.0.nupkg.sha512",
+    "/home/darkness/.nuget/packages/microsoft.openapi/2.0.0/microsoft.openapi.2.0.0.nupkg.sha512",
+    "/home/darkness/.nuget/packages/microsoft.aspnetcore.app.ref/10.0.0/microsoft.aspnetcore.app.ref.10.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "SocialNetwork.Infrastructure/1.0.0": {
+        "dependencies": {
+          "SocialNetwork.Contracts": "1.0.0"
+        },
+        "runtime": {
+          "SocialNetwork.Infrastructure.dll": {}
+        }
+      },
+      "SocialNetwork.Contracts/1.0.0": {
+        "runtime": {
+          "SocialNetwork.Contracts.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "SocialNetwork.Infrastructure/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "SocialNetwork.Contracts/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
