@@ -1,11 +1,30 @@
 {
   "version": 3,
   "targets": {
-    "net10.0": {}
+    "net10.0": {
+      "SocialNetwork.Contracts/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/SocialNetwork.Contracts.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/SocialNetwork.Contracts.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "SocialNetwork.Contracts/1.0.0": {
+      "type": "project",
+      "path": "../SocialNetwork.Contracts/SocialNetwork.Contracts.csproj",
+      "msbuildProject": "../SocialNetwork.Contracts/SocialNetwork.Contracts.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net10.0": []
+    "net10.0": [
+      "SocialNetwork.Contracts >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "/home/darkness/.nuget/packages/": {}
@@ -31,7 +50,11 @@
       "frameworks": {
         "net10.0": {
           "targetAlias": "net10.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "/home/darkness/Área de trabalho/backend/projects/c#/SocialNetwork/src/BuildingBlocks/SocialNetwork.Contracts/SocialNetwork.Contracts.csproj": {
+              "projectPath": "/home/darkness/Área de trabalho/backend/projects/c#/SocialNetwork/src/BuildingBlocks/SocialNetwork.Contracts/SocialNetwork.Contracts.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
