@@ -33,4 +33,11 @@
     <ProjectReference Include="..\..\BuildingBlocks\SocialNetwork.Contracts\SocialNetwork.Contracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+    <Folder Include="Repositories\" />
+    <Folder Include="Services\" />
+    <Folder Include="Utils\" />
+  </ItemGroup>
+
 </Project>
