@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using SocialNetwork.Contracts.Attributes.Globals;
 using SocialNetwork.Write.API.Configs.DB;
 using SocialNetwork.Write.API.Models;
 using SocialNetwork.Write.API.Repositories.Interfaces;
@@ -8,12 +9,12 @@ namespace SocialNetwork.Write.API.Repositories.Provider;
 
 public class UserRepository(AppDbContext context, UserManager<UserModel> manager): IUserRepository
 {
-    public async Task<UserModel?> GetByIdAsync(string id)
+    public async Task<UserModel?> GetByIdAsync([IsId] string id)
     {
         return await manager.FindByIdAsync(id);
     }
 
-    public async Task<bool> ExistsByIdAsync(string id)
+    public async Task<bool> ExistsByIdAsync([IsId] string id)
     {
         return await manager.FindByIdAsync(id) != null;
     }
