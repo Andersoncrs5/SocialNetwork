@@ -1,0 +1,89 @@
+using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using SocialNetwork.Write.API.Configs.DB;
+using SocialNetwork.Write.API.Models;
+using SocialNetwork.Write.API.Repositories.Interfaces;
+using SocialNetwork.Write.API.Repositories.Provider;
+using SocialNetwork.Write.API.Services.Interfaces;
+
+namespace SocialNetwork.Write.API.Utils.UnitOfWork;
+
+public class UnitOfWork(
+    AppDbContext context, 
+    UserManager<UserModel> userManager, 
+    RoleManager<RoleModel> roleManager,
+    StackExchange.Redis.IDatabase db,
+    IRedisService redisService,
+    IMapper mapper
+) : IUnitOfWork, IDisposable
+{
+    private UserRepository? _userRepository;
+    private RoleRepository? _roleRepository;
+    
+    public IUserRepository UserRepository
+        => _userRepository ??= new UserRepository(context, userManager);
+    public IRoleRepository RoleRepository
+        => _roleRepository ??= new RoleRepository(roleManager);
+    
+    public async Task CommitAsync() 
+    {
+        try
+        {
+            await context.SaveChangesAsync();
+        } 
+        catch (DbUpdateException ex)
+        {
+            var innerEx = ex.InnerException; 
+        
+            if (innerEx != null)
+            {
+                Console.WriteLine($"SQL COMMIT ERROR: {innerEx.Message}");
+                throw new InvalidOperationException($"Database Integrity Violation: {innerEx.Message}", innerEx);
+            }
+
+            throw; 
+        }
+    }
+    
+    public Task<IDbContextTransaction> BeginTransactionAsync()
+    {
+        return context.Database.BeginTransactionAsync();
+    }
+
+    public void Dispose()
+    {
+        context.Dispose();
+        GC.SuppressFinalize(this);
+    }
+    
+    public async Task ExecuteTransactionAsync(Func<Task> operation)
+    {
+        IDbContextTransaction? transaction = null;
+
+        try
+        {
+            transaction = await BeginTransactionAsync();
+
+            await operation.Invoke();
+
+            await transaction.CommitAsync();
+        }
+        catch (Exception)
+        {
+            if (transaction != null)
+            {
+                await transaction.RollbackAsync();
+            }
+            throw; 
+        }
+        finally
+        {
+            if (transaction != null)
+            {
+                await transaction.DisposeAsync();
+            }
+        }
+    }
+}
