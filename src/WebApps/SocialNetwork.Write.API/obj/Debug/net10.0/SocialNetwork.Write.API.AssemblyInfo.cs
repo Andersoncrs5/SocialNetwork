@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SocialNetwork.Write.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+de01b6456df1f335f2aa7635ac228b3e449b9931")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3a2884f3d12369ec4b5478c0247986295860cbcd")]
 [assembly: System.Reflection.AssemblyProductAttribute("SocialNetwork.Write.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SocialNetwork.Write.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

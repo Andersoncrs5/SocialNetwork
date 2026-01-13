@@ -8,4 +8,7 @@
     <Project Path="src/WebApps/SocialNetwork.Read.API/SocialNetwork.Read.API.csproj" />
     <Project Path="src/WebApps/SocialNetwork.Write.API/SocialNetwork.Write.API.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SocialNetwork.Tests/SocialNetwork.Tests.csproj" />
+  </Folder>
 </Solution>
