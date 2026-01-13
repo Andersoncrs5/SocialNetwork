@@ -1,9 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "sumiKe1V3Io=",
+  "dgSpecHash": "C11XuTmObAg=",
   "success": true,
   "projectFilePath": "/home/darkness/Área de trabalho/backend/projects/c#/SocialNetwork/src/WebApps/SocialNetwork.Write.API/SocialNetwork.Write.API.csproj",
   "expectedPackageFiles": [
+    "/home/darkness/.nuget/packages/asp.versioning.abstractions/8.1.0/asp.versioning.abstractions.8.1.0.nupkg.sha512",
+    "/home/darkness/.nuget/packages/asp.versioning.http/8.1.1/asp.versioning.http.8.1.1.nupkg.sha512",
+    "/home/darkness/.nuget/packages/asp.versioning.mvc/8.1.1/asp.versioning.mvc.8.1.1.nupkg.sha512",
+    "/home/darkness/.nuget/packages/asp.versioning.mvc.apiexplorer/8.1.1/asp.versioning.mvc.apiexplorer.8.1.1.nupkg.sha512",
     "/home/darkness/.nuget/packages/automapper/16.0.0/automapper.16.0.0.nupkg.sha512",
     "/home/darkness/.nuget/packages/automapper.extensions.microsoft.dependencyinjection/12.0.1/automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
     "/home/darkness/.nuget/packages/castle.core/5.2.1/castle.core.5.2.1.nupkg.sha512",
@@ -34,6 +38,7 @@
     "/home/darkness/.nuget/packages/microsoft.extensions.apidescription.server/10.0.0/microsoft.extensions.apidescription.server.10.0.0.nupkg.sha512",
     "/home/darkness/.nuget/packages/microsoft.extensions.caching.abstractions/10.0.1/microsoft.extensions.caching.abstractions.10.0.1.nupkg.sha512",
     "/home/darkness/.nuget/packages/microsoft.extensions.caching.memory/10.0.1/microsoft.extensions.caching.memory.10.0.1.nupkg.sha512",
+    "/home/darkness/.nuget/packages/microsoft.extensions.caching.stackexchangeredis/10.0.1/microsoft.extensions.caching.stackexchangeredis.10.0.1.nupkg.sha512",
     "/home/darkness/.nuget/packages/microsoft.extensions.configuration/10.0.1/microsoft.extensions.configuration.10.0.1.nupkg.sha512",
     "/home/darkness/.nuget/packages/microsoft.extensions.configuration.abstractions/10.0.1/microsoft.extensions.configuration.abstractions.10.0.1.nupkg.sha512",
     "/home/darkness/.nuget/packages/microsoft.extensions.configuration.binder/10.0.1/microsoft.extensions.configuration.binder.10.0.1.nupkg.sha512",
