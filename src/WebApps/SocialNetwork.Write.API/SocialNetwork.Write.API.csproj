@@ -25,6 +25,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
+    <PackageReference Include="StackExchange.Redis" Version="2.10.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="10.1.0" />
   </ItemGroup>
@@ -36,8 +37,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="Repositories\" />
-    <Folder Include="Services\" />
     <Folder Include="Utils\" />
   </ItemGroup>
 
