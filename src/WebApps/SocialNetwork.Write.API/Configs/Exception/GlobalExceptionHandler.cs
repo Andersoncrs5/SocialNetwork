@@ -2,6 +2,7 @@ using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Contracts.Utils.Res.http;
+using SocialNetwork.Write.API.Configs.Exception.classes;
 
 namespace SocialNetwork.Write.API.Configs.Exception;
 
@@ -12,33 +13,41 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
         System.Exception exception, 
         CancellationToken cancellationToken)
     {
-        logger.LogError(exception, "An error occurred: {Message}", exception.Message);
-
-        // Mapeamento de Exception -> Status Code
-        var (statusCode, message) = exception switch
+        var (statusCode, message, isBusinessError) = exception switch
         {
-            // Equivalente ao ModelNotFoundException
-            KeyNotFoundException => (HttpStatusCode.NotFound, exception.Message),
+            ModelNotFoundException => (HttpStatusCode.NotFound, exception.Message, true),
             
-            // Equivalente ao OptimisticLockingFailureException
-            DbUpdateConcurrencyException => (HttpStatusCode.Conflict, "This record was updated by another user. Please refresh."),
+            DbUpdateConcurrencyException => (HttpStatusCode.Conflict, "Este registro foi atualizado por outro usuário.", false),
             
-            // Equivalente ao DataIntegrityViolationException
-            DbUpdateException => (HttpStatusCode.Conflict, "Database integrity violation."),
+            DbUpdateException => (HttpStatusCode.Conflict, "Violação de integridade no banco de dados.", false),
 
-            // Erros de Validação (como o seu [IsId] ou [Required])
-            BadHttpRequestException => (HttpStatusCode.BadRequest, "Validation failed."),
+            BadHttpRequestException => (HttpStatusCode.BadRequest, "Falha na validação da requisição.", true),
 
-            _ => (HttpStatusCode.InternalServerError, "An unexpected error occurred.")
+            _ => (HttpStatusCode.InternalServerError, "Ocorreu um erro inesperado no servidor.", false)
         };
 
+        // 2. Lógica de Log Inteligente para Observabilidade
+        if (isBusinessError)
+        {
+            // LogWarning não costuma disparar gatilhos de PagerDuty/Grafana
+            logger.LogWarning("Business Violation: {Message} | TraceId: {TraceId}", 
+                message, httpContext.TraceIdentifier);
+        }
+        else
+        {
+            // LogError dispara alertas de infraestrutura
+            logger.LogError(exception, "Critical Error: {Message} | TraceId: {TraceId}", 
+                exception.Message, httpContext.TraceIdentifier);
+        }
+
+        // 3. Resposta padronizada
         var response = new ResponseHttp<object>(
-            null,
-            message,
-            Guid.NewGuid().ToString(),
-            0,
-            false,
-            DateTime.UtcNow
+            Data: null,
+            Message: message,
+            TraceId: httpContext.TraceIdentifier,
+            ErrorCode: 0,
+            Success: false,
+            Timestamp: DateTime.UtcNow
         );
 
         httpContext.Response.StatusCode = (int)statusCode;
