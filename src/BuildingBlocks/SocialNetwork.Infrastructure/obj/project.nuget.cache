@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "S5BvIYxE+ZY=",
+  "success": true,
+  "projectFilePath": "/home/darkness/Área de trabalho/backend/projects/c#/SocialNetwork/src/BuildingBlocks/SocialNetwork.Infrastructure/SocialNetwork.Infrastructure.csproj",
+  "expectedPackageFiles": [
+    "/home/darkness/.nuget/packages/microsoft.aspnetcore.app.ref/10.0.0/microsoft.aspnetcore.app.ref.10.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

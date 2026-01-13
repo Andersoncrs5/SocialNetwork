@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/BuildingBlocks/">
+    <Project Path="src/BuildingBlocks/SocialNetwork.Contracts/SocialNetwork.Contracts.csproj" />
+    <Project Path="src/BuildingBlocks/SocialNetwork.Infrastructure/SocialNetwork.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/WebApps/">
+    <Project Path="src/WebApps/SocialNetwork.Read.API/SocialNetwork.Read.API.csproj" />
+    <Project Path="src/WebApps/SocialNetwork.Write.API/SocialNetwork.Write.API.csproj" />
+  </Folder>
+</Solution>
