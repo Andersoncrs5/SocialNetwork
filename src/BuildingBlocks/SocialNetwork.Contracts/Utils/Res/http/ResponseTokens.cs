@@ -1,3 +1,5 @@
+using System;
+
 namespace SocialNetwork.Contracts.Utils.Res.http;
 
 public class ResponseTokens

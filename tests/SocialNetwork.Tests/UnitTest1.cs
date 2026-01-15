@@ -1,4 +1,6 @@
-﻿namespace SocialNetwork.Tests;
+﻿using Xunit;
+
+namespace SocialNetwork.Tests;
 
 public class UnitTest1
 {

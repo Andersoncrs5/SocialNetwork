@@ -1,3 +1,5 @@
+using System;
+
 namespace SocialNetwork.Contracts.DTOs.User;
 
 public class UserDto: BaseDto

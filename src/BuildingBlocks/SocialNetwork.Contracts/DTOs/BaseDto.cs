@@ -1,3 +1,5 @@
+using System;
+
 namespace SocialNetwork.Contracts.DTOs;
 
 public class BaseDto

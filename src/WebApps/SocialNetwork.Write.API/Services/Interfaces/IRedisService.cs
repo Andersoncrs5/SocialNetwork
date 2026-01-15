@@ -1,3 +1,6 @@
+using System;
+using System.Threading.Tasks;
+
 namespace SocialNetwork.Write.API.Services.Interfaces;
 
 public interface IRedisService
