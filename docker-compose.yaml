@@ -1,0 +1,56 @@
+services:
+  # --- INFRAESTRUTURA: TiDB (Write Side) ---
+  pd:
+    image: pingcap/pd:latest
+    container_name: social_pd
+    command:
+      - --name=pd1
+      - --client-urls=http://0.0.0.0:2379
+      - --peer-urls=http://0.0.0.0:2380
+      - --advertise-client-urls=http://pd:2379
+      - --advertise-peer-urls=http://pd:2380
+      - --initial-cluster=pd1=http://pd:2380
+    ports:
+      - "2379:2379"
+    networks:
+      - social_network_net
+
+  tikv:
+    image: pingcap/tikv:latest
+    container_name: social_tikv
+    command:
+      - --pd=pd:2379
+      - --addr=0.0.0.0:20160
+      - --advertise-addr=tikv:20160
+    depends_on:
+      - pd
+    networks:
+      - social_network_net
+
+  tidb:
+    image: pingcap/tidb:latest
+    container_name: tidb-server-social
+    command:
+      - --store=tikv
+      - --path=pd:2379
+    ports:
+      - "4000:4000"
+    depends_on:
+      - tikv
+    networks:
+      - social_network_net
+
+  dragonfly:
+    image: 'docker.dragonflydb.io/dragonflydb/dragonfly'
+    container_name: social_redis
+    command: ["dragonfly", "--logtostderr", "--password=123456"]
+    ulimits:
+      memlock: -1
+    ports:
+      - "6379:6379"
+    networks:
+      - social_network_net
+
+networks:
+  social_network_net:
+    driver: bridge
