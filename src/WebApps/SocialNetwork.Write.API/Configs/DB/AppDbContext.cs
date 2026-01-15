@@ -60,8 +60,24 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
                 .HasMaxLength(250)
                 .IsRequired(false);
             
+            options.Property(e => e.Language)
+                .HasMaxLength(4)
+                .IsRequired(false);
+            
+            options.Property(e => e.Bio)
+                .HasMaxLength(600)
+                .IsRequired(false);
+            
+            options.Property(e => e.Country)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            
+            options.Property(e => e.CoverImageUrl)
+                .HasMaxLength(800)
+                .IsRequired(false);
+            
             options.Property(e => e.ImageProfileUrl)
-                .HasMaxLength(1000)
+                .HasMaxLength(800)
                 .IsRequired(false);
             
             options.Property(e => e.RefreshToken)
@@ -71,10 +87,20 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
             options.Property(e => e.RefreshTokenExpiryTime)
                 .IsRequired(false);
             
-            options.Property(e => e.UpdatedAt)
+            options.Property(e => e.BirthDate)
                 .IsRequired(false);
             
+            options.Property(e => e.UpdatedAt)
+                .IsRequired(false);
+
+            options.Property(e => e.IsPrivate)
+                .HasDefaultValue(false);
+
+            options.Property(e => e.FailedLoginAttempts)
+                .HasDefaultValue(0);
             
+            options.Property(e => e.LockoutEnd)
+                .IsRequired(false);
         });
 
         modelBuilder.Entity<UserModel>().ToTable("app_users");
