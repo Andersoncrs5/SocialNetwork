@@ -12,10 +12,17 @@ using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi;
+using SocialNetwork.Contracts.Utils.Res.http;
+using SocialNetwork.Write.API.Repositories.Interfaces;
+using SocialNetwork.Write.API.Repositories.Provider;
+using SocialNetwork.Write.API.Services.Interfaces;
+using SocialNetwork.Write.API.Services.Providers;
+using SocialNetwork.Write.API.Utils.UnitOfWork;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -91,15 +98,42 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+
 // ===================================================================================
 // SWAGGER CONFIGURATION
 // ===================================================================================
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var errors = context.ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage);
+
+            var response = new ResponseHttp<IEnumerable<string>>(
+                Data: errors,
+                Message: "Validation failed",
+                TraceId: context.HttpContext.TraceIdentifier,
+                ErrorCode: errors.Count(),
+                Success: false,
+                Timestamp: DateTime.UtcNow
+            );
+
+            return new BadRequestObjectResult(response);
+        };
+    });
+
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new() { Title = "Social Network API", Version = "v1" });
+    options.EnableAnnotations();
 
     var securityScheme = new OpenApiSecurityScheme
     {
@@ -122,7 +156,7 @@ builder.Services.AddRateLimiter(options =>
         opt.PermitLimit = 30;
         opt.Window = TimeSpan.FromSeconds(5);
     });
-    // Adicione as outras políticas conforme sua base...
+    
 });
 
 // ===================================================================================
@@ -131,8 +165,16 @@ builder.Services.AddRateLimiter(options =>
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
-
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
@@ -153,7 +195,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseExceptionHandler(); // Ativa seu GlobalExceptionHandler
+app.UseExceptionHandler(); 
 app.UseHttpsRedirection();
 app.UseRateLimiter();
 app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
@@ -162,7 +204,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 
-app.MapControllers(); // Habilita o uso de [Route("api/v{version:apiVersion}/[controller]")]
+app.MapControllers(); 
 
 app.Run();
 
