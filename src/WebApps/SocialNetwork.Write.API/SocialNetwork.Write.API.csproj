@@ -38,8 +38,4 @@
     <ProjectReference Include="..\..\BuildingBlocks\SocialNetwork.Contracts\SocialNetwork.Contracts.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="dto\User\" />
-  </ItemGroup>
-
 </Project>
