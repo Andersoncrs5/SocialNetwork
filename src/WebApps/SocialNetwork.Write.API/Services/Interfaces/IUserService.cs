@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using SocialNetwork.Contracts.Attributes.Globals;
+using SocialNetwork.Write.API.dto.User;
 using SocialNetwork.Write.API.Models;
 using SocialNetwork.Write.API.Utils;
 
@@ -21,4 +22,6 @@ public interface IUserService
     Task<UserModel> GetUserByUsernameSimple(string username);
     Task<bool> ExistsUserByUsername(string username);
     Task<UserModel?> GetUserByRefreshToken(string refreshToken);
+    Task<IList<string>> GetUserRoles(UserModel user);
+    Task<UserResult> CreateUser(CreateUserDto dto);
 }
