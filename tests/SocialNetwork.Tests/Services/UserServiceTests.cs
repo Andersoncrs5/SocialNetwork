@@ -4,8 +4,10 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 using SocialNetwork.Write.API.Configs.Exception.classes;
+using SocialNetwork.Write.API.dto.User;
 using SocialNetwork.Write.API.Models;
 using SocialNetwork.Write.API.Services.Providers;
+using SocialNetwork.Write.API.Utils;
 using SocialNetwork.Write.API.Utils.UnitOfWork;
 using Xunit;
 
@@ -393,4 +395,72 @@ public class UserServiceTests
         _uowMock.Verify(x => x.UserRepository.GetByRefreshToken(invalidToken), Times.Once);
         _uowMock.VerifyNoOtherCalls();
     }
+
+    [Fact]
+    public async Task GetRolesUser()
+    {
+        var list = new List<string>() { "SUPER_ADM", "ADMINISTRATOR" };
+        _uowMock.Setup(x => x.UserRepository.GetRolesAsync(_user)).ReturnsAsync(list);
+
+        IList<string> userRoles = await _userService.GetUserRoles(_user);
+        
+        userRoles.Should().NotBeNullOrEmpty();
+        userRoles.Should().HaveCount(2);
+        userRoles.First().Should().Be("SUPER_ADM");
+        
+        _uowMock.Verify(x => x.UserRepository.GetRolesAsync(_user), Times.Once);
+        _uowMock.VerifyNoOtherCalls();
+    }
+
+    [Fact]
+    public async Task CreateUser_ShouldReturnSucceededResult_WhenDataIsValid()
+    {
+        var dto = new CreateUserDto
+        {
+            Email = _user.Email!,
+            Username = _user.UserName!,
+            PasswordHash = "StrongPassword123!",
+            FullName = _user.FullName
+        };
+
+        _mapperMock.Setup(m => m.Map<UserModel>(dto)).Returns(_user);
+
+        _uowMock.Setup(x => x.UserRepository.Insert(It.IsAny<UserModel>()))
+            .ReturnsAsync(IdentityResult.Success);
+
+        _uowMock.Setup(x => x.CommitAsync()).Returns(Task.CompletedTask);
+
+        _uowMock.Setup(x => x.UserRepository.GetByEmail(dto.Email))
+            .ReturnsAsync(_user);
+
+        UserResult result = await _userService.CreateUser(dto);
+
+        result.Succeeded.Should().BeTrue();
+        result.User.Should().NotBeNull();
+        result.User!.Email.Should().Be(dto.Email);
+
+        _uowMock.Verify(x => x.UserRepository.Insert(It.IsAny<UserModel>()), Times.Once);
+        _uowMock.Verify(x => x.CommitAsync(), Times.Once);
+        _uowMock.Verify(x => x.UserRepository.GetByEmail(dto.Email), Times.AtLeastOnce);
+    }
+    
+    [Fact]
+    public async Task CreateUser_ShouldReturnFailedResult_AndNotCommit_WhenIdentityFails()
+    {
+        var dto = new CreateUserDto { Email = "fail@test.com", Username = "fail",  PasswordHash = "StrongPassword123!" };
+        var identityError = new IdentityError { Description = "Password too weak" };
+    
+        _mapperMock.Setup(m => m.Map<UserModel>(dto)).Returns(_user);
+    
+        _uowMock.Setup(x => x.UserRepository.Insert(It.IsAny<UserModel>()))
+            .ReturnsAsync(IdentityResult.Failed(identityError));
+
+        UserResult result = await _userService.CreateUser(dto);
+
+        result.Succeeded.Should().BeFalse();
+        result.Errors.Should().Contain("Password too weak");
+    
+        _uowMock.Verify(x => x.CommitAsync(), Times.Never);
+    }
+    
 }
