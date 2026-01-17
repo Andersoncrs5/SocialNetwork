@@ -10,5 +10,6 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/SocialNetwork.Tests/SocialNetwork.Tests.csproj" />
+    <Project Path="tests/SocialNetwork.Write.IntegrationTests/SocialNetwork.Write.IntegrationTests.csproj" />
   </Folder>
 </Solution>
