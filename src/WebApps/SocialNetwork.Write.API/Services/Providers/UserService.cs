@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using SocialNetwork.Contracts.Attributes.Globals;
 using SocialNetwork.Write.API.Configs.Exception.classes;
+using SocialNetwork.Write.API.dto.User;
 using SocialNetwork.Write.API.Models;
 using SocialNetwork.Write.API.Services.Interfaces;
 using SocialNetwork.Write.API.Utils;
@@ -84,6 +85,21 @@ public class UserService(
     
     public async Task<UserModel?> GetUserByRefreshToken(string refreshToken)
         => await uow.UserRepository.GetByRefreshToken(refreshToken);
-    
+
+    public async Task<IList<string>> GetUserRoles(UserModel user)
+        => await uow.UserRepository.GetRolesAsync(user);
+
+    public async Task<UserResult> CreateUser(CreateUserDto dto)
+    {
+        UserModel user = mapper.Map<UserModel>(dto);
+
+        IdentityResult result = await uow.UserRepository.Insert(user);
+        
+        if (result.Succeeded)
+            await uow.CommitAsync();
+        
+        var userCreated = await GetUserByEmail(dto.Email);
+        return ReturnResult(result, userCreated);
+    }
     
 }
