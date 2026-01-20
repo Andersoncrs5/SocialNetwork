@@ -112,5 +112,46 @@ public class UserService(
         var userCreated = await GetUserByEmail(user.Email!);
         return ReturnResult(result, userCreated);
     }
+
+    public async Task<UserResult> Update(UpdateUserDto dto, UserModel user)
+    {
+        if (!string.IsNullOrWhiteSpace(dto.Username) && !await ExistsUserByUsername(dto.Username) )
+            user.UserName = dto.Username;
+        
+        if (!string.IsNullOrWhiteSpace(dto.FullName))
+            user.FullName = dto.FullName;
+        
+        if (!string.IsNullOrWhiteSpace(dto.PasswordHash))
+            user.PasswordHash = passwordHasher.HashPassword(user, dto.PasswordHash);
+        
+        if (!string.IsNullOrWhiteSpace(dto.Bio))
+            user.Bio = dto.Bio;
+
+        if (!string.IsNullOrWhiteSpace(dto.CoverImageUrl))
+            user.CoverImageUrl = dto.CoverImageUrl;
+
+        if (dto.BirthDate.HasValue)
+            user.BirthDate = dto.BirthDate;
+
+        if (dto.IsPrivate.HasValue)
+            user.IsPrivate = dto.IsPrivate.Value;
+
+        if (!string.IsNullOrWhiteSpace(dto.Language))
+            user.Language = dto.Language;
+
+        if (!string.IsNullOrWhiteSpace(dto.Country))
+            user.Country = dto.Country;
+
+        if (!string.IsNullOrWhiteSpace(dto.ImageProfileUrl))
+            user.ImageProfileUrl = dto.ImageProfileUrl;
+
+        IdentityResult result = await uow.UserRepository.Update(user);
+        
+        if (result.Succeeded)
+            await uow.CommitAsync();
+        
+        var userCreated = await GetUserByEmailSimple(user.Email!);
+        return ReturnResult(result, userCreated);
+    }
     
 }
