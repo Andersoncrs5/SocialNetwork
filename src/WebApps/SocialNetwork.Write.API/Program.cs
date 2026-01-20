@@ -9,30 +9,31 @@ using SocialNetwork.Write.API.Configs.Exception;
 using SocialNetwork.Write.API.Models; // Ajuste para seu UserModel/RoleModel
 using SocialNetwork.Write.API.Configs.DB;
 using Microsoft.AspNetCore.RateLimiting;
-using System.Threading.RateLimiting;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi;
+using SocialNetwork.Contracts.configs.jwt;
 using SocialNetwork.Contracts.Utils.Res.http;
 using SocialNetwork.Write.API.Repositories.Interfaces;
 using SocialNetwork.Write.API.Repositories.Provider;
 using SocialNetwork.Write.API.Services.Interfaces;
 using SocialNetwork.Write.API.Services.Providers;
+using SocialNetwork.Write.API.Utils.Mappers;
 using SocialNetwork.Write.API.Utils.UnitOfWork;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 // ===================================================================================
 // BANCAS DE DADOS (TiDB & Redis)
 // ===================================================================================
 var connectionString = builder.Configuration.GetConnectionString("TiDBConnection");
+
+if (connectionString == null)
+    throw new ArgumentNullException(nameof(connectionString));
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    options.UseMySQL(connectionString));
 
 builder.Services.AddStackExchangeRedisCache(options =>
 {
@@ -43,6 +44,8 @@ builder.Services.AddStackExchangeRedisCache(options =>
 // ===================================================================================
 // IDENTITY & JWT
 // ===================================================================================
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("jwt"));
+
 var jwtSettings = builder.Configuration.GetSection("jwt");
 var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey is missing");
 
@@ -165,8 +168,6 @@ builder.Services.AddRateLimiter(options =>
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
-builder.Services.AddAutoMapper(typeof(Program).Assembly);
-
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -175,6 +176,18 @@ builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRedisService, RedisService>();
+
+// ===================================================================================
+// AUTO MAPPER
+// ===================================================================================
+
+var mapperConfig = new MapperConfiguration(mc =>
+{
+    mc.AddMaps(typeof(UserMapper).Assembly); 
+}, builder.Logging.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>());
+IMapper mapper = mapperConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
 
 var app = builder.Build();
 
