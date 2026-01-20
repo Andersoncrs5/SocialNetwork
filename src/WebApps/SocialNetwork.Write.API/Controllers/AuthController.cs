@@ -53,7 +53,7 @@ public class AuthController(
         
         await userService.UpdateSimple(user);
         
-        return Ok(new ResponseHttp<ResponseTokens>(
+        return StatusCode(StatusCodes.Status201Created, new ResponseHttp<ResponseTokens>(
             Data: tokens,
             ErrorCode: 0,
             Message: "User created",
