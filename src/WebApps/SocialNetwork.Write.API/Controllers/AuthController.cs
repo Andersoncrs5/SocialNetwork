@@ -36,7 +36,6 @@ public class AuthController(
                 Data: result.Errors,
                 Message: "Registration failed",
                 TraceId: HttpContext.TraceIdentifier,
-                ErrorCode: result.Errors?.Count() ?? 0,
                 Success: false,
                 Timestamp: DateTime.UtcNow
             ));
@@ -55,7 +54,6 @@ public class AuthController(
         
         return StatusCode(StatusCodes.Status201Created, new ResponseHttp<ResponseTokens>(
             Data: tokens,
-            ErrorCode: 0,
             Message: "User created",
             Success: true,
             Timestamp: DateTime.UtcNow,
@@ -73,14 +71,14 @@ public class AuthController(
         var traceId = HttpContext.TraceIdentifier;
 
          var invalidCredentialsResponse = Unauthorized(new ResponseHttp<object>(
-            null, "Invalid credentials", traceId, 1, false, DateTime.UtcNow));
+            null, "Invalid credentials", traceId,  false, DateTime.UtcNow));
 
         if (user is null) return invalidCredentialsResponse;
 
         if (user.LockoutEnd > DateTime.UtcNow)
         {
             return StatusCode(423, new ResponseHttp<object>( 
-                null, $"Account locked until {user.LockoutEnd}", traceId, 2, false, DateTime.UtcNow));
+                null, $"Account locked until {user.LockoutEnd}", traceId, false, DateTime.UtcNow));
         }
 
         bool isPasswordValid = await userService.CheckPassword(user, dto.Password);
@@ -110,7 +108,7 @@ public class AuthController(
     
         await userService.UpdateSimple(user);
 
-        return Ok(new ResponseHttp<ResponseTokens>(tokens, "Login success", traceId, 0, true, DateTime.UtcNow));
+        return Ok(new ResponseHttp<ResponseTokens>(tokens, "Login success", traceId, true, DateTime.UtcNow));
     }
     
     

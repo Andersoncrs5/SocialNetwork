@@ -122,7 +122,6 @@ builder.Services.AddControllers()
                 Data: errors,
                 Message: "Validation failed",
                 TraceId: context.HttpContext.TraceIdentifier,
-                ErrorCode: errors.Count(),
                 Success: false,
                 Timestamp: DateTime.UtcNow
             );
