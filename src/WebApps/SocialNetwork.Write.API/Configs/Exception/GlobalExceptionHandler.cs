@@ -16,7 +16,8 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext, 
         System.Exception exception, 
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+        )
     {
         var (statusCode, message, isBusinessError) = exception switch
         {
@@ -27,6 +28,8 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
             DbUpdateException => (HttpStatusCode.Conflict, "Violação de integridade no banco de dados.", false),
 
             BadHttpRequestException => (HttpStatusCode.BadRequest, "Falha na validação da requisição.", true),
+            
+            UnauthenticatedException => (HttpStatusCode.Unauthorized, exception.Message, true),
 
             _ => (HttpStatusCode.InternalServerError, $"Ocorreu um erro inesperado no servidor." , false)
         };
@@ -50,7 +53,6 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
             Data: null,
             Message: message,
             TraceId: httpContext.TraceIdentifier,
-            ErrorCode: 0,
             Success: false,
             Timestamp: DateTime.UtcNow,
             DetailsError: exception.Message
