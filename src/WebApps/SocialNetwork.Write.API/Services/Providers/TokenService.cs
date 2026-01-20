@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Renci.SshNet.Security;
 using SocialNetwork.Contracts.configs.jwt;
 using SocialNetwork.Contracts.Utils.Res.http;
 using SocialNetwork.Write.API.Models;
@@ -35,7 +36,7 @@ public class TokenService(IOptions<JwtOptions> jwtOptions) : ITokenService
 
     public string GenerateRefreshToken()
     {
-        var randomNumber = new byte[32];
+        var randomNumber = new byte[64];
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(randomNumber);
         return Convert.ToBase64String(randomNumber);
