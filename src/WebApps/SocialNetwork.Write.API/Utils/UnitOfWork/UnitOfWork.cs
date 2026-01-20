@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Caching.Distributed;
 using SocialNetwork.Write.API.Configs.DB;
 using SocialNetwork.Write.API.Models;
 using SocialNetwork.Write.API.Repositories.Interfaces;
@@ -16,7 +17,7 @@ public class UnitOfWork(
     AppDbContext context, 
     UserManager<UserModel> userManager, 
     RoleManager<RoleModel> roleManager,
-    StackExchange.Redis.IDatabase db,
+    IDistributedCache db,
     IRedisService redisService,
     IMapper mapper
 ) : IUnitOfWork, IDisposable
