@@ -28,7 +28,7 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
 
             BadHttpRequestException => (HttpStatusCode.BadRequest, "Falha na validação da requisição.", true),
 
-            _ => (HttpStatusCode.InternalServerError, "Ocorreu um erro inesperado no servidor.", false)
+            _ => (HttpStatusCode.InternalServerError, $"Ocorreu um erro inesperado no servidor." , false)
         };
 
         // 2. Lógica de Log Inteligente para Observabilidade
@@ -52,7 +52,8 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
             TraceId: httpContext.TraceIdentifier,
             ErrorCode: 0,
             Success: false,
-            Timestamp: DateTime.UtcNow
+            Timestamp: DateTime.UtcNow,
+            DetailsError: exception.Message
         );
 
         httpContext.Response.StatusCode = (int)statusCode;
