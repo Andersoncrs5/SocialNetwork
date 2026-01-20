@@ -29,45 +29,54 @@ public class WriteApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 
         builder.ConfigureTestServices(services =>
         {
-            var descriptor = services.SingleOrDefault(
-                d => d.ServiceType == typeof(DbContextOptions<AppDbContext>));
-            if (descriptor != null) services.Remove(descriptor);
+            var dbDescriptor = services.SingleOrDefault(d => 
+                d.ServiceType == typeof(DbContextOptions<AppDbContext>));
+            if (dbDescriptor != null) services.Remove(dbDescriptor);
             
-            var redisDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(IConnectionMultiplexer));
+            var redisDescriptor = services.SingleOrDefault(d => 
+                d.ServiceType == typeof(IConnectionMultiplexer));
             if (redisDescriptor != null) services.Remove(redisDescriptor);
 
             var redisConn = _redisContainer.GetConnectionString();
             var multiplexer = ConnectionMultiplexer.Connect(redisConn);
-            
             services.AddSingleton<IConnectionMultiplexer>(multiplexer);
-            services.AddScoped<IDatabase>(s => multiplexer.GetDatabase());
+            services.AddScoped<IDatabase>(s => s.GetRequiredService<IConnectionMultiplexer>().GetDatabase());
             
             var connectionString = _dbContainer.GetConnectionString();
-
             services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseMySQL(connectionString);
             });
-
-            using var scope = services.BuildServiceProvider().CreateScope();
-            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            db.Database.Migrate(); 
         });
     }
 
     public async Task InitializeAsync()
     {
-        await Task.WhenAll(
-            _dbContainer.StartAsync(), 
-            _redisContainer.StartAsync()
-        );
+        await Task.WhenAll(_dbContainer.StartAsync(), _redisContainer.StartAsync());
+
+        using var scope = Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var retries = 5;
+        while (retries > 0)
+        {
+            try
+            {
+                await db.Database.EnsureCreatedAsync();
+                await db.Database.MigrateAsync();
+                break; 
+            }
+            catch (Exception)
+            {
+                retries--;
+                if (retries == 0) throw;
+                await Task.Delay(2000); 
+            }
+        }
     }
 
     public new async Task DisposeAsync()
     {
-        await Task.WhenAll(
-            _dbContainer.StopAsync(),
-            _redisContainer.StopAsync()
-        );
+        await Task.WhenAll(_dbContainer.StopAsync(), _redisContainer.StopAsync());
     }
 }
