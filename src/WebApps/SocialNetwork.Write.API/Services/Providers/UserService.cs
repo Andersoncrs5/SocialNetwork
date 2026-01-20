@@ -101,5 +101,16 @@ public class UserService(
         var userCreated = await GetUserByEmail(dto.Email);
         return ReturnResult(result, userCreated);
     }
+
+    public async Task<UserResult> UpdateSimple(UserModel user)
+    {
+        IdentityResult result = await uow.UserRepository.Update(user);
+        
+        if (result.Succeeded)
+            await uow.CommitAsync();
+        
+        var userCreated = await GetUserByEmail(user.Email!);
+        return ReturnResult(result, userCreated);
+    }
     
 }

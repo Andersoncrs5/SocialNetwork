@@ -9,6 +9,7 @@ namespace SocialNetwork.Write.API.Services.Interfaces;
 
 public interface IUserService
 {
+    Task<UserResult> UpdateSimple(UserModel user);
     Task<UserModel?> GetUserBySid([IsId] string sid);
     Task<UserModel> GetUserBySidSimple([IsId] string sid);
     Task<bool> ExistsUserBySid([IsId] string sid);
