@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi;
 using SocialNetwork.Contracts.configs.jwt;
 using SocialNetwork.Contracts.Utils.Res.http;
+using SocialNetwork.Write.API.Configs.InfoApp;
 using SocialNetwork.Write.API.Repositories.Interfaces;
 using SocialNetwork.Write.API.Repositories.Provider;
 using SocialNetwork.Write.API.Services.Interfaces;
@@ -40,6 +41,11 @@ builder.Services.AddStackExchangeRedisCache(options =>
     options.Configuration = builder.Configuration.GetConnectionString("RedisConnection");
     options.InstanceName = "SocialNetwork_";
 });
+
+// ===================================================================================
+// INFO APP
+// ===================================================================================
+builder.Services.Configure<InfoAppOptions>(builder.Configuration.GetSection("InfoApp"));
 
 // ===================================================================================
 // IDENTITY & JWT
