@@ -8,5 +8,8 @@ public record ResponseHttp<T>(
     string TraceId,
     int ErrorCode,
     bool Success,
-    DateTime Timestamp
+    DateTime Timestamp,
+    string? DetailsError = null,
+    string? Path = null,
+    UInt16 ApiVersion = 1
 );
