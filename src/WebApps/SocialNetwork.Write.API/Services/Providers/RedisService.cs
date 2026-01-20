@@ -1,35 +1,74 @@
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Distributed;
 using SocialNetwork.Write.API.Services.Interfaces;
 using StackExchange.Redis;
 
 namespace SocialNetwork.Write.API.Services.Providers;
 
-public class RedisService(IDatabase db): IRedisService
+public class RedisService(IDistributedCache cache) : IRedisService
 {
-    private readonly TimeSpan _defaultTtl = TimeSpan.FromMinutes(5);
-    
+    private readonly TimeSpan _defaultTtl = TimeSpan.FromMinutes(8);
+
     public async Task<bool> CreateAsync<T>(string key, T value, TimeSpan? ttl = null)
     {
-        RedisValue json = (RedisValue) JsonSerializer.Serialize(value);
-        return await db.StringSetAsync(key, json, ttl ?? _defaultTtl);
+        try
+        {
+            var options = new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = ttl ?? _defaultTtl
+            };
+
+            var jsonData = JsonSerializer.Serialize(value);
+            await cache.SetStringAsync(key, jsonData, options);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public async Task<T?> GetAsync<T>(string key)
     {
-        RedisValue json = await db.StringGetAsync(key);
-        if (json.IsNullOrEmpty) return default;
+        var jsonData = await cache.GetStringAsync(key);
+        
+        if (string.IsNullOrEmpty(jsonData)) 
+            return default;
 
-        return JsonSerializer.Deserialize<T>((byte[]) json!);
+        return JsonSerializer.Deserialize<T>(jsonData);
     }
-    
-    public Task<bool> ExistsAsync(string key)
-        => db.KeyExistsAsync(key);
 
-    public Task<bool> DeleteAsync(string key)
-        => db.KeyDeleteAsync(key);
+    public async Task<bool> ExistsAsync(string key)
+    {
+        var data = await cache.GetAsync(key);
+        return data != null;
+    }
 
-    public Task<bool> RefreshTtlAsync(string key, TimeSpan? ttl = null)
-        => db.KeyExpireAsync(key, ttl ?? _defaultTtl);
+    public async Task<bool> DeleteAsync(string key)
+    {
+        try
+        {
+            await cache.RemoveAsync(key);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> RefreshTtlAsync(string key, TimeSpan? ttl = null)
+    {
+        try
+        {
+            await cache.RefreshAsync(key);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }
