@@ -50,9 +50,6 @@ public class UserService(
     public async Task<bool> ExistsUserBySid([IsId] string sid)
         => await uow.UserRepository.ExistsByIdAsync(sid);
     
-    public IQueryable<UserModel> GetIQueryable()
-        => uow.UserRepository.GetIQueryable();
-    
     public async Task<bool> CheckPassword(UserModel user, string password)
         => await uow.UserRepository.CheckPassword(user, password);
     
@@ -95,27 +92,25 @@ public class UserService(
 
         IdentityResult result = await uow.UserRepository.Insert(user);
         
-        if (result.Succeeded)
-            await uow.CommitAsync();
-        
         var userCreated = await GetUserByEmail(dto.Email);
         return ReturnResult(result, userCreated);
     }
-
+    
     public async Task<UserResult> UpdateSimple(UserModel user)
     {
         IdentityResult result = await uow.UserRepository.Update(user);
-        
-        if (result.Succeeded)
-            await uow.CommitAsync();
-        
-        var userCreated = await GetUserByEmail(user.Email!);
-        return ReturnResult(result, userCreated);
+
+        UserModel model = await GetUserByEmailSimple(user.Email!);
+        return ReturnResult(result, model);
     }
 
     public async Task<UserResult> Update(UpdateUserDto dto, UserModel user)
     {
-        if (!string.IsNullOrWhiteSpace(dto.Username) && !await ExistsUserByUsername(dto.Username) )
+        if (
+            !string.IsNullOrWhiteSpace(dto.Username) && 
+            !await ExistsUserByUsername(dto.Username) &&
+            !(dto.Username.Equals(user.UserName))
+            )
             user.UserName = dto.Username;
         
         if (!string.IsNullOrWhiteSpace(dto.FullName))
@@ -145,13 +140,7 @@ public class UserService(
         if (!string.IsNullOrWhiteSpace(dto.ImageProfileUrl))
             user.ImageProfileUrl = dto.ImageProfileUrl;
 
-        IdentityResult result = await uow.UserRepository.Update(user);
-        
-        if (result.Succeeded)
-            await uow.CommitAsync();
-        
-        var userCreated = await GetUserByEmailSimple(user.Email!);
-        return ReturnResult(result, userCreated);
+        return await UpdateSimple(user);
     }
     
 }

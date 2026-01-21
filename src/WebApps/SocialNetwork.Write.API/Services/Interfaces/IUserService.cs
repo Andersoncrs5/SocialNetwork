@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using SocialNetwork.Contracts.Attributes.Globals;
 using SocialNetwork.Write.API.dto.User;
 using SocialNetwork.Write.API.Models;
@@ -14,7 +15,6 @@ public interface IUserService
     Task<UserModel?> GetUserBySid([IsId] string sid);
     Task<UserModel> GetUserBySidSimple([IsId] string sid);
     Task<bool> ExistsUserBySid([IsId] string sid);
-    IQueryable<UserModel> GetIQueryable();
     Task<bool> CheckPassword(UserModel user, string password);
     Task<UserResult> DeleteUser(UserModel user);
     Task<UserModel?> GetUserByEmail([EmailConstraint] string email);
