@@ -46,7 +46,6 @@ public class UserServiceTests
         EmailConfirmed = true,
         CoverImageUrl = "",
         CreatedAt = DateTime.UtcNow,
-        FailedLoginAttempts = 0,
         FullName = "pochita the chainsaw demon",
         UserName = "pochita"
     };
