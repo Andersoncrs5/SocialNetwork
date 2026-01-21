@@ -18,9 +18,6 @@ public class UserModel: IdentityUser
     public string? RefreshToken { get; set; }
     public DateTime? RefreshTokenExpiryTime { get; set; }
     
-    public int FailedLoginAttempts { get; set; }
-    public DateTime? LockoutEnd { get; set; }
-    
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }
