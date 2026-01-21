@@ -15,8 +15,6 @@ namespace SocialNetwork.Write.API.Configs.DB;
 public class AppDbContext(DbContextOptions<AppDbContext> options)
     : IdentityDbContext<UserModel, RoleModel, string>(options)
 {
-    public new DbSet<UserModel> Users { get; set; }
-    public new DbSet<RoleModel> Roles { get; set; }
     
     public override int SaveChanges()
     {
@@ -35,75 +33,33 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
         var entries = ChangeTracker.Entries<BaseModel>();
         foreach (var entry in entries)
         {
-            if (entry.State == EntityState.Added)
-            {
-                entry.Entity.Id = entry.Entity.Id ?? Guid.NewGuid().ToString();
-            }
-            else if (entry.State == EntityState.Modified)
+            if (entry.State == EntityState.Modified)
             {
                 entry.Entity.UpdatedAt = DateTime.UtcNow;
+            }
+            else if (entry.State == EntityState.Added)
+            {
+                 entry.Entity.CreatedAt = DateTime.UtcNow;
             }
         }
     }
  
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        base.OnConfiguring(optionsBuilder);
-    }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         
-        modelBuilder.Entity<UserModel>(options =>
+        modelBuilder.Entity<UserModel>(entity =>
         {
-            options.HasKey(e => e.Id);
             
-            options.Property(e => e.FullName)
-                .HasMaxLength(250)
-                .IsRequired(false);
+            entity.Property(e => e.FullName).HasMaxLength(250);
+            entity.Property(e => e.Language).HasMaxLength(4);
+            entity.Property(e => e.Bio).HasMaxLength(600);
+            entity.Property(e => e.Country).HasMaxLength(100);
+            entity.Property(e => e.CoverImageUrl).HasMaxLength(800);
+            entity.Property(e => e.ImageProfileUrl).HasMaxLength(800);
+            entity.Property(e => e.RefreshToken).HasMaxLength(400);
             
-            options.Property(e => e.Language)
-                .HasMaxLength(4)
-                .IsRequired(false);
-            
-            options.Property(e => e.Bio)
-                .HasMaxLength(600)
-                .IsRequired(false);
-            
-            options.Property(e => e.Country)
-                .HasMaxLength(100)
-                .IsRequired(false);
-            
-            options.Property(e => e.CoverImageUrl)
-                .HasMaxLength(800)
-                .IsRequired(false);
-            
-            options.Property(e => e.ImageProfileUrl)
-                .HasMaxLength(800)
-                .IsRequired(false);
-            
-            options.Property(e => e.RefreshToken)
-                .HasMaxLength(400)
-                .IsRequired(false);
-            
-            options.Property(e => e.RefreshTokenExpiryTime)
-                .IsRequired(false);
-            
-            options.Property(e => e.BirthDate)
-                .IsRequired(false);
-            
-            options.Property(e => e.UpdatedAt)
-                .IsRequired(false);
-
-            options.Property(e => e.IsPrivate)
-                .HasDefaultValue(false);
-
-            options.Property(e => e.FailedLoginAttempts)
-                .HasDefaultValue(0);
-            
-            options.Property(e => e.LockoutEnd)
-                .IsRequired(false);
+            entity.Property(e => e.IsPrivate).HasDefaultValue(false);
         });
 
         modelBuilder.Entity<UserModel>().ToTable("app_users");
@@ -113,7 +69,5 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
         modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("app_user_logins");
         modelBuilder.Entity<IdentityRoleClaim<string>>().ToTable("app_role_claims");
         modelBuilder.Entity<IdentityUserToken<string>>().ToTable("app_user_tokens");
-        
     }
-
 }
