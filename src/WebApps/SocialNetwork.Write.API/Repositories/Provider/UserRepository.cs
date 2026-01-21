@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using SocialNetwork.Contracts.Attributes.Globals;
 using SocialNetwork.Write.API.Configs.DB;
 using SocialNetwork.Write.API.Models;
@@ -13,90 +14,53 @@ namespace SocialNetwork.Write.API.Repositories.Provider;
 
 public class UserRepository(AppDbContext context, UserManager<UserModel> manager): IUserRepository
 {
-    public async Task<UserModel?> GetByIdAsync([IsId] string id)
-    {
-        return await manager.FindByIdAsync(id);
-    }
+    public Task<UserModel?> GetByIdAsync(string id)
+        => manager.FindByIdAsync(id);
 
-    public async Task<bool> ExistsByIdAsync([IsId] string id)
-    {
-        return await manager.FindByIdAsync(id) != null;
-    }
-    
-    public async Task<UserModel?> GetByEmail(string email)
-    {
-        return await manager.FindByEmailAsync(email);
-    }
+    public async Task<bool> ExistsByIdAsync(string id)
+        => await manager.FindByIdAsync(id) != null;
+
+    public Task<UserModel?> GetByEmail(string email)
+        => manager.FindByEmailAsync(email);
 
     public async Task<bool> ExistsByEmail(string email)
-    {
-        return await manager.FindByEmailAsync(email) != null;
-    }
-    
-    public async Task<bool> CheckPassword(UserModel user, string password)
-    {
-        return await manager.CheckPasswordAsync(user, password);
-    }
-    
+        => await manager.FindByEmailAsync(email) != null;
+
+    public Task<UserModel?> GetByUsername(string username)
+        => manager.FindByNameAsync(username);
+
+    public async Task<bool> ExistsByUsername(string username)
+        => await manager.FindByNameAsync(username) != null;
+
+    public Task<bool> CheckPassword(UserModel user, string password)
+        => manager.CheckPasswordAsync(user, password);
+
     public async Task<UserModel?> GetByRefreshToken(string refreshToken)
     {
-        UserModel? user = await context.Users.
-            Where(u => 
-                u.RefreshToken == refreshToken&& 
+        return await manager.Users
+            .Where(u =>
+                u.RefreshToken == refreshToken &&
                 u.RefreshTokenExpiryTime > DateTime.UtcNow
-            ).
-            FirstOrDefaultAsync();
-        
-        return user;
-    }
-    
-    public async Task<bool> ExistsByUsername(string username)
-    {
-        var user = await manager.FindByNameAsync(username);
-        return user != null;
-    }
-    
-    public async Task<UserModel?> GetByUsername(string username)
-    {
-        return await manager.FindByNameAsync(username);
-    }
-    
-    public async Task<IdentityResult> Delete(UserModel user)
-    {
-        return await manager.DeleteAsync(user);
+            )
+            .FirstOrDefaultAsync();
     }
 
-    public async Task<IdentityResult> Insert(UserModel user)
-    {
-        user.CreatedAt = DateTime.UtcNow;
-        return await manager.CreateAsync(user, user.PasswordHash!);
-    }
+    public Task<IdentityResult> Insert(UserModel user)
+        => manager.CreateAsync(user, user.PasswordHash!);
 
-    public async Task<IdentityResult> Update(UserModel user)
-    {
-        user.UpdatedAt = DateTime.UtcNow;
-        return await manager.UpdateAsync(user);
-    }
-    
-    public async Task<IdentityResult> AddRoleToUser(UserModel user, RoleModel role)
-    {
-        return await manager.AddToRoleAsync(user, role.Name!);
-    }
-    
-    public async Task<IdentityResult> RemoveRoleToUser(UserModel user, string roleName)
-    {
-        return await manager.RemoveFromRoleAsync(user, roleName);
-    }
+    public Task<IdentityResult> Update(UserModel user)
+        => manager.UpdateAsync(user);
 
-    public async Task<IList<string>> GetRolesAsync(UserModel user)
-    {
-        IList<string> rolesAsync = await manager.GetRolesAsync(user);
-        return rolesAsync;
-    }
+    public Task<IdentityResult> Delete(UserModel user)
+        => manager.DeleteAsync(user);
 
-    public IQueryable<UserModel> GetIQueryable()
-    {
-        return context.Users.AsQueryable();
-    }
-    
+    public Task<IdentityResult> AddRoleToUser(UserModel user, RoleModel role)
+        => manager.AddToRoleAsync(user, role.Name!);
+
+    public Task<IdentityResult> RemoveRoleToUser(UserModel user, string roleName)
+        => manager.RemoveFromRoleAsync(user, roleName);
+
+    public Task<IList<string>> GetRolesAsync(UserModel user)
+        => manager.GetRolesAsync(user);
+
 }

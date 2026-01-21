@@ -23,5 +23,4 @@ public interface IUserRepository
     Task<IdentityResult> AddRoleToUser(UserModel user, RoleModel role);
     Task<IdentityResult> RemoveRoleToUser(UserModel user, string roleName);
     Task<IList<string>> GetRolesAsync(UserModel user);
-    IQueryable<UserModel> GetIQueryable();
 }
