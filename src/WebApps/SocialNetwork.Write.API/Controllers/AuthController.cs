@@ -75,7 +75,7 @@ public class AuthController(
 
         if (user is null) return invalidCredentialsResponse;
 
-        if (user.LockoutEnd > DateTime.UtcNow)
+        if (user.LockoutEnd > DateTimeOffset.UtcNow)
         {
             return StatusCode(423, new ResponseHttp<object>( 
                 null, $"Account locked until {user.LockoutEnd}", traceId, false, DateTime.UtcNow));
@@ -85,19 +85,19 @@ public class AuthController(
 
         if (!isPasswordValid)
         {
-            user.FailedLoginAttempts += 1;
+            user.AccessFailedCount += 1;
         
-            if (user.FailedLoginAttempts >= 3)
+            if (user.AccessFailedCount >= 3)
             {
-                user.LockoutEnd = DateTime.UtcNow.AddHours(5);
-                user.FailedLoginAttempts = 0; 
+                user.LockoutEnd = DateTimeOffset.UtcNow.AddHours(5);
+                user.AccessFailedCount = 0; 
             }
         
             await userService.UpdateSimple(user);
             return invalidCredentialsResponse;
         }
 
-        user.FailedLoginAttempts = 0;
+        user.AccessFailedCount = 0;
         user.LockoutEnd = null;
     
         var roles = await userService.GetUserRoles(user);
