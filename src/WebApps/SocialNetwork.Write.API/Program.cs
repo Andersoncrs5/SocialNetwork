@@ -111,7 +111,7 @@ builder.Services.AddOpenApi();
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
-    options.SuppressModelStateInvalidFilter = true;
+    options.SuppressModelStateInvalidFilter = false;
 });
 
 // ===================================================================================
