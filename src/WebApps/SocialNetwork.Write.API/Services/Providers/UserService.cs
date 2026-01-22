@@ -100,6 +100,9 @@ public class UserService(
     {
         IdentityResult result = await uow.UserRepository.Update(user);
 
+        if (result.Succeeded)
+            await uow.CommitAsync();
+        
         UserModel model = await GetUserByEmailSimple(user.Email!);
         return ReturnResult(result, model);
     }
