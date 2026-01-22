@@ -51,13 +51,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
         modelBuilder.Entity<UserModel>(entity =>
         {
             
-            entity.Property(e => e.FullName).HasMaxLength(250);
-            entity.Property(e => e.Language).HasMaxLength(4);
-            entity.Property(e => e.Bio).HasMaxLength(600);
-            entity.Property(e => e.Country).HasMaxLength(100);
-            entity.Property(e => e.CoverImageUrl).HasMaxLength(800);
-            entity.Property(e => e.ImageProfileUrl).HasMaxLength(800);
-            entity.Property(e => e.RefreshToken).HasMaxLength(400);
+            entity.Property(e => e.FullName).HasMaxLength(250).IsRequired(false);
+            entity.Property(e => e.Language).HasMaxLength(4).IsRequired(false);
+            entity.Property(e => e.Bio).HasMaxLength(600).IsRequired(false);
+            entity.Property(e => e.Country).HasMaxLength(100).IsRequired(false);
+            entity.Property(e => e.CoverImageUrl).HasMaxLength(800).IsRequired(false);
+            entity.Property(e => e.ImageProfileUrl).HasMaxLength(800).IsRequired(false);
+            entity.Property(e => e.RefreshToken).HasMaxLength(300).IsRequired(false);
             
             entity.Property(e => e.IsPrivate).HasDefaultValue(false);
         });
