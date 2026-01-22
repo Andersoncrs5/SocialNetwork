@@ -62,7 +62,6 @@ public class WriteApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         {
             try
             {
-                await db.Database.EnsureCreatedAsync();
                 await db.Database.MigrateAsync();
                 break; 
             }
