@@ -2,6 +2,7 @@ using System.Net;
 using Asp.Versioning;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using SocialNetwork.Contracts.DTOs.User;
 using SocialNetwork.Contracts.Utils.Res.http;
 using SocialNetwork.Write.API.dto.User;
 using SocialNetwork.Write.API.Models;
@@ -49,8 +50,10 @@ public class AuthController(
         
         user.RefreshToken = tokens.RefreshToken;
         user.RefreshTokenExpiryTime = tokens.ExpiredAtRefreshToken;
-        
-        await userService.UpdateSimple(user);
+
+        UserResult simple = await userService.UpdateSimple(user);
+
+        tokens.User = mapper.Map<UserDto>(simple.User);
         
         return StatusCode(StatusCodes.Status201Created, new ResponseHttp<ResponseTokens>(
             Data: tokens,
@@ -106,7 +109,9 @@ public class AuthController(
         user.RefreshToken = tokens.RefreshToken;
         user.RefreshTokenExpiryTime = tokens.ExpiredAtRefreshToken;
     
-        await userService.UpdateSimple(user);
+        UserResult simple = await userService.UpdateSimple(user);
+
+        tokens.User = mapper.Map<UserDto>(simple.User);
 
         return Ok(new ResponseHttp<ResponseTokens>(tokens, "Login success", traceId, true, DateTime.UtcNow));
     }
