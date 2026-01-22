@@ -69,7 +69,6 @@ public class UserControllerTest : BaseIntegrationTest
             new AuthenticationHeaderValue("Bearer", result.Tokens.Token);
 
         HttpResponseMessage message = await Client.PatchAsJsonAsync(_url, dto);
-        _output.WriteLine(await message.Content.ReadAsStringAsync());
         message.StatusCode.Should().Be(HttpStatusCode.OK);
 
         ResponseHttp<UserDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<UserDto>>();
@@ -81,17 +80,184 @@ public class UserControllerTest : BaseIntegrationTest
 
         http.Data.Should().NotBeNull();
         http.Data.Id.Should().Be(result.User.Id);
-        http.Data.Bio.Should().NotBe(result.User.Bio);
-        http.Data.BirthDate.Should().NotBe(result.User.BirthDate);
         http.Data.Email.Should().Be(result.User.Email);
-        http.Data.Country.Should().NotBe(result.User.Country);
-        http.Data.CoverImageUrl.Should().NotBe(result.User.CoverImageUrl);
-        http.Data.FullName.Should().Be(result.User.FullName);
-        http.Data.ImageProfileUrl.Should().NotBe(result.User.ImageProfileUrl);
-        http.Data.IsPrivate.Should().Be(result.User.IsPrivate);
-        http.Data.Language.Should().NotBe(result.User.Language);
-        http.Data.Username.Should().Be(result.User.Username);
+    
+        http.Data.Bio.Should().Be(dto.Bio);
+        http.Data.Country.Should().Be(dto.Country);
+        http.Data.CoverImageUrl.Should().Be(dto.CoverImageUrl);
+        http.Data.FullName.Should().Be(dto.FullName);
+        http.Data.ImageProfileUrl.Should().Be(dto.ImageProfileUrl);
+        http.Data.Language.Should().Be(dto.Language);
+        http.Data.Username.Should().Be(dto.Username);
+
+        http.Data.IsPrivate.Should().Be(dto.IsPrivate!.Value);
+    
+        http.Data.BirthDate.Should().BeCloseTo(dto.BirthDate!.Value, TimeSpan.FromSeconds(1));
         
     }
+    
+    [Fact]
+    public async Task UpdateUser_Success_JustFieldBio()
+    {
+        UserTestResult result = await _helper.CreateNewUser();
+
+        UpdateUserDto dto = new UpdateUserDto()
+        {
+            Bio = "AnyBio",
+            BirthDate = null,
+            Country = null,
+            CoverImageUrl = null,
+            FullName = null,
+            ImageProfileUrl = null,
+            IsPrivate = null,
+            Language = null,
+            PasswordHash = null,
+            Username = null,
+       };
+        
+        Client.DefaultRequestHeaders.Authorization = 
+            new AuthenticationHeaderValue("Bearer", result.Tokens.Token);
+
+        HttpResponseMessage message = await Client.PatchAsJsonAsync(_url, dto);
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        ResponseHttp<UserDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<UserDto>>();
+        
+        http.Should().NotBeNull();
+        http.DetailsError.Should().BeNull();
+        http.Success.Should().BeTrue();
+        http.TraceId.Should().NotBeNullOrWhiteSpace();
+
+        http.Data.Should().NotBeNull();
+        http.Data.Id.Should().Be(result.User.Id);
+        http.Data.Email.Should().Be(result.User.Email);
+    
+        http.Data.Bio.Should().Be(dto.Bio);
+        http.Data.Country.Should().BeNull();
+        http.Data.CoverImageUrl.Should().BeNull();
+        http.Data.ImageProfileUrl.Should().BeNull();
+        http.Data.Language.Should().BeNull();
+        http.Data.Username.Should().Be(result.User.Username);
+
+        http.Data.IsPrivate.Should().BeFalse();
+    
+        http.Data.BirthDate.Should().BeNull();
+    }
+    
+    [Fact]
+    public async Task UpdateUser_Success_JustFieldBirthDate()
+    {
+        UserTestResult result = await _helper.CreateNewUser();
+
+        UpdateUserDto dto = new UpdateUserDto()
+        {
+            Bio = null,
+            BirthDate = DateTime.UtcNow.AddYears(-30),
+            Country = null,
+            CoverImageUrl = null,
+            FullName = null,
+            ImageProfileUrl = null,
+            IsPrivate = null,
+            Language = null,
+            PasswordHash = null,
+            Username = null,
+       };
+        
+        Client.DefaultRequestHeaders.Authorization = 
+            new AuthenticationHeaderValue("Bearer", result.Tokens.Token);
+
+        HttpResponseMessage message = await Client.PatchAsJsonAsync(_url, dto);
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        ResponseHttp<UserDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<UserDto>>();
+        
+        http.Should().NotBeNull();
+        http.DetailsError.Should().BeNull();
+        http.Success.Should().BeTrue();
+        http.TraceId.Should().NotBeNullOrWhiteSpace();
+
+        http.Data.Should().NotBeNull();
+        http.Data.Id.Should().Be(result.User.Id);
+        http.Data.Email.Should().Be(result.User.Email);
+    
+        http.Data.Bio.Should().BeNull();
+        http.Data.Country.Should().BeNull();
+        http.Data.CoverImageUrl.Should().BeNull();
+        http.Data.ImageProfileUrl.Should().BeNull();
+        http.Data.Language.Should().BeNull();
+        http.Data.Username.Should().Be(result.User.Username);
+
+        http.Data.IsPrivate.Should().BeFalse();
+    
+        http.Data.BirthDate.Should().BeCloseTo(dto.BirthDate!.Value, TimeSpan.FromSeconds(1));
+        
+    }
+    
+    [Fact]
+    public async Task UpdateUser_Fail_UsernameAlreadyExists()
+    {
+        UserTestResult user1 = await _helper.CreateNewUser();
+        UserTestResult user2 = await _helper.CreateNewUser();
+
+        UpdateUserDto dto = new UpdateUserDto()
+        {
+            Username = user1.User.Username 
+        };
+        
+        Client.DefaultRequestHeaders.Authorization = 
+            new AuthenticationHeaderValue("Bearer", user2.Tokens.Token);
+
+        HttpResponseMessage message = await Client.PatchAsJsonAsync(_url, dto);
+        _output.WriteLine(await message.Content.ReadAsStringAsync());
+        
+        message.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+        ResponseHttp<object>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<object>>();
+        
+        http.Should().NotBeNull();
+        http.Success.Should().BeFalse();
+        http.Message.Should().NotBeNullOrWhiteSpace();
+    }
+
+    [Fact]
+    public async Task UpdateUser_Fail_Validation_BioTooLong()
+    {
+        UserTestResult result = await _helper.CreateNewUser();
+
+        // String gigantesca para estourar o limite de 600/800 caracteres
+        UpdateUserDto dto = new UpdateUserDto()
+        {
+            Bio = new string('A', 901) 
+        };
+        
+        Client.DefaultRequestHeaders.Authorization = 
+            new AuthenticationHeaderValue("Bearer", result.Tokens.Token);
+
+        HttpResponseMessage message = await Client.PatchAsJsonAsync(_url, dto);
+        
+        // Deve disparar o seu InvalidModelStateResponseFactory configurado no Program.cs
+        message.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+        var response = await message.Content.ReadFromJsonAsync<ResponseHttp<IEnumerable<string>>>();
+        
+        response.Should().NotBeNull();
+        response.Success.Should().BeFalse();
+        response.Data.Should().NotBeEmpty(); // Contém os erros de validação
+    }
+
+    [Fact]
+    public async Task UpdateUser_Fail_Unauthorized()
+    {
+        // Tenta atualizar sem o header de Authorization
+        UpdateUserDto dto = new UpdateUserDto() { Bio = "New Bio" };
+        
+        Client.DefaultRequestHeaders.Authorization = null; 
+
+        HttpResponseMessage message = await Client.PatchAsJsonAsync(_url, dto);
+        
+        message.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
+    
+    
     
 }
