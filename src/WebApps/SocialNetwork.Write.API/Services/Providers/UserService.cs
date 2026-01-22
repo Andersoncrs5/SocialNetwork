@@ -99,9 +99,6 @@ public class UserService(
     public async Task<UserResult> UpdateSimple(UserModel user)
     {
         IdentityResult result = await uow.UserRepository.Update(user);
-
-        if (result.Succeeded)
-            await uow.CommitAsync();
         
         UserModel model = await GetUserByEmailSimple(user.Email!);
         return ReturnResult(result, model);
@@ -109,39 +106,27 @@ public class UserService(
 
     public async Task<UserResult> Update(UpdateUserDto dto, UserModel user)
     {
-        if (
-            !string.IsNullOrWhiteSpace(dto.Username) && 
-            !await ExistsUserByUsername(dto.Username) &&
-            !(dto.Username.Equals(user.UserName))
-            )
-            user.UserName = dto.Username;
-        
-        if (!string.IsNullOrWhiteSpace(dto.FullName))
-            user.FullName = dto.FullName;
-        
+        if (!string.IsNullOrWhiteSpace(dto.Username) && !dto.Username.Equals(user.UserName))
+        {
+            if (!await ExistsUserByUsername(dto.Username))
+                user.UserName = dto.Username;
+        }
+    
         if (!string.IsNullOrWhiteSpace(dto.PasswordHash))
+        {
             user.PasswordHash = passwordHasher.HashPassword(user, dto.PasswordHash);
-        
-        if (!string.IsNullOrWhiteSpace(dto.Bio))
-            user.Bio = dto.Bio;
-
-        if (!string.IsNullOrWhiteSpace(dto.CoverImageUrl))
-            user.CoverImageUrl = dto.CoverImageUrl;
-
-        if (dto.BirthDate.HasValue)
-            user.BirthDate = dto.BirthDate;
-
-        if (dto.IsPrivate.HasValue)
-            user.IsPrivate = dto.IsPrivate.Value;
-
-        if (!string.IsNullOrWhiteSpace(dto.Language))
-            user.Language = dto.Language;
-
-        if (!string.IsNullOrWhiteSpace(dto.Country))
-            user.Country = dto.Country;
-
-        if (!string.IsNullOrWhiteSpace(dto.ImageProfileUrl))
-            user.ImageProfileUrl = dto.ImageProfileUrl;
+            user.SecurityStamp = Guid.NewGuid().ToString();
+        }
+    
+        user.FullName = dto.FullName ?? user.FullName;
+        user.Bio = dto.Bio ?? user.Bio;
+        user.CoverImageUrl = dto.CoverImageUrl ?? user.CoverImageUrl;
+        user.ImageProfileUrl = dto.ImageProfileUrl ?? user.ImageProfileUrl;
+        user.Language = dto.Language ?? user.Language;
+        user.Country = dto.Country ?? user.Country;
+    
+        if (dto.BirthDate.HasValue) user.BirthDate = dto.BirthDate;
+        if (dto.IsPrivate.HasValue) user.IsPrivate = dto.IsPrivate.Value;
 
         return await UpdateSimple(user);
     }
