@@ -108,10 +108,14 @@ public class UserService(
     {
         if (!string.IsNullOrWhiteSpace(dto.Username) && !dto.Username.Equals(user.UserName))
         {
-            if (!await ExistsUserByUsername(dto.Username))
-                user.UserName = dto.Username;
+            if (await ExistsUserByUsername(dto.Username))
+            {
+                throw new ConflictValueException("Username already in use"); 
+            }
+        
+            user.UserName = dto.Username;
         }
-    
+        
         if (!string.IsNullOrWhiteSpace(dto.PasswordHash))
         {
             user.PasswordHash = passwordHasher.HashPassword(user, dto.PasswordHash);
