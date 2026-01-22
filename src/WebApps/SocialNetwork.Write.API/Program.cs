@@ -34,7 +34,9 @@ if (connectionString == null)
     throw new ArgumentNullException(nameof(connectionString));
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySQL(connectionString));
+{
+    options.UseMySQL(connectionString).EnableSensitiveDataLogging().EnableDetailedErrors();
+});
 
 builder.Services.AddStackExchangeRedisCache(options =>
 {
