@@ -29,6 +29,8 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
 
             BadHttpRequestException => (HttpStatusCode.BadRequest, "Falha na validação da requisição.", true),
             
+            ConflictValueException => (HttpStatusCode.BadRequest, exception.Message, true),
+            
             UnauthenticatedException => (HttpStatusCode.Unauthorized, exception.Message, true),
 
             _ => (HttpStatusCode.InternalServerError, $"Ocorreu um erro inesperado no servidor." , false)
