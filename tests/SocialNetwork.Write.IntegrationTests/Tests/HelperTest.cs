@@ -30,6 +30,7 @@ public class HelperTest(HttpClient client)
         
         http.Should().NotBeNull();
         http.Data.Should().NotBeNull();
+        http.Data.User.Should().NotBeNull();
         
         http.Data.Token.Should().NotBeNullOrEmpty();
         http.Data.RefreshToken.Should().NotBeNullOrEmpty();
@@ -39,7 +40,8 @@ public class HelperTest(HttpClient client)
         return new UserTestResult()
         {
             Dto = dto,
-            Tokens = http.Data
+            Tokens = http.Data,
+            User = http.Data.User,
         };
 
     }
