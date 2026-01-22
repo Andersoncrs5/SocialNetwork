@@ -13,10 +13,10 @@ public class UpdateUserDto
     [StringLength(50, ErrorMessage = "Max size of 50")] 
     public string? PasswordHash { get; set; } 
     
-    [StringLength(800, ErrorMessage = "Max size of 800")] 
+    [StringLength(800, ErrorMessage = "Bio Max size of 800")] 
     public string? Bio { get; set; } 
     
-    [StringLength(800, ErrorMessage = "Max size of 800")] 
+    [StringLength(800, ErrorMessage = "CoverImageUrl Max size of 800")] 
     public string? CoverImageUrl { get; set; } 
     public DateTime? BirthDate { get; set; } 
     public bool? IsPrivate { get; set; } 
