@@ -46,11 +46,17 @@ public class UserRepository(AppDbContext context, UserManager<UserModel> manager
     }
 
     public Task<IdentityResult> Insert(UserModel user)
-        => manager.CreateAsync(user, user.PasswordHash!);
+    {
+        user.CreatedAt = DateTime.UtcNow;
+        return manager.CreateAsync(user, user.PasswordHash!);
+    }
 
     public Task<IdentityResult> Update(UserModel user)
-        => manager.UpdateAsync(user);
-
+    {
+        user.UpdatedAt = DateTime.UtcNow;
+        return manager.UpdateAsync(user);
+    }
+    
     public Task<IdentityResult> Delete(UserModel user)
         => manager.DeleteAsync(user);
 
