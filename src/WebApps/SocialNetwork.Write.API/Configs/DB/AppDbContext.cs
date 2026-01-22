@@ -55,8 +55,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
             entity.Property(e => e.Language).HasMaxLength(4).IsRequired(false);
             entity.Property(e => e.Bio).HasMaxLength(600).IsRequired(false);
             entity.Property(e => e.Country).HasMaxLength(100).IsRequired(false);
-            entity.Property(e => e.CoverImageUrl).HasMaxLength(800).IsRequired(false);
-            entity.Property(e => e.ImageProfileUrl).HasMaxLength(800).IsRequired(false);
+            entity.Property(e => e.CoverImageUrl).HasColumnType("VARCHAR(800)").IsRequired(false);
+            entity.Property(e => e.ImageProfileUrl).HasColumnType("VARCHAR(800)").IsRequired(false);
             entity.Property(e => e.RefreshToken).HasMaxLength(300).IsRequired(false);
             
             entity.Property(e => e.IsPrivate).HasDefaultValue(false);
