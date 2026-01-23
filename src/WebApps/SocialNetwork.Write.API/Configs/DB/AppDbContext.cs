@@ -15,6 +15,7 @@ namespace SocialNetwork.Write.API.Configs.DB;
 public class AppDbContext(DbContextOptions<AppDbContext> options)
     : IdentityDbContext<UserModel, RoleModel, string>(options)
 {
+    public DbSet<CategoryModel> Categories { get; set; }
     
     public override int SaveChanges()
     {
@@ -60,6 +61,31 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
             entity.Property(e => e.RefreshToken).HasMaxLength(300).IsRequired(false);
             
             entity.Property(e => e.IsPrivate).HasDefaultValue(false);
+        });
+
+        modelBuilder.Entity<CategoryModel>(x =>
+        {
+            x.HasKey(c => c.Id);
+            
+            x.HasIndex(e => e.Name).IsUnique();
+            x.Property(e => e.Name).HasMaxLength(150).IsRequired();
+
+            x.Property(e => e.Description).HasColumnType("VARCHAR(500)").IsRequired(false);
+            x.Property(e => e.IconName).HasColumnType("VARCHAR(800)").IsRequired(false);
+            x.Property(e => e.Color).HasColumnType("VARCHAR(6)").IsRequired(false);
+            
+            x.HasIndex(e => e.Slug).IsUnique();
+            x.Property(e => e.Slug).HasMaxLength(250).IsRequired();
+            
+            x.Property(e => e.IsActive).HasDefaultValue(true).IsRequired();
+            x.Property(e => e.IsVisible).HasDefaultValue(true).IsRequired();
+            
+            x.Property(e => e.DisplayOrder).IsRequired(false);
+            
+            x.HasOne(c => c.Parent)
+                .WithMany(p => p.Children)
+                .HasForeignKey(c => c.ParentId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<UserModel>().ToTable("app_users");
