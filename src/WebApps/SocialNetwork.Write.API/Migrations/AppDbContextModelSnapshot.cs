@@ -121,6 +121,66 @@ namespace SocialNetwork.Write.API.Migrations
                     b.ToTable("app_user_tokens", (string)null);
                 });
 
+            modelBuilder.Entity("SocialNetwork.Write.API.Models.CategoryModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(450)
+                        .HasColumnType("varchar(450)");
+
+                    b.Property<string>("Color")
+                        .HasColumnType("VARCHAR(6)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("VARCHAR(500)");
+
+                    b.Property<uint?>("DisplayOrder")
+                        .HasColumnType("int unsigned");
+
+                    b.Property<string>("IconName")
+                        .HasColumnType("VARCHAR(800)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsVisible")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
+
+                    b.Property<string>("ParentId")
+                        .HasColumnType("varchar(450)");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("varchar(250)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
+
+                    b.ToTable("Categories");
+                });
+
             modelBuilder.Entity("SocialNetwork.Write.API.Models.RoleModel", b =>
                 {
                     b.Property<string>("Id")
@@ -306,6 +366,21 @@ namespace SocialNetwork.Write.API.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SocialNetwork.Write.API.Models.CategoryModel", b =>
+                {
+                    b.HasOne("SocialNetwork.Write.API.Models.CategoryModel", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("SocialNetwork.Write.API.Models.CategoryModel", b =>
+                {
+                    b.Navigation("Children");
                 });
 #pragma warning restore 612, 618
         }
