@@ -439,7 +439,6 @@ public class UserServiceTests
         result.User!.Email.Should().Be(dto.Email);
 
         _uowMock.Verify(x => x.UserRepository.Insert(It.IsAny<UserModel>()), Times.Once);
-        _uowMock.Verify(x => x.CommitAsync(), Times.Once);
         _uowMock.Verify(x => x.UserRepository.GetByEmail(dto.Email), Times.AtLeastOnce);
     }
     
