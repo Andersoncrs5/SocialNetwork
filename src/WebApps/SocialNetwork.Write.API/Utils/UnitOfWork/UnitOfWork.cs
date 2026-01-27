@@ -24,11 +24,14 @@ public class UnitOfWork(
 {
     private UserRepository? _userRepository;
     private RoleRepository? _roleRepository;
+    private CategoryRepository? _categoryRepository;
     
     public IUserRepository UserRepository
         => _userRepository ??= new UserRepository(context, userManager);
     public IRoleRepository RoleRepository
         => _roleRepository ??= new RoleRepository(roleManager);
+    public ICategoryRepository CategoryRepository
+        => _categoryRepository ??= new CategoryRepository(context, redisService);
     
     public async Task CommitAsync() 
     {

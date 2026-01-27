@@ -9,6 +9,7 @@ public interface IUnitOfWork: IDisposable
 {
     IUserRepository UserRepository { get; }
     IRoleRepository RoleRepository { get; }
+    ICategoryRepository CategoryRepository { get; }
     
     Task CommitAsync();
     Task<IDbContextTransaction> BeginTransactionAsync();
