@@ -1,0 +1,16 @@
+using SocialNetwork.Contracts.Attributes.Globals;
+using SocialNetwork.Write.API.Models;
+
+namespace SocialNetwork.Write.API.Services.Interfaces;
+
+public interface ICategoryService
+{
+    Task<CategoryModel> GetByIdSimple([IsId] string id);
+    Task<CategoryModel?> GetById([IsId] string id);
+    Task Delete(CategoryModel category);
+    Task<bool> ExistsById([IsId] string id);
+    Task<CategoryModel?> GetByName(string name);
+    Task<bool> ExistsByName(string name);
+    Task<bool> ExistsBySlug([SlugConstraint] string slug);
+
+}
