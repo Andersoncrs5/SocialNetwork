@@ -63,7 +63,7 @@ public class CategoryService(IUnitOfWork uow, IMapper mapper): ICategoryService
         
         if (!string.IsNullOrWhiteSpace(dto.Slug) && category.Slug != dto.Slug)
         {
-            if (await ExistsBySlug(dto.Slug))
+            if (await uow.CategoryRepository.ExistsBySlug(dto.Slug))
                 throw new ConflictValueException($"Slug: {dto.Slug} already in use"); 
             
             category.Slug = dto.Slug;
@@ -74,7 +74,7 @@ public class CategoryService(IUnitOfWork uow, IMapper mapper): ICategoryService
             if (dto.ParentId == category.Id)
                 throw new SelfReferencingHierarchyException("A category cannot be its own parent.");
             
-            if (await ExistsById(dto.ParentId) == false)
+            if (await uow.CategoryRepository.ExistsById(dto.ParentId) == false)
                 throw new ModelNotFoundException("Parent not found");
             
             category.ParentId = dto.ParentId;
