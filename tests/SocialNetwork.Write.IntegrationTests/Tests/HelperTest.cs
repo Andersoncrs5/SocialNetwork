@@ -15,19 +15,19 @@ namespace SocialNetwork.Write.IntegrationTests.Tests;
 
 public class HelperTest(HttpClient client)
 {
-    public async Task<CategoryDto> CreateCategory(UserTestResult result)
+    public async Task<CategoryDto> CreateCategory(UserTestResult result, string? parentId = null)
     {
         CreateCategoryDto dto = new CreateCategoryDto()
         {
             Name = "category" + GenerateChars(),
             Slug = "category-" + GenerateChars().ToLower(),
             Description = null,
-            IconName = null,
+            IconName = "fa-solid fa-microchip",
             Color = null,
             IsActive = true,
             IsVisible = true,
             DisplayOrder = 1,
-            ParentId = null
+            ParentId = parentId
         };
 
         client.DefaultRequestHeaders.Authorization = 
