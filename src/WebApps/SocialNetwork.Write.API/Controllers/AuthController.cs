@@ -26,9 +26,9 @@ public class AuthController(
 
     [HttpPost("register")]
     [SwaggerOperation(Summary = "Create user", Tags = ["Auth"])]
-    [ProducesResponseType(typeof(ResponseHttp<IEnumerable<string>>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ResponseHttp<ResponseTokens>), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(ResponseHttp<IEnumerable<string>>), (int)HttpStatusCode.BadRequest)] 
+    [ProducesResponseType(typeof(ResponseHttp<IDictionary<string, string[]>>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ResponseHttp<IEnumerable<string>>), (int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> RegisterUser([FromBody] CreateUserDto dto)
     {
         UserResult result = await userService.CreateUser(dto);
@@ -70,6 +70,7 @@ public class AuthController(
     [SwaggerOperation(Summary = "Login user", Tags = ["Auth"])]
     [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
     [ProducesResponseType(typeof(ResponseHttp<ResponseTokens>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ResponseHttp<IDictionary<string, string[]>>), (int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> Login([FromBody] LoginUserDto dto)
     {
         var user = await userService.GetUserByEmail(dto.Email);

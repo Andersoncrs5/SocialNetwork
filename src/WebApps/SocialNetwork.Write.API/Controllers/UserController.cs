@@ -51,6 +51,7 @@ public class UserController(
     [ProducesResponseType(typeof(ResponseHttp<object>), (int)HttpStatusCode.Unauthorized)]
     [ProducesResponseType(typeof(ResponseHttp<object>), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(ResponseHttp<UserDto>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ResponseHttp<IDictionary<string, string[]>>), (int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> Update([FromBody] UpdateUserDto dto)
     {
         string? userId = User.FindFirst(JwtRegisteredClaimNames.Sid)?.Value ?? throw new UnauthenticatedException();
