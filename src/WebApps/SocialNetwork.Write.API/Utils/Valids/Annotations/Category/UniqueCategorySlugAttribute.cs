@@ -8,7 +8,7 @@ public class UniqueCategorySlugAttribute: ValidationAttribute
 {
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
-        if (value is not string slug || !string.IsNullOrWhiteSpace(slug))
+        if (value is not string slug || string.IsNullOrWhiteSpace(slug))
             return new ValidationResult("Slug is required");
 
         ICategoryRepository repository = (ICategoryRepository)validationContext.GetRequiredService(typeof(ICategoryRepository));
