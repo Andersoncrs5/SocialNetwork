@@ -180,6 +180,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -193,11 +194,78 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 var mapperConfig = new MapperConfiguration(mc =>
 {
     mc.AddMaps(typeof(UserMapper).Assembly); 
+    mc.AddMaps(typeof(CategoryMapper).Assembly); 
 }, builder.Logging.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>());
+
 IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    
+    var context = services.GetRequiredService<AppDbContext>();
+    context.Database.Migrate();
+    
+    var userManager = services.GetRequiredService<UserManager<UserModel>>();
+    var roleManager = services.GetRequiredService<RoleManager<RoleModel>>();
+    var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+    
+    var datasSystemSection = configuration.GetSection("DataSystem");
+    
+    string systemUserName = datasSystemSection["SystemName"] ?? throw new InvalidOperationException("System user name configuration is missing.");
+    string systemUserEmail = datasSystemSection["systemUserEmail"] ?? throw new InvalidOperationException("System user email configuration is missing.");
+    string systemUserPassword = datasSystemSection["SystemUserPassword"] ?? throw new InvalidOperationException("System user password configuration is missing.");
+    bool isPrivate = configuration.GetSection("DataSystem:IsPrivate").Get<bool?>() ?? throw new InvalidOperationException("System user IsPrivate configuration is missing.");
+    
+    var datasRoles = configuration.GetSection("Roles");
+    string masterRole = datasRoles["MasterRole"] ?? throw new InvalidOperationException("Master role configuration is missing.");
+    string userRole = datasRoles["UserRole"] ?? throw new InvalidOperationException("User role configuration is missing.");
+    string superAdmRole = datasRoles["SuperAdmRole"] ?? throw new InvalidOperationException("Super adm role configuration is missing.");
+    var otherRoles = configuration.GetSection("Roles:OtherRoles").Get<string[]>() 
+                     ?? throw new InvalidOperationException("OtherRoles configuration is missing.");
+
+    var roles = new List<string> { userRole, masterRole, superAdmRole };
+    roles.AddRange(otherRoles);
+    
+    try 
+    {
+        foreach (var roleName in roles)
+        {
+            if (!await roleManager.RoleExistsAsync(roleName))
+            {
+                await roleManager.CreateAsync(new RoleModel { Id = Guid.NewGuid().ToString(), Name = roleName });
+            }
+        }
+        
+        var systemUser = await userManager.FindByEmailAsync(systemUserEmail);
+        if (systemUser == null)
+        {
+            var newSystemUser = new UserModel
+            {
+                UserName = systemUserName,
+                Email = systemUserEmail,
+                EmailConfirmed = true,
+                IsPrivate = isPrivate
+            };
+
+            var createResult = await userManager.CreateAsync(newSystemUser, systemUserPassword);
+            if (createResult.Succeeded)
+            {
+                await userManager.AddToRoleAsync(newSystemUser, masterRole);
+                await userManager.AddToRoleAsync(newSystemUser, superAdmRole);
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while initializing the database (Migrations/Seed).");
+    }
+    
+}
 
 // ===================================================================================
 // PIPELINE (MIDDLEWARES)
