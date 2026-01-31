@@ -72,7 +72,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
 
             x.Property(e => e.Description).HasColumnType("VARCHAR(500)").IsRequired(false);
             x.Property(e => e.IconName).HasColumnType("VARCHAR(800)").IsRequired(false);
-            x.Property(e => e.Color).HasColumnType("VARCHAR(6)").IsRequired(false);
+            x.Property(e => e.Color).HasColumnType("VARCHAR(10)").IsRequired(false);
             
             x.HasIndex(e => e.Slug).IsUnique();
             x.Property(e => e.Slug).HasMaxLength(250).IsRequired();
