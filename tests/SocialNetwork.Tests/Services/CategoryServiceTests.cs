@@ -39,6 +39,14 @@ public class CategoryServiceTests
         UpdatedAt = DateTime.UtcNow,
     };
 
+    private UpdateCategoryDto _dto = new UpdateCategoryDto()
+    {
+        Name = "NameUpdate",
+        Slug = "name-update",
+        ParentId = "b93f7c4e-28a1-4d37-8461-9c6a1e94e50d"
+    };
+    
+    
     [Fact]
     public async Task GetByIdSimple_ShouldReturnCategory()
     {
@@ -259,7 +267,48 @@ public class CategoryServiceTests
         _mapperMock.Verify(x => x.Map<CategoryModel>(dto), Times.Once);
         _uowMock.Verify(x => x.CommitAsync(), Times.Once);
     }
+
+    [Fact]
+    public async Task UpdateFieldName_ShouldThrowConflictValueException()
+    {
+        _uowMock.Setup(x => x.CategoryRepository.ExistsByName(_dto.Name!)).ReturnsAsync(true);
+
+        Func<Task> func = async () => await _service.Update(_dto, _category);
+        
+        await func.Should().ThrowAsync<ConflictValueException>();
+    }
     
+    [Fact]
+    public async Task UpdateFieldSlug_ShouldThrowConflictValueException()
+    {
+        _uowMock.Setup(x => x.CategoryRepository.ExistsBySlug(_dto.Slug!)).ReturnsAsync(true);
+
+        Func<Task> func = async () => await _service.Update(_dto, _category);
+        
+        await func.Should().ThrowAsync<ConflictValueException>();
+    }
     
+    [Fact]
+    public async Task Update_ShouldThrowSelfReferencingHierarchyException()
+    {
+        UpdateCategoryDto dto = new UpdateCategoryDto()
+        {
+            ParentId = _category.Id,
+        };
+        
+        Func<Task> func = async () => await _service.Update(dto, _category);
+        
+        await func.Should().ThrowAsync<SelfReferencingHierarchyException>();
+    }
+    
+    [Fact]
+    public async Task Update_ShouldThrowModelNotFoundException()
+    {
+        _uowMock.Setup(x => x.CategoryRepository.ExistsById(_dto.ParentId!)).ReturnsAsync(false);
+        
+        Func<Task> func = async () => await _service.Update(_dto, _category);
+        
+        await func.Should().ThrowAsync<ModelNotFoundException>();
+    }
     
 }
