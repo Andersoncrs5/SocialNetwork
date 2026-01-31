@@ -8,8 +8,10 @@ public class ExistsCategoryByIdAttribute: ValidationAttribute
 {
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
-        if (value is not string id || !string.IsNullOrWhiteSpace(id))
-            return new ValidationResult("Id is required");
+        if (value == null || string.IsNullOrWhiteSpace(value.ToString()))
+            return ValidationResult.Success;
+
+        var id = value.ToString()!;
         
         ICategoryRepository repository = (ICategoryRepository)validationContext.GetRequiredService(typeof(ICategoryRepository));
         bool result = repository.ExistsById(id).GetAwaiter().GetResult();
