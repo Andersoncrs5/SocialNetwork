@@ -1,7 +1,11 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using FluentAssertions;
+using MySqlX.XDevAPI;
+using SocialNetwork.Contracts.DTOs.User;
 using SocialNetwork.Contracts.Utils.Res.http;
+using SocialNetwork.Write.API.dto.Category;
 using SocialNetwork.Write.API.dto.User;
 using SocialNetwork.Write.IntegrationTests.Config;
 using SocialNetwork.Write.IntegrationTests.Tests.Utils.Classes;
@@ -11,6 +15,43 @@ namespace SocialNetwork.Write.IntegrationTests.Tests;
 
 public class HelperTest(HttpClient client)
 {
+    public async Task<CategoryDto> CreateCategory(UserTestResult result)
+    {
+        CreateCategoryDto dto = new CreateCategoryDto()
+        {
+            Name = "category" + GenerateChars(),
+            Slug = "category-" + GenerateChars().ToLower(),
+            Description = null,
+            IconName = null,
+            Color = null,
+            IsActive = true,
+            IsVisible = true,
+            DisplayOrder = 1,
+            ParentId = null
+        };
+
+        client.DefaultRequestHeaders.Authorization = 
+            new AuthenticationHeaderValue("Bearer", result.Tokens.Token);
+
+        HttpResponseMessage message = await client.PostAsJsonAsync("api/v1/category", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+        
+        ResponseHttp<CategoryDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<CategoryDto>>();
+        
+        http.Should().NotBeNull();
+        http.Data.Should().NotBeNull();
+        
+        http.Success.Should().BeTrue();
+        http.TraceId.Should().NotBeNullOrWhiteSpace();
+        http.DetailsError.Should().BeNull();
+
+        http.Data.Id.Should().NotBeNullOrWhiteSpace();
+        http.Data.Name.Should().Be(dto.Name);
+        http.Data.Slug.Should().Be(dto.Slug);
+    
+        return http.Data;
+    }
+    
     public async Task<UserTestResult> LoginMaster()
     {
         LoginUserDto dto = new LoginUserDto()
