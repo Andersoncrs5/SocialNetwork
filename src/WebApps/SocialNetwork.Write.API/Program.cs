@@ -122,11 +122,14 @@ builder.Services.AddControllers()
     {
         options.InvalidModelStateResponseFactory = context =>
         {
-            var errors = context.ModelState.Values
-                .SelectMany(v => v.Errors)
-                .Select(e => e.ErrorMessage);
+            var errors = context.ModelState
+                .Where(e => e.Value?.Errors.Count > 0)
+                .ToDictionary(
+                    kvp => kvp.Key, 
+                    kvp => kvp.Value!.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
 
-            var response = new ResponseHttp<IEnumerable<string>>(
+            var response = new ResponseHttp<IDictionary<string, string[]>>(
                 Data: errors,
                 Message: "Validation failed",
                 TraceId: context.HttpContext.TraceIdentifier,
