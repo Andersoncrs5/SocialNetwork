@@ -238,7 +238,7 @@ public class UserControllerTest : BaseIntegrationTest
         // Deve disparar o seu InvalidModelStateResponseFactory configurado no Program.cs
         message.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-        var response = await message.Content.ReadFromJsonAsync<ResponseHttp<IEnumerable<string>>>();
+        var response = await message.Content.ReadFromJsonAsync<ResponseHttp<IDictionary<string, string[]>>>();
         
         response.Should().NotBeNull();
         response.Success.Should().BeFalse();
