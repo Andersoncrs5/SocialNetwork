@@ -16,6 +16,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     : IdentityDbContext<UserModel, RoleModel, string>(options)
 {
     public DbSet<CategoryModel> Categories { get; set; }
+    public DbSet<TagModel> Tags { get; set; }
     
     public override int SaveChanges()
     {
@@ -48,6 +49,41 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<TagModel>(x =>
+        {
+            x.HasKey(e => e.Id);
+            x.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(150)
+                .HasColumnType("VARCHAR(150)");
+            
+            x.Property(e => e.Slug)
+                .IsRequired()
+                .HasMaxLength(250)
+                .HasColumnType("VARCHAR(250)");
+
+            x.Property(e => e.Description)
+                .HasMaxLength(500)
+                .HasColumnType("VARCHAR(500)")
+                .IsRequired(false);
+            
+            x.Property(e => e.Color)
+                .HasColumnType("VARCHAR(10)")
+                .IsRequired(false);
+            
+            x.Property(e => e.IsActive)
+                .HasDefaultValue(true)
+                .IsRequired();
+            
+            x.Property(e => e.IsSystem)
+                .HasDefaultValue(false)
+                .IsRequired();
+            
+            x.Property(e => e.IsVisible)
+                .HasDefaultValue(true)
+                .IsRequired();
+        });
         
         modelBuilder.Entity<UserModel>(entity =>
         {
