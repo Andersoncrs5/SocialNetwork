@@ -10,6 +10,7 @@ public interface ICategoryService
     Task<CategoryModel?> GetById([IsId] string id);
     Task Delete(CategoryModel category);
     Task<bool> ExistsById([IsId] string id);
+    Task<CategoryModel> Create(CreateCategoryDto dto);
     Task<CategoryModel?> GetByName(string name);
     Task<bool> ExistsByName(string name);
     Task<bool> ExistsBySlug([SlugConstraint] string slug);
