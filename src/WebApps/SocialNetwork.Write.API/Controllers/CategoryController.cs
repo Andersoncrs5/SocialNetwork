@@ -13,7 +13,7 @@ using SocialNetwork.Write.API.Services.Interfaces;
 namespace SocialNetwork.Write.API.Controllers;
 
 [ApiController]
-[Route("api/v{version:apiVersion}/user")]
+[Route("api/v{version:apiVersion}/category")]
 [ApiVersion("1.0")]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class CategoryController(
@@ -23,8 +23,9 @@ public class CategoryController(
 {
     [HttpPost]
     [ProducesResponseType(typeof(ResponseHttp<object>), (int)HttpStatusCode.Unauthorized)]
-    [ProducesResponseType(typeof(ResponseHttp<UserDto>), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(ResponseHttp<CategoryDto>), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(ResponseHttp<IEnumerable<string>>), (int)HttpStatusCode.OK)]
+    [Authorize(Roles = "MASTER_ROLE, SUPER_ADM_ROLE")]
     public async Task<IActionResult> Create([FromBody] CreateCategoryDto dto)
     {
         CategoryModel model = await service.Create(dto);
