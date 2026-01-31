@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using SocialNetwork.Write.API.Utils.Valids.Annotations.Category;
 
 namespace SocialNetwork.Write.API.dto.Category;
@@ -7,6 +8,8 @@ public class UpdateCategoryDto
     public string? Name { get; set; }
     public string? Description { get; set; }
     public string? IconName { get; set; }
+    
+    [MaxLength(7)]
     public string? Color { get; set; }
     public string? Slug { get; set; }
     public bool? IsActive { get; set; }
