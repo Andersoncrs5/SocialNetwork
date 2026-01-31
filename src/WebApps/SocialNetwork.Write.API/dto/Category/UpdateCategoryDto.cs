@@ -12,5 +12,8 @@ public class UpdateCategoryDto
     public bool? IsActive { get; set; }
     public bool? IsVisible { get; set; }
     public uint? DisplayOrder { get; set; }
+    
     public string? ParentId { get; set; } 
+    
+    public bool? BecameRoot { get; set; }
 }
