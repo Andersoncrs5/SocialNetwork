@@ -184,6 +184,7 @@ builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRedisService, RedisService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 // ===================================================================================
 // AUTO MAPPER
