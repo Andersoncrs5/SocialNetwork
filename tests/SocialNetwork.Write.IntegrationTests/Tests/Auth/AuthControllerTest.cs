@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -120,6 +121,38 @@ public class AuthControllerTest : BaseIntegrationTest
         http.Data.Should().BeNull();
         http.DetailsError.Should().BeNullOrWhiteSpace();
         http.Success.Should().BeFalse();
+    }
+    
+    [Fact]
+    public async Task Logout_Success()
+    {
+        UserTestResult result = await _helper.CreateNewUser();
+        
+        Client.DefaultRequestHeaders.Authorization = 
+            new AuthenticationHeaderValue("Bearer", result.Tokens.Token);
+        
+        HttpResponseMessage message = await Client.PostAsJsonAsync("/api/v1/Auth/logout", result);
+        
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+        
+        ResponseHttp<object>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<object>>();
+        
+        http.Should().NotBeNull();
+        http.Data.Should().BeNull();
+        
+        http.Success.Should().BeTrue();
+        http.TraceId.Should().NotBeNullOrWhiteSpace();
+        http.DetailsError.Should().BeNull();
+    }
+    
+    [Fact]
+    public async Task Logout_Fail_TokenRequired()
+    {
+        UserTestResult result = await _helper.CreateNewUser();
+        
+        HttpResponseMessage message = await Client.PostAsJsonAsync("/api/v1/Auth/logout", result);
+        
+        message.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
     
 }
