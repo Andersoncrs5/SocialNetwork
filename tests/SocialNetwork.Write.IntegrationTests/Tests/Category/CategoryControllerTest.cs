@@ -641,6 +641,5 @@ public class CategoryControllerTest: BaseIntegrationTest
         http.Data.DisplayOrder.Should().Be(categoryDto.DisplayOrder);
         http.Data.ParentId.Should().Be(parentDto2.Id);
     }
-
-    // to test exceptions to method update
+    
 }
