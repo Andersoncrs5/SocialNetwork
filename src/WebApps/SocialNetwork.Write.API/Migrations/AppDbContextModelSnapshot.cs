@@ -128,7 +128,7 @@ namespace SocialNetwork.Write.API.Migrations
                         .HasColumnType("varchar(450)");
 
                     b.Property<string>("Color")
-                        .HasColumnType("VARCHAR(6)");
+                        .HasColumnType("VARCHAR(10)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
