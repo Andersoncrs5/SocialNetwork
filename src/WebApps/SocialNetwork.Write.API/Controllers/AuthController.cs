@@ -2,8 +2,10 @@ using System.Net;
 using Asp.Versioning;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.JsonWebTokens;
 using SocialNetwork.Contracts.DTOs.User;
 using SocialNetwork.Contracts.Utils.Res.http;
+using SocialNetwork.Write.API.Configs.Exception.classes;
 using SocialNetwork.Write.API.dto.User;
 using SocialNetwork.Write.API.Models;
 using SocialNetwork.Write.API.Services.Interfaces;
@@ -115,7 +117,31 @@ public class AuthController(
 
         return Ok(new ResponseHttp<ResponseTokens>(tokens, "Login success", traceId, true, DateTime.UtcNow));
     }
-    
+
+    [HttpPost("logout")]
+    [SwaggerOperation(Summary = "Logout user", Tags = ["Auth"])]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType(typeof(ResponseHttp<object>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ResponseHttp<object>), (int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> Logout()
+    {
+        string? userId = User.FindFirst(JwtRegisteredClaimNames.Sid)?.Value ?? throw new UnauthenticatedException();
+        UserModel userBySid = await userService.GetUserBySidSimple(userId);
+        
+        userBySid.RefreshToken = null;
+        userBySid.RefreshTokenExpiryTime = null;
+        userBySid.AccessFailedCount = 0;
+        
+        await userService.UpdateSimple(userBySid);
+        
+        return Ok(new ResponseHttp<object>(
+            Data: null,
+            Message: "Logout success",
+            TraceId: HttpContext.TraceIdentifier,
+            Success: true,
+            Timestamp: DateTime.UtcNow
+        ));
+    }
     
     
 }
