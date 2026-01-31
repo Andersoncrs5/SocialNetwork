@@ -46,7 +46,41 @@ public class CategoryService(IUnitOfWork uow, IMapper mapper): ICategoryService
 
     public async Task<CategoryModel> Update(UpdateCategoryDto dto, CategoryModel category)
     {
+        category.Description = dto.Description ?? category.Description;
+        category.IconName = dto.IconName ?? category.IconName;
+        category.Color = dto.Color ?? category.Color;
+        if (dto.IsActive.HasValue) category.IsActive = dto.IsActive.Value;
+        if (dto.IsVisible.HasValue) category.IsVisible = dto.IsVisible.Value;
+        if (dto.DisplayOrder.HasValue) category.DisplayOrder = dto.DisplayOrder.Value;
         
+        if (!string.IsNullOrWhiteSpace(dto.Name) && category.Name != dto.Name)
+        {
+            if (await uow.CategoryRepository.ExistsByName(dto.Name))
+                throw new ConflictValueException($"Name: {dto.Name} already in use"); 
+             
+            category.Name = dto.Name;
+        }
+        
+        if (!string.IsNullOrWhiteSpace(dto.Slug) && category.Slug != dto.Slug)
+        {
+            if (await ExistsBySlug(dto.Slug))
+                throw new ConflictValueException($"Slug: {dto.Slug} already in use"); 
+            
+            category.Slug = dto.Slug;
+        }
+        
+        if (!string.IsNullOrWhiteSpace(dto.ParentId) && category.ParentId != dto.ParentId)
+        {
+            if (dto.ParentId == category.Id)
+                throw new SelfReferencingHierarchyException("A category cannot be its own parent.");
+            
+            if (await ExistsById(dto.ParentId) == false)
+                throw new ModelNotFoundException("Parent not found");
+            
+            category.ParentId = dto.ParentId;
+        }
+        
+        if (dto.BecameRoot.HasValue && dto.BecameRoot.Value) category.ParentId = null;
         
         CategoryModel update = await uow.CategoryRepository.Update(category);
         await uow.CommitAsync();

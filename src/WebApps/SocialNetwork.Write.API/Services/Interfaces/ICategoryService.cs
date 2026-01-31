@@ -1,4 +1,5 @@
 using SocialNetwork.Contracts.Attributes.Globals;
+using SocialNetwork.Write.API.dto.Category;
 using SocialNetwork.Write.API.Models;
 
 namespace SocialNetwork.Write.API.Services.Interfaces;
@@ -12,5 +13,6 @@ public interface ICategoryService
     Task<CategoryModel?> GetByName(string name);
     Task<bool> ExistsByName(string name);
     Task<bool> ExistsBySlug([SlugConstraint] string slug);
+    Task<CategoryModel> Update(UpdateCategoryDto dto, CategoryModel category);
 
 }
