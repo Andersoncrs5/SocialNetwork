@@ -8,7 +8,7 @@ public class UniqueCategoryNameAttribute: ValidationAttribute
 {
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
-        if (value is not string name || !string.IsNullOrWhiteSpace(name))
+        if (value is not string name || string.IsNullOrWhiteSpace(name))
             return new ValidationResult("Name is required");
 
         ICategoryRepository repository = (ICategoryRepository)validationContext.GetRequiredService(typeof(ICategoryRepository));
