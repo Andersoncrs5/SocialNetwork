@@ -32,6 +32,8 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
             ConflictValueException => (HttpStatusCode.BadRequest, exception.Message, true),
             
             UnauthenticatedException => (HttpStatusCode.Unauthorized, exception.Message, true),
+            
+            SelfReferencingHierarchyException => (HttpStatusCode.UnprocessableEntity, exception.Message, true),
 
             _ => (HttpStatusCode.InternalServerError, $"Ocorreu um erro inesperado no servidor." , false)
         };
