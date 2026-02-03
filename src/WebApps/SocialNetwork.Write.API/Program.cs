@@ -197,8 +197,11 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var mapperConfig = new MapperConfiguration(mc =>
 {
+    
     mc.AddMaps(typeof(UserMapper).Assembly); 
     mc.AddMaps(typeof(CategoryMapper).Assembly); 
+    mc.AddMaps(typeof(TagMapper).Assembly); 
+    
 }, builder.Logging.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>());
 
 IMapper mapper = mapperConfig.CreateMapper();
