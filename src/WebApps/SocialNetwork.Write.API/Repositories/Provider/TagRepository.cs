@@ -15,4 +15,7 @@ public class TagRepository(AppDbContext context, IRedisService redisService): Ge
     public async Task<TagModel?> FindBySlug([SlugConstraint] string slug)
         => await context.Tags.AsNoTracking().FirstOrDefaultAsync(c => c.Slug == slug);
     
+    public async Task<bool> ExistsByName([SlugConstraint] string name)
+        => await context.Categories.AnyAsync(c => c.Name == name);
+
 }

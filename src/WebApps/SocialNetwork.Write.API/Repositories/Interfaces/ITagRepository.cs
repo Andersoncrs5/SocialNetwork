@@ -7,4 +7,5 @@ public interface ITagRepository: IGenericRepository<TagModel>
 {
     Task<bool> ExistsBySlug([SlugConstraint] string slug);
     Task<TagModel?> FindBySlug([SlugConstraint] string slug);
+    Task<bool> ExistsByName([SlugConstraint] string name);
 }
