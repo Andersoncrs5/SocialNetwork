@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using SocialNetwork.Contracts.Attributes.Globals;
 using SocialNetwork.Write.API.Configs.DB;
 using SocialNetwork.Write.API.Models.Bases;
 using SocialNetwork.Write.API.Repositories.Interfaces;
@@ -12,22 +13,14 @@ using SocialNetwork.Write.API.Services.Interfaces;
 
 namespace SocialNetwork.Write.API.Repositories.Provider;
 
-public class GenericRepository<T>: IGenericRepository<T> where T : BaseModel
+public class GenericRepository<T>(AppDbContext context, IRedisService redisService) : IGenericRepository<T> where T : BaseModel
 {
-    protected readonly AppDbContext Context;
-    private readonly DbSet<T> _dbSet;
-    private readonly IRedisService _redisService;
-    
-    protected GenericRepository(AppDbContext ctx, IRedisService redisService)
-    {
-        Context = ctx;
-        _dbSet = Context.Set<T>();
-        _redisService = redisService;
-    }
+    protected readonly AppDbContext Context = context;
+    private readonly DbSet<T> _dbSet = context.Set<T>();
 
-    public async Task<T?> GetByIdInCache(string id, TimeSpan? cacheExpiry = null)
+    public async Task<T?> GetByIdInCache([IsId] string id, TimeSpan? cacheExpiry = null)
     {
-        T? inCache = await _redisService.GetAsync<T>(id);
+        T? inCache = await redisService.GetAsync<T>(id);
         
         if (inCache != null)
             return inCache;
@@ -35,18 +28,18 @@ public class GenericRepository<T>: IGenericRepository<T> where T : BaseModel
         T? fromDb = await GetByIdAsync(id);
         
         if (fromDb != null)
-            await _redisService.CreateAsync(id, fromDb, cacheExpiry);
+            await redisService.CreateAsync(id, fromDb, cacheExpiry);
         
         return fromDb;
     }
 
-    public async Task<bool> ExistsById(string Id)
+    public async Task<bool> ExistsById([IsId] string Id)
     {
         return await _dbSet
             .AnyAsync(c => c.Id == Id);
     }
     
-    public async Task<int> CountByIdAsync(string Id)
+    public async Task<int> CountByIdAsync([IsId] string Id)
     {
         return await _dbSet
             .CountAsync(c => c.Id == Id);
@@ -62,7 +55,7 @@ public class GenericRepository<T>: IGenericRepository<T> where T : BaseModel
         return this._dbSet;
     }
 
-    public async Task<T?> GetByIdAsync(string id)
+    public async Task<T?> GetByIdAsync([IsId] string id)
     {
         return await _dbSet.FindAsync(id);
     }
