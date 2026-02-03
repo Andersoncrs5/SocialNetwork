@@ -3,9 +3,11 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using FluentAssertions;
 using MySqlX.XDevAPI;
+using SocialNetwork.Contracts.DTOs.Tag;
 using SocialNetwork.Contracts.DTOs.User;
 using SocialNetwork.Contracts.Utils.Res.http;
 using SocialNetwork.Write.API.dto.Category;
+using SocialNetwork.Write.API.dto.Tag;
 using SocialNetwork.Write.API.dto.User;
 using SocialNetwork.Write.IntegrationTests.Config;
 using SocialNetwork.Write.IntegrationTests.Tests.Utils.Classes;
@@ -15,6 +17,46 @@ namespace SocialNetwork.Write.IntegrationTests.Tests;
 
 public class HelperTest(HttpClient client)
 {
+    public async Task<TagDto> CreateTag(UserTestResult result)
+    {
+        CreateTagDto dto = new CreateTagDto()
+        {
+            Name = "TagName" + GenerateChars(),
+            Slug = "tag-name" + GenerateChars().ToLower(),
+            Description = "TagDescription",
+            Color = "#000000",
+            IsActive = true,
+            IsSystem = true,
+            IsVisible = true,
+        };
+        
+        client.DefaultRequestHeaders.Authorization = 
+            new AuthenticationHeaderValue("Bearer", result.Tokens.Token);
+
+        HttpResponseMessage message = await client.PostAsJsonAsync("api/v1/tag", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+        
+        ResponseHttp<TagDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<TagDto>>();
+        
+        http.Should().NotBeNull();
+        http.Data.Should().NotBeNull();
+        
+        http.Success.Should().BeTrue();
+        http.TraceId.Should().NotBeNullOrWhiteSpace();
+        http.DetailsError.Should().BeNull();
+
+        http.Data.Id.Should().NotBeNullOrWhiteSpace();
+        http.Data.Name.Should().Be(dto.Name);
+        http.Data.Slug.Should().Be(dto.Slug);
+        http.Data.Description.Should().Be(dto.Description);
+        http.Data.Color.Should().Be(dto.Color);
+        http.Data.IsActive.Should().Be(dto.IsActive);
+        http.Data.IsSystem.Should().Be(dto.IsSystem);
+        http.Data.IsVisible.Should().Be(dto.IsVisible);
+        
+        return http.Data;
+    }
+    
     public async Task<CategoryDto> CreateCategory(UserTestResult result, string? parentId = null)
     {
         CreateCategoryDto dto = new CreateCategoryDto()
