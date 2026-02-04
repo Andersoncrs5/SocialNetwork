@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using SocialNetwork.Contracts.Attributes.Globals;
 using SocialNetwork.Write.API.Configs.DB;
 using SocialNetwork.Write.API.Models;
 using SocialNetwork.Write.API.Repositories.Provider;
@@ -7,5 +9,6 @@ namespace SocialNetwork.Write.API.Services.Providers;
 
 public class PostRepository(AppDbContext app, IRedisService redisService): GenericRepository<PostModel>(app, redisService), IPostRepository
 {
-    
+    public async Task<bool> ExistsBySlug([SlugConstraint] string slug) 
+        => await app.Posts.AnyAsync(x => x.Slug == slug);
 }
