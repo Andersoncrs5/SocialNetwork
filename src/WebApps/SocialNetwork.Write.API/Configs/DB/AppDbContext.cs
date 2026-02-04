@@ -17,6 +17,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
 {
     public DbSet<CategoryModel> Categories { get; set; }
     public DbSet<TagModel> Tags { get; set; }
+    public DbSet<PostModel> Posts { get; set; }
     
     public override int SaveChanges()
     {
@@ -50,6 +51,42 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<PostModel>(x =>
+        {
+            x.ToTable("Posts");
+            x.HasKey(p => p.Id);
+            
+            x.Property(c => c.Title).IsRequired().HasColumnType("VARCHAR(150)").HasMaxLength(150);
+            x.Property(c => c.Slug).IsRequired().HasColumnType("VARCHAR(250)").HasMaxLength(250);
+            x.Property(c => c.Content).IsRequired().HasColumnType("VARCHAR(700)").HasMaxLength(700);
+            x.Property(c => c.Summary).IsRequired(false).HasColumnType("VARCHAR(300)").HasMaxLength(300);
+            x.Property(c => c.FeaturedImageUrl).IsRequired(false).HasColumnType("VARCHAR(800)").HasMaxLength(800);
+
+            x.Property(c => c.IsCommentsEnabled).IsRequired(true).HasDefaultValue(true);
+            x.Property(c => c.ReadingTime).IsRequired(false);
+            x.Property(c => c.RankingScore).IsRequired().HasDefaultValue(0.0);
+
+            x.Property(p => p.Visibility)
+                .HasConversion<string>()
+                .HasMaxLength(20);
+
+            x.Property(p => p.HighlightStatus)
+                .HasConversion<string>()
+                .HasMaxLength(30);
+
+            x.Property(p => p.ModerationStatus)
+                .HasConversion<string>()
+                .HasMaxLength(30);
+
+            x.Property(p => p.ReadingLevel)
+                .HasConversion<string>()
+                .HasMaxLength(20);
+
+            x.Property(p => p.PostType)
+                .HasConversion<string>()
+                .HasMaxLength(25);
+        });
+        
         modelBuilder.Entity<TagModel>(x =>
         {
             x.HasKey(e => e.Id);
