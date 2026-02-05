@@ -184,6 +184,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
@@ -202,7 +203,7 @@ var mapperConfig = new MapperConfiguration(mc =>
     mc.AddMaps(typeof(UserMapper).Assembly); 
     mc.AddMaps(typeof(CategoryMapper).Assembly); 
     mc.AddMaps(typeof(TagMapper).Assembly); 
-    
+    mc.AddMaps(typeof(PostMapper).Assembly); 
 }, builder.Logging.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>());
 
 IMapper mapper = mapperConfig.CreateMapper();
