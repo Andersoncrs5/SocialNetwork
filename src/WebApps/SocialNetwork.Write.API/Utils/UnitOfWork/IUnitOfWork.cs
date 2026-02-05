@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore.Storage;
 using SocialNetwork.Write.API.Repositories.Interfaces;
 
@@ -11,6 +12,7 @@ public interface IUnitOfWork: IDisposable
     IRoleRepository RoleRepository { get; }
     ICategoryRepository CategoryRepository { get; }
     ITagRepository TagRepository { get; }
+    IPostRepository PostRepository { get; }
     
     Task CommitAsync();
     Task<IDbContextTransaction> BeginTransactionAsync();

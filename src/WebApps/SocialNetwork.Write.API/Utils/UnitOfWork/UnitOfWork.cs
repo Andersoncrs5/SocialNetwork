@@ -26,6 +26,7 @@ public class UnitOfWork(
     private RoleRepository? _roleRepository;
     private CategoryRepository? _categoryRepository;
     private TagRepository? _tagRepository;
+    private PostRepository? _postRepository;
     
     public IUserRepository UserRepository
         => _userRepository ??= new UserRepository(context, userManager);
@@ -35,6 +36,8 @@ public class UnitOfWork(
         => _categoryRepository ??= new CategoryRepository(context, redisService);
     public ITagRepository TagRepository
         => _tagRepository ??= new TagRepository(context, redisService); 
+    public IPostRepository PostRepository
+        => _postRepository ??= new PostRepository(context, redisService);
     
     public async Task CommitAsync() 
     {
