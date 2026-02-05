@@ -1,0 +1,18 @@
+using SocialNetwork.Contracts.DTOs;
+using SocialNetwork.Write.API.Models.Enums.Post;
+
+namespace SocialNetwork.Write.API.dto.Posts;
+
+public class PostDto: BaseDto
+{
+    public required string Title { get; set; }
+    public required string Slug { get; set; }
+    public required string Content { get; set; }
+    public string? Summary { get; set; }
+    public string? FeaturedImageUrl { get; set; }
+    public PostVisibilityEnum Visibility { get; set; }
+    public int? ReadingTime { get; set; }
+    public bool IsCommentsEnabled { get; set; }
+    public ReadingLevelEnum  ReadingLevel { get; set; }
+    public PostTypeEnum PostType { get; set; }
+}
