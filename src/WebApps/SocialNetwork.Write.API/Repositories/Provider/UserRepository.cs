@@ -69,4 +69,7 @@ public class UserRepository(AppDbContext context, UserManager<UserModel> manager
     public Task<IList<string>> GetRolesAsync(UserModel user)
         => manager.GetRolesAsync(user);
 
+    public async Task<bool> IsInRoleAsync(UserModel user, string roleName) 
+        => await manager.IsInRoleAsync(user, roleName);
+    
 }
