@@ -22,6 +22,40 @@ public class AuthControllerTest : BaseIntegrationTest
         _output = output;
         _helper = new HelperTest(Client); 
     }
+
+    [Fact]
+    public async Task ShouldReturnNotFound()
+    {
+        HttpResponseMessage message = await Client.GetAsync($"/api/v1/Auth/refresh-token/{Guid.NewGuid()}");
+        message.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        
+        ResponseHttp<object>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<object>>();
+        
+        http.Should().NotBeNull();
+        http.Success.Should().BeFalse();
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        
+        http.Data.Should().BeNull();
+    }
+    
+    [Fact]
+    public async Task ShouldReturnTokensRecreated()
+    {
+        UserTestResult result = await _helper.CreateNewUser();
+
+        HttpResponseMessage message = await Client.GetAsync($"/api/v1/Auth/refresh-token/{result.Tokens.RefreshToken}");
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+        
+        ResponseHttp<ResponseTokens>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<ResponseTokens>>();
+        
+        http.Should().NotBeNull();
+        http.Data.Should().NotBeNull();
+        
+        http.Data.Token.Should().NotBeNullOrEmpty();
+        http.Data.RefreshToken.Should().NotBeNullOrEmpty();
+        http.DetailsError.Should().BeNullOrWhiteSpace();
+        http.Success.Should().BeTrue();
+    }
     
     [Fact]
     public async Task CreateNewUser_Success()
