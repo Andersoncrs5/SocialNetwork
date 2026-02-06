@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.JsonWebTokens;
 using SocialNetwork.Contracts.DTOs.User;
+using SocialNetwork.Contracts.Utils.Exceptions;
 using SocialNetwork.Contracts.Utils.Res.http;
 using SocialNetwork.Write.API.Configs.Exception.classes;
 using SocialNetwork.Write.API.dto.User;
@@ -68,7 +69,6 @@ public class AuthController(
     
     [HttpPost("login")]
     [SwaggerOperation(Summary = "Login user", Tags = ["Auth"])]
-    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
     [ProducesResponseType(typeof(ResponseHttp<ResponseTokens>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ResponseHttp<IDictionary<string, string[]>>), (int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> Login([FromBody] LoginUserDto dto)
@@ -141,6 +141,36 @@ public class AuthController(
             TraceId: HttpContext.TraceIdentifier,
             Success: true,
             Timestamp: DateTime.UtcNow
+        ));
+    }
+
+    [HttpGet("refresh-token/{refreshToken}")]
+    [SwaggerOperation(Summary = "Refresh Token", Tags = ["Auth"])]
+    [ProducesResponseType(typeof(ResponseHttp<ResponseTokens>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ResponseHttp<object>), (int)HttpStatusCode.Forbidden)]
+    [ProducesResponseType(typeof(ResponseHttp<object>), (int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> RefreshToken(string refreshToken)
+    {
+        UserModel user = await userService.GetUserByRefreshToken(refreshToken) 
+                         ?? throw new ModelNotFoundException("Refresh token not found or invalid.");
+        
+        if (user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+            throw new ForbiddenException("Refresh token has expired. Please login again.");
+        
+        IList<string> roles = await userService.GetUserRoles(user);
+
+        ResponseTokens tokens = tokenService.CreateTokens(user, roles);
+        
+        UserDto userDto = mapper.Map<UserDto>(user);
+        
+        tokens.User = userDto;
+
+        return Ok(new ResponseHttp<ResponseTokens>(
+            tokens, 
+            "Refresh with success", 
+            HttpContext.TraceIdentifier, 
+            true, 
+            DateTime.UtcNow
         ));
     }
     
