@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SocialNetwork.Contracts.Utils.Exceptions;
 using SocialNetwork.Contracts.Utils.Res.http;
 using SocialNetwork.Write.API.Configs.Exception.classes;
 
@@ -34,6 +35,10 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
             UnauthenticatedException => (HttpStatusCode.Unauthorized, exception.Message, true),
             
             SelfReferencingHierarchyException => (HttpStatusCode.UnprocessableEntity, exception.Message, true),
+            
+            IdentityOperationException => (HttpStatusCode.UnprocessableEntity, exception.Message, true),
+            
+            ForbiddenException => (HttpStatusCode.Forbidden, exception.Message, true),
 
             _ => (HttpStatusCode.InternalServerError, $"Ocorreu um erro inesperado no servidor." , false)
         };
