@@ -3,6 +3,7 @@ using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Moq;
+using SocialNetwork.Contracts.Utils.Exceptions;
 using SocialNetwork.Write.API.Configs.Exception.classes;
 using SocialNetwork.Write.API.dto.User;
 using SocialNetwork.Write.API.Models;
@@ -50,6 +51,104 @@ public class UserServiceTests
         UserName = "pochita"
     };
 
+    private readonly RoleModel _role = new ()
+    {
+        Id = Guid.NewGuid().ToString(),
+        Description = "AnyDescription",
+        Name = "USER_ROLE",
+    };
+    
+    [Fact]
+    public async Task ShouldRemoveRole_ThrowIdentityOperationException_WhenIdentityFails()
+    {
+        var identityError = new IdentityError { Code = "999", Description = "Database is down" };
+    
+        _uowMock.Setup(x => x.UserRepository.IsInRoleAsync(_user, _role.Name!))
+            .ReturnsAsync(true);
+
+        _uowMock.Setup(x => x.UserRepository.RemoveRoleToUser(_user, _role.Name!))
+            .ReturnsAsync(IdentityResult.Failed(identityError));
+
+        Func<Task> act = async () => await _userService.RemoveRole(_role, _user);
+
+        await act.Should().ThrowAsync<IdentityOperationException>();
+        
+        _uowMock.Verify(x => x.UserRepository.IsInRoleAsync(_user, _role.Name!), Times.Once());
+        _uowMock.Verify(x => x.UserRepository.RemoveRoleToUser(_user, _role.Name!), Times.Once());
+    }
+    
+    [Fact]
+    public async Task ShouldRemoveRole_Success()
+    {
+        _uowMock.Setup(x => x.UserRepository.IsInRoleAsync(_user, _role.Name!))
+            .ReturnsAsync(true);
+    
+        _uowMock.Setup(x => x.UserRepository.RemoveRoleToUser(_user, _role.Name!))
+            .ReturnsAsync(IdentityResult.Success);
+
+        bool result = await _userService.RemoveRole(_role, _user);
+    
+        result.Should().BeTrue();
+        _uowMock.Verify(x => x.UserRepository.RemoveRoleToUser(_user, _role.Name!), Times.Once);
+    }
+    
+    [Fact]
+    public async Task ShouldReturnTrue_WhenUserIsNotInRole()
+    {
+        _uowMock.Setup(x => x.UserRepository.IsInRoleAsync(_user, _role.Name!))
+            .ReturnsAsync(false);
+    
+        bool result = await _userService.RemoveRole(_role, _user);
+    
+        result.Should().BeTrue();
+        _uowMock.Verify(x => x.UserRepository.RemoveRoleToUser(It.IsAny<UserModel>(), It.IsAny<string>()), Times.Never);
+    }
+    
+    [Fact]
+    public async Task ShouldAddRole_ThrowIdentityOperationException_WhenIdentityFails()
+    {
+        var identityError = new IdentityError { Code = "999", Description = "Database is down" };
+    
+        _uowMock.Setup(x => x.UserRepository.IsInRoleAsync(_user, _role.Name!))
+            .ReturnsAsync(false);
+
+        _uowMock.Setup(x => x.UserRepository.AddRoleToUser(_user, _role))
+            .ReturnsAsync(IdentityResult.Failed(identityError));
+
+        Func<Task> act = async () => await _userService.AddRole(_role, _user);
+
+        await act.Should().ThrowAsync<IdentityOperationException>();
+    }
+    
+    [Fact]
+    public async Task ShouldAddRole_Success()
+    {
+        _uowMock.Setup(x => x.UserRepository.IsInRoleAsync(_user, _role.Name!))
+            .ReturnsAsync(false);
+        
+        _uowMock.Setup(x => x.UserRepository.AddRoleToUser(_user, _role))
+            .ReturnsAsync(IdentityResult.Success);
+
+        bool result = await _userService.AddRole(_role, _user);
+        result.Should().BeTrue();
+        
+        _uowMock.Verify(x => x.UserRepository.IsInRoleAsync(_user, _role.Name!), Times.Once);
+        _uowMock.Verify(x => x.UserRepository.AddRoleToUser(_user, _role), Times.Once);
+    }
+    
+    [Fact]
+    public async Task ShouldReturnTrue_Success_BecauseRoleAlreadyPresent()
+    {
+        _uowMock.Setup(x => x.UserRepository.IsInRoleAsync(_user, _role.Name!))
+            .ReturnsAsync(true);
+        
+        bool result = await _userService.AddRole(_role, _user);
+        result.Should().BeTrue();
+        
+        _uowMock.Verify(x => x.UserRepository.IsInRoleAsync(_user, _role.Name!), Times.Once);
+        _uowMock.Verify(x => x.UserRepository.AddRoleToUser(_user, _role), Times.Never);
+    }
+    
     // METHOD: ExistsUserBySid
     [Fact]
     public async Task ExistsUserBySid_ShouldReturnTrue() 
