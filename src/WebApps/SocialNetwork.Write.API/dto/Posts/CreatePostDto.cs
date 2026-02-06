@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using SocialNetwork.Contracts.Attributes.Globals;
 using SocialNetwork.Write.API.Models.Enums.Post;
+using SocialNetwork.Write.API.Utils.Valids.Annotations.Post;
 
 namespace SocialNetwork.Write.API.dto.Posts;
 
@@ -9,7 +10,7 @@ public class CreatePostDto
     [MaxLength(150), MinLength(5), Required]
     public required string Title { get; set; }
     
-    [SlugConstraint, MaxLength(250), MinLength(5)]
+    [SlugConstraint, MaxLength(250), MinLength(5), UniquePostSlug]
     public required string Slug { get; set; }
     
     [Required ,MaxLength(700), MinLength(100)]
