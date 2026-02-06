@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using SocialNetwork.Contracts.Attributes.Globals;
+using SocialNetwork.Contracts.Utils.Exceptions;
 using SocialNetwork.Write.API.Configs.Exception.classes;
 using SocialNetwork.Write.API.dto.User;
 using SocialNetwork.Write.API.Models;
@@ -133,6 +134,41 @@ public class UserService(
         if (dto.IsPrivate.HasValue) user.IsPrivate = dto.IsPrivate.Value;
 
         return await UpdateSimple(user);
+    }
+
+    public async Task<bool> RemoveRole(RoleModel role, UserModel user)
+    {
+        if (!await uow.UserRepository.IsInRoleAsync(user, role.Name!))
+            return true;
+
+        IdentityResult result = await uow.UserRepository.RemoveRoleToUser(user, role.Name!);
+        if (!result.Succeeded)
+        {
+            var errorMessages = string.Join(", ", result.Errors.Select(e => $"{e.Code}: {e.Description}"));
+
+            throw new IdentityOperationException(
+                $"Failed to add role '{role.Name}' to user '{user.UserName}'. Details: {errorMessages}");
+        }
+
+        return true;
+    }
+
+    public async Task<bool> AddRole(RoleModel role, UserModel user)
+    {
+        if (await uow.UserRepository.IsInRoleAsync(user, role.Name!))
+            return true;
+
+        IdentityResult result = await uow.UserRepository.AddRoleToUser(user, role);
+        
+        if (!result.Succeeded)
+        {
+            var errorMessages = string.Join(", ", result.Errors.Select(e => $"{e.Code}: {e.Description}"));
+        
+            throw new IdentityOperationException(
+                $"Failed to add role '{role.Name}' to user '{user.UserName}'. Details: {errorMessages}");
+        }
+    
+        return true;
     }
     
 }

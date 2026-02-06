@@ -26,4 +26,6 @@ public interface IUserService
     Task<UserModel?> GetUserByRefreshToken(string refreshToken);
     Task<IList<string>> GetUserRoles(UserModel user);
     Task<UserResult> CreateUser(CreateUserDto dto);
+    Task<bool> AddRole(RoleModel role, UserModel user);
+    Task<bool> RemoveRole(RoleModel role, UserModel user);
 }
