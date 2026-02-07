@@ -5,14 +5,17 @@ using SocialNetwork.Write.API.Configs.Exception.classes;
 using SocialNetwork.Write.API.dto.Posts;
 using SocialNetwork.Write.API.Models;
 using SocialNetwork.Write.API.Models.Enums.Post;
+using SocialNetwork.Write.API.Services.Interfaces;
 using SocialNetwork.Write.API.Utils.UnitOfWork;
 
 namespace SocialNetwork.Write.API.Services.Providers;
 
-public class PostService(IUnitOfWork uow, IMapper mapper)
+public class PostService(IUnitOfWork uow, IMapper mapper): IPostService
 {
     public async Task<PostModel?> GetByIdAsync([IsId] string id)
         => await uow.PostRepository.GetByIdAsync(id);
+    public async Task<PostModel> GetByIdSimpleAsync([IsId] string id)
+        => await uow.PostRepository.GetByIdAsync(id) ?? throw new ModelNotFoundException("Post not found");
 
     public async Task<bool> ExistsByIdAsync([IsId] string id)
         => await uow.PostRepository.ExistsById(id);
@@ -20,12 +23,14 @@ public class PostService(IUnitOfWork uow, IMapper mapper)
     public async Task<bool> ExistsBySlugAsync([SlugConstraint] string slug)
         => await uow.PostRepository.ExistsBySlug(slug);
 
-    public async Task<PostModel> CreateAsync(CreatePostDto dto)
+    public async Task<PostModel> CreateAsync(CreatePostDto dto, UserModel user)
     {
         PostModel map = mapper.Map<PostModel>(dto);
 
         map.ModerationStatus = ModerationStatusEnum.PendingReview;
         map.HighlightStatus = PostHighlightStatusEnum.None;
+        map.User = user;
+        map.UserId = user.Id;
         
         PostModel model = await uow.PostRepository.AddAsync(map);
         await uow.CommitAsync();
