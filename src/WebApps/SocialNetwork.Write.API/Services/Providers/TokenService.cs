@@ -88,9 +88,7 @@ public class TokenService(
         };
 
         foreach (var role in userRoles)
-        {
             claims.Add(new Claim(ClaimTypes.Role, role));
-        }
 
         var accessToken = GenerateAccessToken(claims);
         var refreshToken = GenerateRefreshToken();
@@ -103,7 +101,8 @@ public class TokenService(
             Token = accessToken,
             RefreshToken = refreshToken,
             ExpiredAt = DateTime.UtcNow.AddMinutes(_options.TokenValidityInMinutes),
-            ExpiredAtRefreshToken = user.RefreshTokenExpiryTime ?? DateTime.UtcNow
+            ExpiredAtRefreshToken = user.RefreshTokenExpiryTime ?? DateTime.UtcNow,
+            Roles = userRoles
         };
     }
 }
