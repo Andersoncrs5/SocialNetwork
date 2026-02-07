@@ -23,6 +23,23 @@ public class PostServiceTest
         _postService = new PostService(_uowMock.Object,  _mapperMock.Object);
     }
 
+    private readonly UserModel _user = new UserModel()
+    {
+        Id = "69b078e9-13ac-481e-bf28-f3767be0493f",
+        Email = "pochita@gmail.com",
+        PasswordHash = "12345678",
+        Bio = "any",
+        AccessFailedCount = 0,
+        BirthDate = DateTime.UtcNow.AddYears(-20),
+        ConcurrencyStamp = null,
+        Country = "BR",
+        EmailConfirmed = true,
+        CoverImageUrl = "",
+        CreatedAt = DateTime.UtcNow,
+        FullName = "pochita the chainsaw demon",
+        UserName = "pochita"
+    };
+    
     private readonly PostModel _postMock = new ()
     {
         Id = Guid.NewGuid().ToString(),
@@ -39,6 +56,7 @@ public class PostServiceTest
         ModerationStatus = ModerationStatusEnum.PendingReview,
         ReadingLevel = ReadingLevelEnum.Short,
         PostType = PostTypeEnum.Article,
+        UserId = "69b078e9-13ac-481e-bf28-f3767be0493f",
         CreatedAt = DateTime.UtcNow,
         UpdatedAt = DateTime.UtcNow,
     };
@@ -127,10 +145,11 @@ public class PostServiceTest
         _mapperMock.Setup(x => x.Map<PostModel>(It.IsAny<CreatePostDto>())).Returns(_postMock);
         _uowMock.Setup(x => x.PostRepository.AddAsync(It.IsAny<PostModel>())).ReturnsAsync(_postMock);
 
-        PostModel model = await _postService.CreateAsync(_dto);
+        PostModel model = await _postService.CreateAsync(_dto, _user);
         
         model.Should().NotBeNull();
         model.Id.Should().Be(_postMock.Id);
+        model.UserId.Should().Be(_user.Id);
         
         _uowMock.Verify(x => x.PostRepository.AddAsync(It.IsAny<PostModel>()), Times.Once);
         _uowMock.Verify(x => x.CommitAsync(), Times.Once);
