@@ -38,6 +38,8 @@ public class UnitOfWork(
         => _tagRepository ??= new TagRepository(context, redisService); 
     public IPostRepository PostRepository
         => _postRepository ??= new PostRepository(context, redisService);
+    public IRedisService RedisService => redisService;
+    public IMapper Mapper => mapper;
     
     public async Task CommitAsync() 
     {
