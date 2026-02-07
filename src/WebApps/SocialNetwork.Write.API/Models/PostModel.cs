@@ -18,4 +18,7 @@ public class PostModel: BaseModel
     public ModerationStatusEnum  ModerationStatus { get; set; }
     public ReadingLevelEnum  ReadingLevel { get; set; }
     public PostTypeEnum PostType { get; set; }
+    
+    public required string UserId { get; set; }
+    public UserModel? User { get; set; }
 }
