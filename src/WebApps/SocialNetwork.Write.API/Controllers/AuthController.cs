@@ -21,6 +21,7 @@ namespace SocialNetwork.Write.API.Controllers;
 public class AuthController(
         ITokenService tokenService,
         IUserService userService,
+        IRoleService roleService,
         IMapper mapper
     ) : Controller
 {
@@ -45,8 +46,13 @@ public class AuthController(
             ));
         }
 
-        UserModel user = result.User!;
+        UserModel userCurrent = result.User!;
+
+        RoleModel role = await roleService.GetByNameSimple("USER_ROLE");
+        await userService.AddRole(role, userCurrent);
         
+        UserModel user = await userService.GetUserByEmailSimple(userCurrent.Email!);
+
         IList<string> roles = await userService.GetUserRoles(user);
 
         ResponseTokens tokens = tokenService.CreateTokens(user, roles);
@@ -173,6 +179,5 @@ public class AuthController(
             DateTime.UtcNow
         ));
     }
-    
     
 }
