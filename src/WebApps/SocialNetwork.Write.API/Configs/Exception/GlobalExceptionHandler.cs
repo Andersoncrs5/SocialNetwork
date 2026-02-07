@@ -39,6 +39,8 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
             IdentityOperationException => (HttpStatusCode.UnprocessableEntity, exception.Message, true),
             
             ForbiddenException => (HttpStatusCode.Forbidden, exception.Message, true),
+            
+            ResourceOwnerMismatchException => (HttpStatusCode.Forbidden, exception.Message, true),
 
             _ => (HttpStatusCode.InternalServerError, $"Ocorreu um erro inesperado no servidor." , false)
         };
