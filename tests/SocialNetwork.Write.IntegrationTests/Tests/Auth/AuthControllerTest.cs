@@ -43,7 +43,8 @@ public class AuthControllerTest : BaseIntegrationTest
     {
         UserTestResult result = await _helper.CreateNewUser();
 
-        HttpResponseMessage message = await Client.GetAsync($"/api/v1/Auth/refresh-token/{result.Tokens.RefreshToken}");
+        HttpResponseMessage message = await Client.GetAsync($"/api/v1/auth/refresh-token/{result.Tokens.RefreshToken}");
+        _output.WriteLine(message.Content.ReadAsStringAsync().Result);
         message.StatusCode.Should().Be(HttpStatusCode.OK);
         
         ResponseHttp<ResponseTokens>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<ResponseTokens>>();
