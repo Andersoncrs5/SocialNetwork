@@ -56,9 +56,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
             x.ToTable("Posts");
             x.HasKey(p => p.Id);
             
+            x.HasIndex(p => p.Slug).IsUnique();
+            
             x.Property(c => c.Title).IsRequired().HasColumnType("VARCHAR(150)").HasMaxLength(150);
             x.Property(c => c.Slug).IsRequired().HasColumnType("VARCHAR(250)").HasMaxLength(250);
-            x.Property(c => c.Content).IsRequired().HasColumnType("VARCHAR(700)").HasMaxLength(700);
+            x.Property(c => c.Content).IsRequired().HasColumnType("TEXT");
             x.Property(c => c.Summary).IsRequired(false).HasColumnType("VARCHAR(300)").HasMaxLength(300);
             x.Property(c => c.FeaturedImageUrl).IsRequired(false).HasColumnType("VARCHAR(800)").HasMaxLength(800);
 
@@ -85,6 +87,15 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
             x.Property(p => p.PostType)
                 .HasConversion<string>()
                 .HasMaxLength(25);
+            
+            x.HasOne(p => p.User)          
+                .WithMany(u => u.Posts)    
+                .HasForeignKey(p => p.UserId) 
+                .OnDelete(DeleteBehavior.Cascade); 
+
+            x.Property(p => p.UserId)
+                .IsRequired()
+                .HasColumnType("VARCHAR(255)"); 
         });
         
         modelBuilder.Entity<TagModel>(x =>

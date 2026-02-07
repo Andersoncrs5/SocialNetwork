@@ -189,8 +189,7 @@ namespace SocialNetwork.Write.API.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasMaxLength(700)
-                        .HasColumnType("VARCHAR(700)");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
@@ -249,12 +248,21 @@ namespace SocialNetwork.Write.API.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(255)");
+
                     b.Property<string>("Visibility")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Posts", (string)null);
                 });
@@ -505,9 +513,25 @@ namespace SocialNetwork.Write.API.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("SocialNetwork.Write.API.Models.PostModel", b =>
+                {
+                    b.HasOne("SocialNetwork.Write.API.Models.UserModel", "User")
+                        .WithMany("Posts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SocialNetwork.Write.API.Models.CategoryModel", b =>
                 {
                     b.Navigation("Children");
+                });
+
+            modelBuilder.Entity("SocialNetwork.Write.API.Models.UserModel", b =>
+                {
+                    b.Navigation("Posts");
                 });
 #pragma warning restore 612, 618
         }
