@@ -15,4 +15,5 @@ public class PostDto: BaseDto
     public bool IsCommentsEnabled { get; set; }
     public ReadingLevelEnum  ReadingLevel { get; set; }
     public PostTypeEnum PostType { get; set; }
+    public required string UserId { get; set; }
 }
