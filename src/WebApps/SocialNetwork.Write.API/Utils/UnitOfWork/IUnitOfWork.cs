@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore.Storage;
 using SocialNetwork.Write.API.Repositories.Interfaces;
+using SocialNetwork.Write.API.Services.Interfaces;
 
 namespace SocialNetwork.Write.API.Utils.UnitOfWork;
 
@@ -13,6 +14,8 @@ public interface IUnitOfWork: IDisposable
     ICategoryRepository CategoryRepository { get; }
     ITagRepository TagRepository { get; }
     IPostRepository PostRepository { get; }
+    IRedisService  RedisService { get; }
+    IMapper Mapper { get; }
     
     Task CommitAsync();
     Task<IDbContextTransaction> BeginTransactionAsync();
