@@ -7,8 +7,10 @@ using SocialNetwork.Contracts.DTOs.Tag;
 using SocialNetwork.Contracts.DTOs.User;
 using SocialNetwork.Contracts.Utils.Res.http;
 using SocialNetwork.Write.API.dto.Category;
+using SocialNetwork.Write.API.dto.Posts;
 using SocialNetwork.Write.API.dto.Tag;
 using SocialNetwork.Write.API.dto.User;
+using SocialNetwork.Write.API.Models.Enums.Post;
 using SocialNetwork.Write.IntegrationTests.Config;
 using SocialNetwork.Write.IntegrationTests.Tests.Utils.Classes;
 using Xunit.Abstractions;
@@ -17,6 +19,50 @@ namespace SocialNetwork.Write.IntegrationTests.Tests;
 
 public class HelperTest(HttpClient client)
 {
+    public async Task<PostDto> CreatePostAsync(UserTestResult user)
+    {
+        CreatePostDto dto = new CreatePostDto()
+        {
+            Title = Guid.NewGuid().ToString(),
+            Slug = GenerateChars().ToLower(),
+            Content = string.Concat(Enumerable.Repeat("Content", 30)),
+            Summary = "Summary",
+            FeaturedImageUrl = "https://preview.redd.it/how-is-pochita-so-strong-v0-l01qqnevch8e1.jpeg?width=1080&crop=smart&auto=webp&s=656328dd522bc25a474c84dc53afe06935f5c262",
+            Visibility = PostVisibilityEnum.Public,
+            ReadingTime = 10,
+            IsCommentsEnabled = true,
+            ReadingLevel = ReadingLevelEnum.Medium,
+            PostType = PostTypeEnum.Opinion
+        };
+        
+        client.DefaultRequestHeaders.Authorization = 
+            new AuthenticationHeaderValue("Bearer", user.Tokens.Token);
+
+        HttpResponseMessage message = await client.PostAsJsonAsync($"api/v1/post", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<PostDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<PostDto>>();
+        
+        http.Should().NotBeNull();
+        http.Success.Should().BeTrue();
+        http.Data.Should().NotBeNull();
+
+        http.Data.Id.Should().NotBeNullOrWhiteSpace();
+        http.Data.Title.Should().Be(dto.Title);
+        http.Data.Slug.Should().Be(dto.Slug);
+        http.Data.Content.Should().Be(dto.Content);
+        http.Data.Summary.Should().Be(dto.Summary);
+        http.Data.FeaturedImageUrl.Should().Be(dto.FeaturedImageUrl);
+        http.Data.Visibility.Should().Be(dto.Visibility);
+        http.Data.ReadingTime.Should().Be(dto.ReadingTime);
+        http.Data.IsCommentsEnabled.Should().Be(dto.IsCommentsEnabled);
+        http.Data.ReadingLevel.Should().Be(dto.ReadingLevel);
+        http.Data.PostType.Should().Be(dto.PostType);
+        http.Data.UserId.Should().Be(user.User.Id);
+        
+        return http.Data;
+    }
+    
     public async Task<TagDto> CreateTag(UserTestResult result)
     {
         CreateTagDto dto = new CreateTagDto()
