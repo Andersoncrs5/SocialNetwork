@@ -20,4 +20,6 @@ public class UserModel: IdentityUser
     
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
+    
+    public ICollection<PostModel> Posts { get; set; } = new List<PostModel>();
 }
