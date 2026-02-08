@@ -18,6 +18,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<CategoryModel> Categories { get; set; }
     public DbSet<TagModel> Tags { get; set; }
     public DbSet<PostModel> Posts { get; set; }
+    public DbSet<PostCategoryModel> PostCategories { get; set; }
     
     public override int SaveChanges()
     {
@@ -55,6 +56,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
         {
             x.HasKey(pc => pc.Id);
            
+            // x.HasKey(pc => new { pc.PostId, pc.CategoryId });
+            
             x.Property(pc => pc.Order).HasColumnType("INT UNSIGNED")
                 .HasDefaultValue(0); 
             
