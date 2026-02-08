@@ -54,21 +54,24 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
 
         modelBuilder.Entity<PostCategoryModel>(x =>
         {
+            x.ToTable("PostCategory");
+
             x.HasKey(pc => pc.Id);
-           
-            // x.HasKey(pc => new { pc.PostId, pc.CategoryId });
-            
-            x.Property(pc => pc.Order).HasColumnType("INT UNSIGNED")
+
+            x.Property(pc => pc.Order)
+                .HasColumnType("INT UNSIGNED")
                 .HasDefaultValue(0); 
-            
+
             x.HasOne(pc => pc.Category)
-                .WithMany(pc => pc.PostCategories)
+                .WithMany(c => c.PostCategories)
                 .HasForeignKey(pc => pc.CategoryId)
+                .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
-                        
+                
             x.HasOne(pc => pc.Post)
-                .WithMany(pc => pc.PostCategories)
+                .WithMany(p => p.PostCategories)
                 .HasForeignKey(pc => pc.PostId)
+                .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
         });
         
