@@ -11,4 +11,5 @@ public interface IPostCategoryService
     Task Delete(PostCategoryModel postCategory);
     Task<PostCategoryModel> Create(CreatePostCategoryDto dto);
     Task<PostCategoryModel> Update(UpdatePostCategoryDto dto, PostCategoryModel postCategory);
+    Task<int> CountByPostIdAndCategoryId([IsId] string postId, [IsId] string categoryId);
 }

@@ -12,6 +12,9 @@ public class PostCategoryService(IUnitOfWork uow): IPostCategoryService
     public async Task<PostCategoryModel> GetByIdSimple([IsId] string id)
         => await uow.PostCategoryRepository.GetByIdAsync(id) 
            ?? throw new ModelNotFoundException("Category not found");
+
+    public async Task<int> CountByPostIdAndCategoryId([IsId] string postId, [IsId] string categoryId)
+        => await uow.PostCategoryRepository.CountByPostIdAndCategoryId(postId, categoryId);
     
     public async Task<PostCategoryModel> GetByPostIdAndCategoryId([IsId] string postId, [IsId] string categoryId)
         => await uow.PostCategoryRepository.GetByPostIdAndCategoryId(postId, categoryId) 
