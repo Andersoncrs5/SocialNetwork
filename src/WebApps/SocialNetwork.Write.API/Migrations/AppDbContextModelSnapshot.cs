@@ -181,6 +181,40 @@ namespace SocialNetwork.Write.API.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("SocialNetwork.Write.API.Models.PostCategoryModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(450)
+                        .HasColumnType("varchar(450)");
+
+                    b.Property<string>("CategoryId")
+                        .IsRequired()
+                        .HasColumnType("varchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<uint>("Order")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INT UNSIGNED")
+                        .HasDefaultValue(0u);
+
+                    b.Property<string>("PostId")
+                        .IsRequired()
+                        .HasColumnType("varchar(450)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("PostCategoryModel");
+                });
+
             modelBuilder.Entity("SocialNetwork.Write.API.Models.PostModel", b =>
                 {
                     b.Property<string>("Id")
@@ -513,6 +547,25 @@ namespace SocialNetwork.Write.API.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("SocialNetwork.Write.API.Models.PostCategoryModel", b =>
+                {
+                    b.HasOne("SocialNetwork.Write.API.Models.CategoryModel", "Category")
+                        .WithMany("PostCategories")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SocialNetwork.Write.API.Models.PostModel", "Post")
+                        .WithMany("PostCategories")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Post");
+                });
+
             modelBuilder.Entity("SocialNetwork.Write.API.Models.PostModel", b =>
                 {
                     b.HasOne("SocialNetwork.Write.API.Models.UserModel", "User")
@@ -527,6 +580,13 @@ namespace SocialNetwork.Write.API.Migrations
             modelBuilder.Entity("SocialNetwork.Write.API.Models.CategoryModel", b =>
                 {
                     b.Navigation("Children");
+
+                    b.Navigation("PostCategories");
+                });
+
+            modelBuilder.Entity("SocialNetwork.Write.API.Models.PostModel", b =>
+                {
+                    b.Navigation("PostCategories");
                 });
 
             modelBuilder.Entity("SocialNetwork.Write.API.Models.UserModel", b =>
