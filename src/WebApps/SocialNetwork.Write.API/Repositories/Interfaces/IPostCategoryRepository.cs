@@ -7,4 +7,5 @@ public interface IPostCategoryRepository: IGenericRepository<PostCategoryModel>
 {
     Task<bool> ExistsByPostIdAndCategoryId([IsId] string postId, [IsId] string categoryId);
     Task<PostCategoryModel?> GetByPostIdAndCategoryId([IsId] string postId, [IsId] string categoryId);
+    Task<int> CountByPostIdAndCategoryId([IsId] string postId, [IsId] string categoryId);
 }

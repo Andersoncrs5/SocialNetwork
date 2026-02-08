@@ -11,7 +11,10 @@ public class PostCategoryRepository(AppDbContext app, IRedisService redisService
     : GenericRepository<PostCategoryModel>(app, redisService), IPostCategoryRepository
 {
     public async Task<bool> ExistsByPostIdAndCategoryId([IsId] string postId, [IsId] string categoryId)
-        => await app.PostCategories.AnyAsync(x => x.PostId == postId && x.CategoryId == categoryId); 
+        => await app.PostCategories.AnyAsync(x => x.PostId == postId && x.CategoryId == categoryId);
+    
+    public async Task<int> CountByPostIdAndCategoryId([IsId] string postId, [IsId] string categoryId)
+        => await app.PostCategories.CountAsync(x => x.PostId == postId && x.CategoryId == categoryId);
     
     public async Task<PostCategoryModel?> GetByPostIdAndCategoryId([IsId] string postId, [IsId] string categoryId)
         => await app.PostCategories.AsNoTracking()
