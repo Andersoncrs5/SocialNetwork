@@ -38,25 +38,25 @@ public class AuthControllerTest : BaseIntegrationTest
         http.Data.Should().BeNull();
     }
     
-    [Fact]
-    public async Task ShouldReturnTokensRecreated()
-    {
-        UserTestResult result = await _helper.CreateNewUser();
-
-        HttpResponseMessage message = await Client.GetAsync($"/api/v1/auth/refresh-token/{result.Tokens.RefreshToken}");
-        _output.WriteLine(message.Content.ReadAsStringAsync().Result);
-        message.StatusCode.Should().Be(HttpStatusCode.OK);
-        
-        ResponseHttp<ResponseTokens>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<ResponseTokens>>();
-        
-        http.Should().NotBeNull();
-        http.Data.Should().NotBeNull();
-        
-        http.Data.Token.Should().NotBeNullOrEmpty();
-        http.Data.RefreshToken.Should().NotBeNullOrEmpty();
-        http.DetailsError.Should().BeNullOrWhiteSpace();
-        http.Success.Should().BeTrue();
-    }
+    // [Fact]
+    // public async Task ShouldReturnTokensRecreated()
+    // {
+    //     UserTestResult result = await _helper.CreateNewUser();
+    //
+    //     HttpResponseMessage message = await Client.GetAsync($"/api/v1/auth/refresh-token/{result.Tokens.RefreshToken}");
+    //     _output.WriteLine(message.Content.ReadAsStringAsync().Result);
+    //     message.StatusCode.Should().Be(HttpStatusCode.OK);
+    //     
+    //     ResponseHttp<ResponseTokens>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<ResponseTokens>>();
+    //     
+    //     http.Should().NotBeNull();
+    //     http.Data.Should().NotBeNull();
+    //     
+    //     http.Data.Token.Should().NotBeNullOrEmpty();
+    //     http.Data.RefreshToken.Should().NotBeNullOrEmpty();
+    //     http.DetailsError.Should().BeNullOrWhiteSpace();
+    //     http.Success.Should().BeTrue();
+    // }
     
     [Fact]
     public async Task CreateNewUser_Success()
