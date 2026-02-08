@@ -21,4 +21,6 @@ public class PostModel: BaseModel
     
     public required string UserId { get; set; }
     public UserModel? User { get; set; }
+    
+    public ICollection<PostCategoryModel> PostCategories { get; set; } = new List<PostCategoryModel>();
 }

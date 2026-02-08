@@ -16,4 +16,5 @@ public class CategoryModel: BaseModel
     public string? ParentId { get; set; } 
     public CategoryModel? Parent { get; set; }
     public ICollection<CategoryModel> Children { get; set; } = new List<CategoryModel>();
+    public ICollection<PostCategoryModel> PostCategories { get; set; } = new List<PostCategoryModel>();
 }
