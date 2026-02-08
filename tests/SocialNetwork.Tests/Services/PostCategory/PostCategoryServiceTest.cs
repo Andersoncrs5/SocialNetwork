@@ -176,5 +176,17 @@ public class PostCategoryServiceTest
         _uowMock.Verify(x => x.Mapper.Map<PostCategoryModel>(_dto), Times.Once);
         _uowMock.Verify(x => x.CommitAsync(), Times.Once);
     }
+
+    [Fact]
+    public async Task ShouldReturn10WhenExecCountByPostIdAndCategoryId()
+    {
+        _uowMock.Setup(x => x.PostCategoryRepository.CountByPostIdAndCategoryId(_postCategory.PostId, _category.Id))
+            .ReturnsAsync(10);
+
+        int result = await _service.CountByPostIdAndCategoryId(_postCategory.PostId, _category.Id);
+        result.Should().Be(10);
+        
+        _uowMock.Verify(x => x.PostCategoryRepository.CountByPostIdAndCategoryId(_postCategory.PostId, _category.Id), Times.Once);
+    }
     
 }
