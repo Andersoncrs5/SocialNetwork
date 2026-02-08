@@ -11,4 +11,6 @@ public class TagModel: BaseModel
     public bool IsActive { get; set; }
     public bool IsVisible { get; set; }
     public bool IsSystem { get; set; }
+    
+    public ICollection<PostTagModel> PostTags { get; set; } = new List<PostTagModel>();
 }

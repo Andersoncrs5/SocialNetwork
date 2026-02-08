@@ -23,4 +23,6 @@ public class PostModel: BaseModel
     public UserModel? User { get; set; }
     
     public ICollection<PostCategoryModel> PostCategories { get; set; } = new List<PostCategoryModel>();
+    public ICollection<PostTagModel> PostTags { get; set; } = new List<PostTagModel>();
+    
 }
