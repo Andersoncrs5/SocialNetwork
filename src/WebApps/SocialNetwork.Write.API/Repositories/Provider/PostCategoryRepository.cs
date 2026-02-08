@@ -1,0 +1,19 @@
+using Microsoft.EntityFrameworkCore;
+using SocialNetwork.Contracts.Attributes.Globals;
+using SocialNetwork.Write.API.Configs.DB;
+using SocialNetwork.Write.API.Models;
+using SocialNetwork.Write.API.Repositories.Interfaces;
+using SocialNetwork.Write.API.Services.Interfaces;
+
+namespace SocialNetwork.Write.API.Repositories.Provider;
+
+public class PostCategoryRepository(AppDbContext app, IRedisService redisService)
+    : GenericRepository<PostCategoryModel>(app, redisService), IPostCategoryRepository
+{
+    public async Task<bool> ExistsByPostIdAndCategoryId([IsId] string postId, [IsId] string categoryId)
+        => await app.PostCategories.AnyAsync(x => x.PostId == postId && x.CategoryId == categoryId); 
+    
+    public async Task<PostCategoryModel?> GetByPostIdAndCategoryId([IsId] string postId, [IsId] string categoryId)
+        => await app.PostCategories.AsNoTracking()
+            .FirstOrDefaultAsync(x => x.PostId == postId && x.CategoryId == categoryId);
+}
