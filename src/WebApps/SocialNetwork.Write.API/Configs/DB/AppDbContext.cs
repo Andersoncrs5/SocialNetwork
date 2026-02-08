@@ -19,6 +19,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<TagModel> Tags { get; set; }
     public DbSet<PostModel> Posts { get; set; }
     public DbSet<PostCategoryModel> PostCategories { get; set; }
+    public DbSet<PostTagModel> PostTags { get; set; }
     
     public override int SaveChanges()
     {
@@ -52,6 +53,25 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<PostTagModel>(x =>
+        {
+            x.ToTable("PostTags");
+
+            x.HasKey(pc => pc.Id);
+
+            x.HasOne(pc => pc.Tag)
+                .WithMany(c => c.PostTags)
+                .HasForeignKey(pc => pc.TagId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+                
+            x.HasOne(pc => pc.Post)
+                .WithMany(p => p.PostTags)
+                .HasForeignKey(pc => pc.PostId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+        
         modelBuilder.Entity<PostCategoryModel>(x =>
         {
             x.ToTable("PostCategory");

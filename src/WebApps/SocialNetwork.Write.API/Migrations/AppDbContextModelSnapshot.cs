@@ -301,6 +301,35 @@ namespace SocialNetwork.Write.API.Migrations
                     b.ToTable("Posts", (string)null);
                 });
 
+            modelBuilder.Entity("SocialNetwork.Write.API.Models.PostTagModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(450)
+                        .HasColumnType("varchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("PostId")
+                        .IsRequired()
+                        .HasColumnType("varchar(450)");
+
+                    b.Property<string>("TagId")
+                        .IsRequired()
+                        .HasColumnType("varchar(450)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("PostTags", (string)null);
+                });
+
             modelBuilder.Entity("SocialNetwork.Write.API.Models.RoleModel", b =>
                 {
                     b.Property<string>("Id")
@@ -577,6 +606,25 @@ namespace SocialNetwork.Write.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SocialNetwork.Write.API.Models.PostTagModel", b =>
+                {
+                    b.HasOne("SocialNetwork.Write.API.Models.PostModel", "Post")
+                        .WithMany("PostTags")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SocialNetwork.Write.API.Models.TagModel", "Tag")
+                        .WithMany("PostTags")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("Tag");
+                });
+
             modelBuilder.Entity("SocialNetwork.Write.API.Models.CategoryModel", b =>
                 {
                     b.Navigation("Children");
@@ -587,6 +635,13 @@ namespace SocialNetwork.Write.API.Migrations
             modelBuilder.Entity("SocialNetwork.Write.API.Models.PostModel", b =>
                 {
                     b.Navigation("PostCategories");
+
+                    b.Navigation("PostTags");
+                });
+
+            modelBuilder.Entity("SocialNetwork.Write.API.Models.TagModel", b =>
+                {
+                    b.Navigation("PostTags");
                 });
 
             modelBuilder.Entity("SocialNetwork.Write.API.Models.UserModel", b =>
