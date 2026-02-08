@@ -3,10 +3,12 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using FluentAssertions;
 using MySqlX.XDevAPI;
+using SocialNetwork.Contracts.DTOs.PostCategory;
 using SocialNetwork.Contracts.DTOs.Tag;
 using SocialNetwork.Contracts.DTOs.User;
 using SocialNetwork.Contracts.Utils.Res.http;
 using SocialNetwork.Write.API.dto.Category;
+using SocialNetwork.Write.API.dto.PostCategory;
 using SocialNetwork.Write.API.dto.Posts;
 using SocialNetwork.Write.API.dto.Tag;
 using SocialNetwork.Write.API.dto.User;
@@ -19,6 +21,38 @@ namespace SocialNetwork.Write.IntegrationTests.Tests;
 
 public class HelperTest(HttpClient client)
 {
+    public async Task<PostCategoryDto> CreatePostCategory(CategoryDto categoryDto, PostDto postDto, UserTestResult userResult)
+    {
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", userResult.Tokens.Token);
+
+        CreatePostCategoryDto dto = new()
+        {
+            CategoryId = categoryDto.Id,
+            PostId = postDto.Id,
+            Order = 1
+        };
+
+        HttpResponseMessage message = await client.PostAsJsonAsync("api/v1/post-category", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+        
+        ResponseHttp<PostCategoryDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<PostCategoryDto>>();
+        
+        http.Should().NotBeNull();
+        
+        http.Success.Should().BeTrue();
+        http.TraceId.Should().NotBeNullOrWhiteSpace();
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.DetailsError.Should().BeNull();
+
+        http.Data.Should().NotBeNull();
+        http.Data.CategoryId.Should().Be(dto.CategoryId);
+        http.Data.PostId.Should().Be(dto.PostId);
+        http.Data.Order.Should().Be(dto.Order);
+        
+        return http.Data;
+    }
+    
     public async Task<PostDto> CreatePostAsync(UserTestResult user)
     {
         CreatePostDto dto = new CreatePostDto()
