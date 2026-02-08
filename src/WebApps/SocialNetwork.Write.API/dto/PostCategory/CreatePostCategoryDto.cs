@@ -6,7 +6,7 @@ namespace SocialNetwork.Write.API.dto.PostCategory;
 
 public class CreatePostCategoryDto
 {
-    [IsId, ExistsPostId] public required string PostId { get; set; }
-    [IsId, ExistsCategoryById] public required string CategoryId { get; set; }
+    [IsId] public required string PostId { get; set; }
+    [IsId] public required string CategoryId { get; set; }
     public uint Order { get; set; }
 }
