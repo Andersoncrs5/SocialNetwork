@@ -47,6 +47,9 @@ public class PostControllerTest: BaseIntegrationTest
             new AuthenticationHeaderValue("Bearer", user.Tokens.Token);
 
         HttpResponseMessage message = await Client.PostAsJsonAsync($"{_url}", dto);
+        _output.WriteLine("======================================================================");
+        _output.WriteLine(message.Content.ReadAsStringAsync().Result);
+        _output.WriteLine("======================================================================");
         message.StatusCode.Should().Be(HttpStatusCode.Created);
 
         ResponseHttp<PostDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<PostDto>>();
