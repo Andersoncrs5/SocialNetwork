@@ -17,6 +17,8 @@ public class PostDto: BaseDto
     public bool Pinned { get; set; }
     public string? ParentId { get; set; }
     public LanguageEnum Language { get; set; } 
+    public decimal EstimatedValue { get; set; } = 0;
+    
     public ReadingLevelEnum  ReadingLevel { get; set; }
     public PostTypeEnum PostType { get; set; }
     public required string UserId { get; set; }
