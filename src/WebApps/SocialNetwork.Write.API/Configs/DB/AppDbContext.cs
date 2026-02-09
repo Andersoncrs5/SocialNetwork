@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using SocialNetwork.Contracts.Utils.Enums;
 using SocialNetwork.Write.API.Models.Bases;
 
 namespace SocialNetwork.Write.API.Configs.DB;
@@ -101,6 +102,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
             x.HasKey(p => p.Id);
             
             x.HasIndex(p => p.Slug).IsUnique();
+            x.HasIndex(p => p.Language);
+            x.HasIndex(p => p.ParentId);
             
             x.Property(c => c.Title).IsRequired().HasColumnType("VARCHAR(150)").HasMaxLength(150);
             x.Property(c => c.Slug).IsRequired().HasColumnType("VARCHAR(250)").HasMaxLength(250);
@@ -109,8 +112,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
             x.Property(c => c.FeaturedImageUrl).IsRequired(false).HasColumnType("VARCHAR(800)").HasMaxLength(800);
 
             x.Property(c => c.IsCommentsEnabled).IsRequired(true).HasDefaultValue(true);
+            x.Property(c => c.Pinned).IsRequired().HasDefaultValue(false);
             x.Property(c => c.ReadingTime).IsRequired(false);
             x.Property(c => c.RankingScore).IsRequired().HasDefaultValue(0.0);
+            x.Property(c => c.EstimatedValue).IsRequired().HasDefaultValue(0);
 
             x.Property(p => p.Visibility)
                 .HasConversion<string>()
@@ -132,6 +137,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
                 .HasConversion<string>()
                 .HasMaxLength(25);
             
+            x.Property(p => p.Language)
+                .HasConversion<string>()
+                .HasDefaultValue(LanguageEnum.Undefined)
+                .HasMaxLength(20);
+            
             x.HasOne(p => p.User)          
                 .WithMany(u => u.Posts)    
                 .HasForeignKey(p => p.UserId) 
@@ -139,7 +149,16 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
 
             x.Property(p => p.UserId)
                 .IsRequired()
-                .HasColumnType("VARCHAR(255)"); 
+                .HasColumnType("VARCHAR(255)");
+
+            x.Property(c => c.ParentId)
+                .IsRequired(false);
+            
+            x.HasOne(c => c.Parent)
+                .WithMany(p => p.Children)
+                .HasForeignKey(c => c.ParentId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
         });
         
         modelBuilder.Entity<TagModel>(x =>
