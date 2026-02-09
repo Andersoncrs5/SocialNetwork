@@ -56,7 +56,9 @@ public class PostService(IUnitOfWork uow, IMapper mapper): IPostService
         if (dto.IsCommentsEnabled.HasValue) post.IsCommentsEnabled = dto.IsCommentsEnabled.Value;
         if (dto.ReadingLevel.HasValue) post.ReadingLevel = dto.ReadingLevel.Value;
         if (dto.PostType.HasValue) post.PostType = dto.PostType.Value;
-
+        if (dto.Pinned.HasValue) post.Pinned = dto.Pinned.Value;
+        if (dto.Language.HasValue) post.Language = dto.Language.Value;
+        
         if (!string.IsNullOrWhiteSpace(dto.Slug) && dto.Slug != post.Slug )
         {
             if (await uow.PostRepository.ExistsBySlug(dto.Slug))
