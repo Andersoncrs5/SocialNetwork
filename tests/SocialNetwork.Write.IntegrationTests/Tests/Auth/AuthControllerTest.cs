@@ -72,6 +72,10 @@ public class AuthControllerTest : BaseIntegrationTest
         };
         
         HttpResponseMessage response = await Client.PostAsJsonAsync("/api/v1/Auth/register", dto);
+        _output.WriteLine("======================================================================");
+        _output.WriteLine(response.Content.ReadAsStringAsync().Result);
+        _output.WriteLine("======================================================================");
+
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
         ResponseHttp<ResponseTokens>? http = await response.Content.ReadFromJsonAsync<ResponseHttp<ResponseTokens>>();
