@@ -1,4 +1,5 @@
 using SocialNetwork.Contracts.DTOs;
+using SocialNetwork.Contracts.Utils.Enums;
 using SocialNetwork.Write.API.Models.Enums.Post;
 
 namespace SocialNetwork.Write.API.dto.Posts;
@@ -13,6 +14,9 @@ public class PostDto: BaseDto
     public PostVisibilityEnum Visibility { get; set; }
     public int? ReadingTime { get; set; }
     public bool IsCommentsEnabled { get; set; }
+    public bool Pinned { get; set; }
+    public string? ParentId { get; set; }
+    public LanguageEnum Language { get; set; } 
     public ReadingLevelEnum  ReadingLevel { get; set; }
     public PostTypeEnum PostType { get; set; }
     public required string UserId { get; set; }
