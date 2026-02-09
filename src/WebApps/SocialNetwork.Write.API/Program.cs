@@ -209,6 +209,7 @@ var mapperConfig = new MapperConfiguration(mc =>
     mc.AddMaps(typeof(TagMapper).Assembly); 
     mc.AddMaps(typeof(PostMapper).Assembly); 
     mc.AddMaps(typeof(PostCategoryMapper).Assembly); 
+    mc.AddMaps(typeof(PostTagMapper).Assembly); 
 }, builder.Logging.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>());
 
 IMapper mapper = mapperConfig.CreateMapper();
