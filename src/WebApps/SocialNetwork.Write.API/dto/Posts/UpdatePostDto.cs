@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using SocialNetwork.Contracts.Utils.Enums;
 using SocialNetwork.Write.API.Models.Enums.Post;
 
 namespace SocialNetwork.Write.API.dto.Posts;
@@ -21,6 +22,8 @@ public class UpdatePostDto
     public PostVisibilityEnum? Visibility { get; set; }
     public int? ReadingTime { get; set; }
     public bool? IsCommentsEnabled { get; set; }
+    public bool? Pinned { get; set; }
     public ReadingLevelEnum?  ReadingLevel { get; set; }
+    public LanguageEnum? Language { get; set; } 
     public PostTypeEnum? PostType { get; set; }
 }
