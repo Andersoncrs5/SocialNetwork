@@ -228,6 +228,11 @@ namespace SocialNetwork.Write.API.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<decimal>("EstimatedValue")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
+
                     b.Property<string>("FeaturedImageUrl")
                         .HasMaxLength(800)
                         .HasColumnType("VARCHAR(800)");
@@ -242,10 +247,25 @@ namespace SocialNetwork.Write.API.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValue(true);
 
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasDefaultValue("Undefined");
+
                     b.Property<string>("ModerationStatus")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
+
+                    b.Property<string>("ParentId")
+                        .HasColumnType("varchar(450)");
+
+                    b.Property<bool>("Pinned")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("PostType")
                         .IsRequired()
@@ -292,6 +312,10 @@ namespace SocialNetwork.Write.API.Migrations
                         .HasColumnType("varchar(20)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Language");
+
+                    b.HasIndex("ParentId");
 
                     b.HasIndex("Slug")
                         .IsUnique();
@@ -597,11 +621,18 @@ namespace SocialNetwork.Write.API.Migrations
 
             modelBuilder.Entity("SocialNetwork.Write.API.Models.PostModel", b =>
                 {
+                    b.HasOne("SocialNetwork.Write.API.Models.PostModel", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("SocialNetwork.Write.API.Models.UserModel", "User")
                         .WithMany("Posts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Parent");
 
                     b.Navigation("User");
                 });
@@ -634,6 +665,8 @@ namespace SocialNetwork.Write.API.Migrations
 
             modelBuilder.Entity("SocialNetwork.Write.API.Models.PostModel", b =>
                 {
+                    b.Navigation("Children");
+
                     b.Navigation("PostCategories");
 
                     b.Navigation("PostTags");
