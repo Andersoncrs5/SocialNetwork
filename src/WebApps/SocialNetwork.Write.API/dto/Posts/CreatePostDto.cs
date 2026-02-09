@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using SocialNetwork.Contracts.Attributes.Globals;
+using SocialNetwork.Contracts.Utils.Enums;
 using SocialNetwork.Write.API.Models.Enums.Post;
 using SocialNetwork.Write.API.Utils.Valids.Annotations.Post;
 
@@ -29,6 +30,9 @@ public class CreatePostDto
     
     [Required]
     public bool IsCommentsEnabled { get; set; }
+    
+    [Required]
+    public LanguageEnum Language { get; set; } = LanguageEnum.Undefined;
     
     [Required]
     public ReadingLevelEnum  ReadingLevel { get; set; }
