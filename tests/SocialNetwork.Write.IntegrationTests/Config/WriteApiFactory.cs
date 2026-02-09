@@ -20,7 +20,7 @@ public class WriteApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         .Build();
     
     private readonly RedisContainer _redisContainer = new RedisBuilder()
-        .WithImage("redis:latest")
+        .WithImage("redis:8.0.5")
         .Build();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
