@@ -16,6 +16,7 @@ public interface IUnitOfWork: IDisposable
     IPostRepository PostRepository { get; }
     IRedisService  RedisService { get; }
     IPostCategoryRepository PostCategoryRepository { get; }
+    IPostTagRepository PostTagRepository { get; }
     IMapper Mapper { get; }
     
     Task CommitAsync();
