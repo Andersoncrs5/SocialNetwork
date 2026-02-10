@@ -54,6 +54,25 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<CommentModel>(x =>
+        {
+            x.HasKey(c => c.Id);
+    
+            x.HasIndex(c => c.PostId);
+            
+            x.Property(c => c.Content).IsRequired().HasColumnType("TEXT");
+
+            x.HasOne(c => c.Parent)
+                .WithMany(p => p.Replies)
+                .HasForeignKey(c => c.ParentId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict); 
+            
+            x.Property(p => p.ModerationStatus)
+                .HasConversion<string>()
+                .HasMaxLength(20);
+        });
+        
         modelBuilder.Entity<PostTagModel>(x =>
         {
             x.ToTable("PostTags");

@@ -181,6 +181,55 @@ namespace SocialNetwork.Write.API.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("SocialNetwork.Write.API.Models.CommentModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(450)
+                        .HasColumnType("varchar(450)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsEdited")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("ModerationStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<string>("ParentId")
+                        .HasColumnType("varchar(450)");
+
+                    b.Property<string>("PostId")
+                        .IsRequired()
+                        .HasColumnType("varchar(450)");
+
+                    b.Property<double>("SentimentScore")
+                        .HasColumnType("double");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CommentModel");
+                });
+
             modelBuilder.Entity("SocialNetwork.Write.API.Models.PostCategoryModel", b =>
                 {
                     b.Property<string>("Id")
@@ -600,6 +649,32 @@ namespace SocialNetwork.Write.API.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("SocialNetwork.Write.API.Models.CommentModel", b =>
+                {
+                    b.HasOne("SocialNetwork.Write.API.Models.CommentModel", "Parent")
+                        .WithMany("Replies")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("SocialNetwork.Write.API.Models.PostModel", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SocialNetwork.Write.API.Models.UserModel", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Parent");
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SocialNetwork.Write.API.Models.PostCategoryModel", b =>
                 {
                     b.HasOne("SocialNetwork.Write.API.Models.CategoryModel", "Category")
@@ -661,6 +736,11 @@ namespace SocialNetwork.Write.API.Migrations
                     b.Navigation("Children");
 
                     b.Navigation("PostCategories");
+                });
+
+            modelBuilder.Entity("SocialNetwork.Write.API.Models.CommentModel", b =>
+                {
+                    b.Navigation("Replies");
                 });
 
             modelBuilder.Entity("SocialNetwork.Write.API.Models.PostModel", b =>
