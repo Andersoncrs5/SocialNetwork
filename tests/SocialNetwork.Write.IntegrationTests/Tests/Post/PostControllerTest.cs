@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using FluentAssertions;
+using SocialNetwork.Contracts.Utils.Enums;
 using SocialNetwork.Contracts.Utils.Res.http;
 using SocialNetwork.Write.API.dto.Posts;
 using SocialNetwork.Write.API.Models.Enums.Post;
@@ -40,7 +41,8 @@ public class PostControllerTest: BaseIntegrationTest
             ReadingTime = 10,
             IsCommentsEnabled = true,
             ReadingLevel = ReadingLevelEnum.Medium,
-            PostType = PostTypeEnum.Opinion
+            PostType = PostTypeEnum.Opinion,
+            Language = LanguageEnum.English
         };
         
         Client.DefaultRequestHeaders.Authorization = 
@@ -69,6 +71,7 @@ public class PostControllerTest: BaseIntegrationTest
         http.Data.IsCommentsEnabled.Should().Be(dto.IsCommentsEnabled);
         http.Data.ReadingLevel.Should().Be(dto.ReadingLevel);
         http.Data.PostType.Should().Be(dto.PostType);
+        http.Data.Language.Should().Be(dto.Language);
     }
 
     [Fact]
@@ -148,7 +151,9 @@ public class PostControllerTest: BaseIntegrationTest
             IsCommentsEnabled = !postDto.IsCommentsEnabled,
             ReadingLevel = ReadingLevelEnum.Long,
             PostType = PostTypeEnum.Tutorial,
-            FeaturedImageUrl = "https://i.pinimg.com/originals/29/8a/9b/298a9b03ccfc458c345658c16ee280e9.jpg"
+            FeaturedImageUrl = "https://i.pinimg.com/originals/29/8a/9b/298a9b03ccfc458c345658c16ee280e9.jpg",
+            Language = LanguageEnum.English,
+            Pinned = true
         };
         
         Client.DefaultRequestHeaders.Authorization = 
@@ -175,6 +180,8 @@ public class PostControllerTest: BaseIntegrationTest
         http.Data.IsCommentsEnabled.Should().Be(dto.IsCommentsEnabled.Value);
         http.Data.ReadingLevel.Should().Be(dto.ReadingLevel);
         http.Data.PostType.Should().Be(dto.PostType);
+        http.Data.Language.Should().Be(dto.Language);
+        http.Data.Pinned.Should().Be(dto.Pinned.Value);
     }
     
     [Fact]
@@ -258,6 +265,83 @@ public class PostControllerTest: BaseIntegrationTest
         http.Data.IsCommentsEnabled.Should().Be(postDto.IsCommentsEnabled);
         http.Data.ReadingLevel.Should().Be(postDto.ReadingLevel);
         http.Data.PostType.Should().Be(postDto.PostType);
+    }
+    
+    [Fact]
+    public async Task ShouldPatchPost_Success_JustLanguage()
+    {
+        UserTestResult user = await _helper.CreateNewUser();
+        PostDto postDto = await _helper.CreatePostAsync(user);
+
+        UpdatePostDto dto = new()
+        {
+            Language = LanguageEnum.German
+        };
+        
+        Client.DefaultRequestHeaders.Authorization = 
+            new AuthenticationHeaderValue("Bearer", user.Tokens.Token);
+
+        HttpResponseMessage message = await Client.PatchAsJsonAsync($"{_url}/{postDto.Id}", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+        
+        ResponseHttp<PostDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<PostDto>>();
+        
+        http.Should().NotBeNull();
+        http.Success.Should().BeTrue();
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.Data.Should().NotBeNull();
+        
+        http.Data.Id.Should().Be(postDto.Id);
+        http.Data.Title.Should().Be(postDto.Title);
+        http.Data.Slug.Should().Be(postDto.Slug);
+        http.Data.Content.Should().Be(postDto.Content);
+        http.Data.Summary.Should().Be(postDto.Summary);
+        http.Data.Visibility.Should().Be(postDto.Visibility);
+        http.Data.FeaturedImageUrl.Should().Be(postDto.FeaturedImageUrl);
+        http.Data.ReadingTime.Should().Be(postDto.ReadingTime);
+        http.Data.IsCommentsEnabled.Should().Be(postDto.IsCommentsEnabled);
+        http.Data.ReadingLevel.Should().Be(postDto.ReadingLevel);
+        http.Data.PostType.Should().Be(postDto.PostType);
+        http.Data.Language.Should().Be(dto.Language);
+    }
+    
+    [Fact]
+    public async Task ShouldPatchPost_Success_JustPinned()
+    {
+        UserTestResult user = await _helper.CreateNewUser();
+        PostDto postDto = await _helper.CreatePostAsync(user);
+
+        UpdatePostDto dto = new()
+        {
+            Pinned = true
+        };
+        
+        Client.DefaultRequestHeaders.Authorization = 
+            new AuthenticationHeaderValue("Bearer", user.Tokens.Token);
+
+        HttpResponseMessage message = await Client.PatchAsJsonAsync($"{_url}/{postDto.Id}", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+        
+        ResponseHttp<PostDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<PostDto>>();
+        
+        http.Should().NotBeNull();
+        http.Success.Should().BeTrue();
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.Data.Should().NotBeNull();
+        
+        http.Data.Id.Should().Be(postDto.Id);
+        http.Data.Title.Should().Be(postDto.Title);
+        http.Data.Slug.Should().Be(postDto.Slug);
+        http.Data.Content.Should().Be(postDto.Content);
+        http.Data.Summary.Should().Be(postDto.Summary);
+        http.Data.Visibility.Should().Be(postDto.Visibility);
+        http.Data.FeaturedImageUrl.Should().Be(postDto.FeaturedImageUrl);
+        http.Data.ReadingTime.Should().Be(postDto.ReadingTime);
+        http.Data.IsCommentsEnabled.Should().Be(postDto.IsCommentsEnabled);
+        http.Data.ReadingLevel.Should().Be(postDto.ReadingLevel);
+        http.Data.PostType.Should().Be(postDto.PostType);
+        http.Data.Language.Should().Be(postDto.Language);
+        http.Data.Pinned.Should().Be(dto.Pinned.Value);
     }
     
     [Fact]
