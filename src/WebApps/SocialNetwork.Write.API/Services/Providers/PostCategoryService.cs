@@ -20,29 +20,29 @@ public class PostCategoryService(IUnitOfWork uow): IPostCategoryService
         => await uow.PostCategoryRepository.GetByPostIdAndCategoryId(postId, categoryId) 
            ?? throw new ModelNotFoundException("Category not found");
 
-    public async Task Delete(PostCategoryModel postCategory)
+    public async Task Delete(PostCategoryModel postCategory, bool commit = true)
     {
         await uow.PostCategoryRepository.DeleteAsync(postCategory);
-        await uow.CommitAsync();
+        if (commit) await uow.CommitAsync();
     }
 
-    public async Task<PostCategoryModel> Create(CreatePostCategoryDto dto)
+    public async Task<PostCategoryModel> Create(CreatePostCategoryDto dto, bool commit = true)
     {
         PostCategoryModel model = uow.Mapper.Map<PostCategoryModel>(dto);
 
         PostCategoryModel postCategoryAdded = await uow.PostCategoryRepository.AddAsync(model);
-        await uow.CommitAsync();
+        if (commit) await uow.CommitAsync();
         
         return postCategoryAdded;
     }
 
-    public async Task<PostCategoryModel> Update(UpdatePostCategoryDto dto, PostCategoryModel postCategory)
+    public async Task<PostCategoryModel> Update(UpdatePostCategoryDto dto, PostCategoryModel postCategory, bool commit = true)
     {
         if (dto.Order.HasValue)
             postCategory.Order = dto.Order.Value;
 
         PostCategoryModel postCategoryUpdated = await uow.PostCategoryRepository.Update(postCategory);
-        await uow.CommitAsync();
+        if (commit) await uow.CommitAsync();
         
         return postCategoryUpdated;
     }

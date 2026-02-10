@@ -28,23 +28,23 @@ public class CategoryService(IUnitOfWork uow, IMapper mapper): ICategoryService
     public async Task<bool> ExistsBySlug([SlugConstraint] string slug)
         => await uow.CategoryRepository.ExistsBySlug(slug);
     
-    public async Task Delete(CategoryModel category)
+    public async Task Delete(CategoryModel category, bool commit = true)
     {
         await uow.CategoryRepository.DeleteAsync(category);
-        await uow.CommitAsync();
+        if (commit) await uow.CommitAsync();
     }
 
-    public async Task<CategoryModel> Create(CreateCategoryDto dto)
+    public async Task<CategoryModel> Create(CreateCategoryDto dto, bool commit = true)
     {
         CategoryModel model = mapper.Map<CategoryModel>(dto);
 
         CategoryModel categoryModel = await uow.CategoryRepository.AddAsync(model);
-        await uow.CommitAsync();
+        if (commit) await uow.CommitAsync();
         
         return categoryModel;
     }
 
-    public async Task<CategoryModel> Update(UpdateCategoryDto dto, CategoryModel category)
+    public async Task<CategoryModel> Update(UpdateCategoryDto dto, CategoryModel category, bool commit = true)
     {
         category.Description = dto.Description ?? category.Description;
         category.IconName = dto.IconName ?? category.IconName;
@@ -83,7 +83,7 @@ public class CategoryService(IUnitOfWork uow, IMapper mapper): ICategoryService
         if (dto.BecameRoot.HasValue && dto.BecameRoot.Value) category.ParentId = null;
         
         CategoryModel update = await uow.CategoryRepository.Update(category);
-        await uow.CommitAsync();
+        if (commit) await uow.CommitAsync();
         return update;
     }
     

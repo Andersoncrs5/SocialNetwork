@@ -23,7 +23,7 @@ public class PostService(IUnitOfWork uow, IMapper mapper): IPostService
     public async Task<bool> ExistsBySlugAsync([SlugConstraint] string slug)
         => await uow.PostRepository.ExistsBySlug(slug);
 
-    public async Task<PostModel> CreateAsync(CreatePostDto dto, UserModel user)
+    public async Task<PostModel> CreateAsync(CreatePostDto dto, UserModel user, bool commit = true)
     {
         PostModel map = mapper.Map<PostModel>(dto);
 
@@ -33,18 +33,18 @@ public class PostService(IUnitOfWork uow, IMapper mapper): IPostService
         map.UserId = user.Id;
         
         PostModel model = await uow.PostRepository.AddAsync(map);
-        await uow.CommitAsync();
+        if (commit) await uow.CommitAsync();
         
         return model;
     }
     
-    public async Task DeleteAsync(PostModel post)
+    public async Task DeleteAsync(PostModel post, bool commit = true)
     {
         await uow.PostRepository.DeleteAsync(post);
-        await uow.CommitAsync();
+        if (commit) await uow.CommitAsync();
     }
 
-    public async Task<PostModel> UpdateAsync(PostModel post, UpdatePostDto dto)
+    public async Task<PostModel> UpdateAsync(PostModel post, UpdatePostDto dto, bool commit = true)
     {
         if (!string.IsNullOrWhiteSpace(dto.Title)) post.Title = dto.Title;
         if (!string.IsNullOrWhiteSpace(dto.Content)) post.Content = dto.Content;
@@ -68,7 +68,7 @@ public class PostService(IUnitOfWork uow, IMapper mapper): IPostService
         }
         
         PostModel postUpdated = await uow.PostRepository.Update(post);
-        await uow.CommitAsync();
+        if (commit) await uow.CommitAsync();
         
         return postUpdated;
     }

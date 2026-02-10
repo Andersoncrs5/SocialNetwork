@@ -9,7 +9,7 @@ public interface ITagService
     Task<TagModel> GetByIdSimpleAsync([IsId] string id);
     Task<bool> ExistsByIdAsync([IsId] string id);
     Task<bool> ExistsByNameAsync(string name);
-    Task<TagModel> CreateAsync(CreateTagDto dto);
-    Task<TagModel> UpdateAsync(TagModel tag, UpdateTagDto dto);
-    Task DeleteAsync(TagModel tag);
+    Task<TagModel> CreateAsync(CreateTagDto dto, bool commit = true);
+    Task<TagModel> UpdateAsync(TagModel tag, UpdateTagDto dto, bool commit = true);
+    Task DeleteAsync(TagModel tag, bool commit = true);
 }

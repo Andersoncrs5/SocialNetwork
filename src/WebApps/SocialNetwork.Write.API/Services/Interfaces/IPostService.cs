@@ -10,7 +10,7 @@ public interface IPostService
     Task<PostModel> GetByIdSimpleAsync([IsId] string id);
     Task<bool> ExistsByIdAsync([IsId] string id);
     Task<bool> ExistsBySlugAsync([SlugConstraint] string slug);
-    Task<PostModel> CreateAsync(CreatePostDto dto, UserModel user);
-    Task DeleteAsync(PostModel post);
-    Task<PostModel> UpdateAsync(PostModel post, UpdatePostDto dto);
+    Task<PostModel> CreateAsync(CreatePostDto dto, UserModel user, bool commit = true);
+    Task DeleteAsync(PostModel post, bool commit = true);
+    Task<PostModel> UpdateAsync(PostModel post, UpdatePostDto dto, bool commit = true);
 }

@@ -19,23 +19,23 @@ public class TagService(IUnitOfWork uow, IMapper mapper): ITagService
     public async Task<bool> ExistsByNameAsync(string name)
         => await uow.TagRepository.ExistsByName(name);
 
-    public async Task DeleteAsync(TagModel tag)
+    public async Task DeleteAsync(TagModel tag, bool commit = true)
     {
         await uow.TagRepository.DeleteAsync(tag);
-        await uow.CommitAsync();
+        if (commit) await uow.CommitAsync();
     }
 
-    public async Task<TagModel> CreateAsync(CreateTagDto dto)
+    public async Task<TagModel> CreateAsync(CreateTagDto dto, bool commit = true)
     {
         TagModel model = mapper.Map<TagModel>(dto);
 
         TagModel tagCreated = await uow.TagRepository.AddAsync(model);
-        await uow.CommitAsync();
+        if (commit) await uow.CommitAsync();
         
         return tagCreated;
     }
 
-    public async Task<TagModel> UpdateAsync(TagModel tag, UpdateTagDto dto)
+    public async Task<TagModel> UpdateAsync(TagModel tag, UpdateTagDto dto, bool commit = true)
     {
         if (!string.IsNullOrWhiteSpace(dto.Name) && tag.Name != dto.Name)
         {
@@ -61,7 +61,7 @@ public class TagService(IUnitOfWork uow, IMapper mapper): ITagService
         if (dto.IsSystem.HasValue) dto.IsSystem = dto.IsSystem.Value;
         
         TagModel update = await uow.TagRepository.Update(tag);
-        await uow.CommitAsync();
+        if (commit) await uow.CommitAsync();
         return update;
     }
     
