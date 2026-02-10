@@ -75,6 +75,58 @@ public class PostControllerTest: BaseIntegrationTest
     }
 
     [Fact]
+    public async Task Post_CreatePostOnPost()
+    {
+        UserTestResult user = await _helper.CreateNewUser();
+        PostDto postDto = await _helper.CreatePostAsync(user);
+
+        CreatePostDto dto = new CreatePostDto()
+        {
+            Title = Guid.NewGuid().ToString(),
+            Slug = _helper.GenerateChars().ToLower(),
+            Content = string.Concat(Enumerable.Repeat("Content", 30)),
+            Summary = "Summary",
+            FeaturedImageUrl = "https://preview.redd.it/how-is-pochita-so-strong-v0-l01qqnevch8e1.jpeg?width=1080&crop=smart&auto=webp&s=656328dd522bc25a474c84dc53afe06935f5c262",
+            Visibility = PostVisibilityEnum.Public,
+            ReadingTime = 10,
+            IsCommentsEnabled = true,
+            ReadingLevel = ReadingLevelEnum.Medium,
+            PostType = PostTypeEnum.Opinion,
+            Language = LanguageEnum.English,
+            ParentId = postDto.Id
+        };
+        
+        Client.DefaultRequestHeaders.Authorization = 
+            new AuthenticationHeaderValue("Bearer", user.Tokens.Token);
+
+        HttpResponseMessage message = await Client.PostAsJsonAsync($"{_url}", dto);
+        _output.WriteLine("======================================================================");
+        _output.WriteLine(message.Content.ReadAsStringAsync().Result);
+        _output.WriteLine("======================================================================");
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<PostDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<PostDto>>();
+        
+        http.Should().NotBeNull();
+        http.Success.Should().BeTrue();
+        http.Data.Should().NotBeNull();
+
+        http.Data.Id.Should().NotBeNullOrWhiteSpace();
+        http.Data.Title.Should().Be(dto.Title);
+        http.Data.Slug.Should().Be(dto.Slug);
+        http.Data.Content.Should().Be(dto.Content);
+        http.Data.Summary.Should().Be(dto.Summary);
+        http.Data.FeaturedImageUrl.Should().Be(dto.FeaturedImageUrl);
+        http.Data.Visibility.Should().Be(dto.Visibility);
+        http.Data.ReadingTime.Should().Be(dto.ReadingTime);
+        http.Data.IsCommentsEnabled.Should().Be(dto.IsCommentsEnabled);
+        http.Data.ReadingLevel.Should().Be(dto.ReadingLevel);
+        http.Data.PostType.Should().Be(dto.PostType);
+        http.Data.Language.Should().Be(dto.Language);
+        http.Data.ParentId.Should().Be(postDto.Id);
+    }
+
+    [Fact]
     public async Task ShouldDeletePost_Success()
     {
         UserTestResult user = await _helper.CreateNewUser();
