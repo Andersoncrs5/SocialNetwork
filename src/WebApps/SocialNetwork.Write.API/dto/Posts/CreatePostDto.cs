@@ -39,4 +39,6 @@ public class CreatePostDto
     
     [Required]
     public PostTypeEnum PostType { get; set; }
+    
+    public string? ParentId { get; set; }
 }
