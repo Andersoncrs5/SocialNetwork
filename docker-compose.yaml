@@ -43,7 +43,7 @@ services:
   dragonfly:
     image: 'docker.dragonflydb.io/dragonflydb/dragonfly'
     container_name: social_redis
-    command: ["dragonfly", "--logtostderr", "--password=123456"]
+    command: ["dragonfly", "--logtostderr", "--proactor_threads=2"]
     ulimits:
       memlock: -1
     ports:
