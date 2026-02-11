@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.Contracts.Attributes.Globals;
+using SocialNetwork.Contracts.DTOs.Post;
 using SocialNetwork.Contracts.Utils.Exceptions;
 using SocialNetwork.Contracts.Utils.Res.http;
 using SocialNetwork.Write.API.Configs.Exception.classes;

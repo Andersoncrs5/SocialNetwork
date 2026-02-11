@@ -1,4 +1,4 @@
-namespace SocialNetwork.Write.API.Models.Enums.Post;
+namespace SocialNetwork.Contracts.Enums.Post;
 
 public enum PostStatusEnum
 {

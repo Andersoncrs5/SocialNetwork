@@ -1,3 +1,4 @@
+using SocialNetwork.Contracts.DTOs.Post;
 using SocialNetwork.Contracts.DTOs.User;
 using SocialNetwork.Write.API.Models.Enums.Post;
 
@@ -16,4 +17,6 @@ public class CommentDto: BaseDto
     public UserDto? User { get; set; }
     
     public string? ParentId { get; set; }
+    
+    public PostDto? Post { get; set; }
 }

@@ -1,4 +1,5 @@
 using AutoMapper;
+using SocialNetwork.Contracts.DTOs.Post;
 using SocialNetwork.Write.API.dto.Posts;
 using SocialNetwork.Write.API.Models;
 

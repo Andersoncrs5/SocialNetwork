@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using FluentAssertions;
+using SocialNetwork.Contracts.DTOs.Post;
 using SocialNetwork.Contracts.DTOs.PostTag;
 using SocialNetwork.Contracts.DTOs.Tag;
 using SocialNetwork.Contracts.Utils.Res.http;

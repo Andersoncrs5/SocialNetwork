@@ -1,6 +1,7 @@
 using AutoMapper;
 using FluentAssertions;
 using Moq;
+using SocialNetwork.Contracts.Enums.Post;
 using SocialNetwork.Write.API.Configs.Exception.classes;
 using SocialNetwork.Write.API.dto.PostTag;
 using SocialNetwork.Write.API.Models;

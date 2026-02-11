@@ -1,8 +1,9 @@
 using SocialNetwork.Contracts.DTOs;
+using SocialNetwork.Contracts.Enums.Post;
 using SocialNetwork.Contracts.Utils.Enums;
 using SocialNetwork.Write.API.Models.Enums.Post;
 
-namespace SocialNetwork.Write.API.dto.Posts;
+namespace SocialNetwork.Contracts.DTOs.Post;
 
 public class PostDto: BaseDto
 {

@@ -1,6 +1,7 @@
 
 using AutoMapper;
 using SocialNetwork.Contracts.Attributes.Globals;
+using SocialNetwork.Contracts.Enums.Post;
 using SocialNetwork.Write.API.Configs.Exception.classes;
 using SocialNetwork.Write.API.dto.Posts;
 using SocialNetwork.Write.API.Models;

@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using FluentAssertions;
 using SocialNetwork.Contracts.DTOs.Comment;
+using SocialNetwork.Contracts.DTOs.Post;
 using SocialNetwork.Contracts.Utils.Res.http;
 using SocialNetwork.Write.API.dto.Comment;
 using SocialNetwork.Write.API.dto.Posts;

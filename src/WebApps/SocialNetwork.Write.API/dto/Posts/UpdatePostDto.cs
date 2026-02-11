@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using SocialNetwork.Contracts.Enums.Post;
 using SocialNetwork.Contracts.Utils.Enums;
 using SocialNetwork.Write.API.Models.Enums.Post;
 

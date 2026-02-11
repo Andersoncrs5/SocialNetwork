@@ -2,6 +2,8 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using FluentAssertions;
+using SocialNetwork.Contracts.DTOs.Post;
+using SocialNetwork.Contracts.Enums.Post;
 using SocialNetwork.Contracts.Utils.Enums;
 using SocialNetwork.Contracts.Utils.Res.http;
 using SocialNetwork.Write.API.dto.Posts;
