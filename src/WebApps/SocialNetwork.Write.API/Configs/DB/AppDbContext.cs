@@ -21,6 +21,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<PostModel> Posts { get; set; }
     public DbSet<PostCategoryModel> PostCategories { get; set; }
     public DbSet<PostTagModel> PostTags { get; set; }
+    public DbSet<CommentModel> Comments { get; set; }
     
     public override int SaveChanges()
     {
