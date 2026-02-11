@@ -188,6 +188,7 @@ builder.Services.AddScoped<IPostCategoryRepository, PostCategoryRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IPostTagRepository, PostTagRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -198,6 +199,7 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IPostTagService, PostTagService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
 
 // ===================================================================================
 // AUTO MAPPER
@@ -212,6 +214,7 @@ var mapperConfig = new MapperConfiguration(mc =>
     mc.AddMaps(typeof(PostMapper).Assembly); 
     mc.AddMaps(typeof(PostCategoryMapper).Assembly); 
     mc.AddMaps(typeof(PostTagMapper).Assembly); 
+    mc.AddMaps(typeof(CommentMapper).Assembly); 
 }, builder.Logging.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>());
 
 IMapper mapper = mapperConfig.CreateMapper();
