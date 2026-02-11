@@ -3,12 +3,14 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using FluentAssertions;
 using MySqlX.XDevAPI;
+using SocialNetwork.Contracts.DTOs.Comment;
 using SocialNetwork.Contracts.DTOs.PostCategory;
 using SocialNetwork.Contracts.DTOs.PostTag;
 using SocialNetwork.Contracts.DTOs.Tag;
 using SocialNetwork.Contracts.DTOs.User;
 using SocialNetwork.Contracts.Utils.Res.http;
 using SocialNetwork.Write.API.dto.Category;
+using SocialNetwork.Write.API.dto.Comment;
 using SocialNetwork.Write.API.dto.PostCategory;
 using SocialNetwork.Write.API.dto.Posts;
 using SocialNetwork.Write.API.dto.PostTag;
@@ -24,6 +26,37 @@ namespace SocialNetwork.Write.IntegrationTests.Tests;
 public class HelperTest(HttpClient client)
 {
 
+    public async Task<CommentDto> CreateComment(UserTestResult user, PostDto postDto, string? parentId = null)
+    {
+        
+        CreateCommentDto dto = new()
+        {
+            PostId = postDto.Id,
+            Content = string.Concat(Enumerable.Repeat("AnyContent", 20)),
+            ParentId = parentId
+        };
+
+        HttpResponseMessage message = await client.PostAsJsonAsync("api/v1/comment", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<CommentDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<CommentDto>>();
+        
+        http.Should().NotBeNull();
+        http.Success.Should().BeTrue();
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.TraceId.Should().NotBeNullOrWhiteSpace();
+        
+        http.Data.Should().NotBeNull();
+        
+        http.Data.Id.Should().NotBeNullOrWhiteSpace();
+        http.Data.Content.Should().Be(dto.Content);
+        http.Data.PostId.Should().Be(dto.PostId);
+        http.Data.ParentId.Should().Be(dto.ParentId);
+        http.Data.UserId.Should().Be(user.User.Id);
+        
+        return http.Data;
+    }
+    
     public async Task<PostTagDto> CreateTagToPost(UserTestResult userTest, TagDto tagDto, PostDto postDto)
     {
         CreatePostTagDto dto = new ()
