@@ -29,6 +29,7 @@ public class UnitOfWork(
     private PostRepository? _postRepository;
     private PostCategoryRepository? _postCategoryRepository;
     private PostTagRepository? _postTagRepository;
+    private CommentRepository? _commentRepository;
     
     public IUserRepository UserRepository
         => _userRepository ??= new UserRepository(context, userManager);
@@ -44,6 +45,8 @@ public class UnitOfWork(
         => _postCategoryRepository ??= new PostCategoryRepository(context, redisService);
     public IPostTagRepository PostTagRepository
         => _postTagRepository ??= new PostTagRepository(context, redisService);
+    public ICommentRepository CommentRepository
+        => _commentRepository ??= new CommentRepository(context, redisService);
     public IRedisService RedisService => redisService;
     public IMapper Mapper => mapper;
     
