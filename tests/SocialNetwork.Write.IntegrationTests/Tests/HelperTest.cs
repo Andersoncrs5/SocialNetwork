@@ -6,6 +6,7 @@ using MySqlX.XDevAPI;
 using SocialNetwork.Contracts.DTOs.Comment;
 using SocialNetwork.Contracts.DTOs.Post;
 using SocialNetwork.Contracts.DTOs.PostCategory;
+using SocialNetwork.Contracts.DTOs.PostFavorite;
 using SocialNetwork.Contracts.DTOs.PostTag;
 using SocialNetwork.Contracts.DTOs.Tag;
 using SocialNetwork.Contracts.DTOs.User;
@@ -27,7 +28,26 @@ namespace SocialNetwork.Write.IntegrationTests.Tests;
 
 public class HelperTest(HttpClient client)
 {
+    public async Task<PostFavoriteDto> CreatePostFavorite(UserTestResult user, PostDto postDto)
+    {
+        client.DefaultRequestHeaders.Authorization = 
+            new AuthenticationHeaderValue("Bearer", user.Tokens.Token);
 
+        HttpResponseMessage message = await client.PostAsync($"api/v1/post-favorite/{postDto.Id}/toggle", null); 
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<PostFavoriteDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<PostFavoriteDto>>();
+        http.Should().NotBeNull();
+        http.Success.Should().BeTrue();
+        
+        http.Data.Should().NotBeNull();
+        http.Data.Id.Should().NotBeNullOrWhiteSpace();
+        http.Data.PostId.Should().Be(postDto.Id);
+        http.Data.UserId.Should().Be(user.User.Id);
+        
+        return http.Data;
+    }
+    
     public async Task<CommentDto> CreateComment(UserTestResult user, PostDto postDto, string? parentId = null)
     {
         
