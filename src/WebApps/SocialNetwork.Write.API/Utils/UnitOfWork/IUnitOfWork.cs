@@ -19,6 +19,7 @@ public interface IUnitOfWork: IDisposable
     IPostTagRepository PostTagRepository { get; }
     ICommentRepository CommentRepository { get; }
     IPostFavoriteRepository PostFavoriteRepository { get;  }
+    ICommentFavoriteRepository CommentFavoriteRepository { get;  }
     IMapper Mapper { get; }
     
     Task CommitAsync();
