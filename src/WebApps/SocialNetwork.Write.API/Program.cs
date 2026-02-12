@@ -190,6 +190,7 @@ builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IPostTagRepository, PostTagRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IPostFavoriteRepository, PostFavoriteRepository>();
+builder.Services.AddScoped<ICommentFavoriteRepository, CommentFavoriteRepository>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -202,6 +203,7 @@ builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IPostTagService, PostTagService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IPostFavoriteService, PostFavoriteService>();
+builder.Services.AddScoped<ICommentFavoriteService, CommentFavoriteService>();
 
 // ===================================================================================
 // AUTO MAPPER
