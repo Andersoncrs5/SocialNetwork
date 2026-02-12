@@ -39,6 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="dto\PostFavorite\" />
     <Folder Include="Migrations\" />
     <Folder Include="Models\Enums\" />
     <Folder Include="Utils\Valids\Annotations\Globals\" />
