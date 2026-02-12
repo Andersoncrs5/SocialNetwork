@@ -19,4 +19,6 @@ public class CommentModel: BaseModel
     public bool IsEdited { get; set; }
     public ModerationStatusEnum ModerationStatus { get; set; }
     public ICollection<CommentModel> Replies { get; set; } = new List<CommentModel>();
+    public ICollection<CommentFavoriteModel> Favorites { get; set; } = new List<CommentFavoriteModel>();
+    
 }

@@ -23,4 +23,5 @@ public class UserModel: IdentityUser
     
     public ICollection<PostModel> Posts { get; set; } = new List<PostModel>();
     public ICollection<PostFavoriteModel> Favorites { get; set; } = new List<PostFavoriteModel>();
+    public ICollection<CommentFavoriteModel> CommentFavorites { get; set; } = new List<CommentFavoriteModel>();
 }
