@@ -181,6 +181,41 @@ namespace SocialNetwork.Write.API.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("SocialNetwork.Write.API.Models.CommentFavoriteModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(450)
+                        .HasColumnType("varchar(450)");
+
+                    b.Property<string>("CommentId")
+                        .IsRequired()
+                        .HasColumnType("varchar(450)");
+
+                    b.Property<string>("CommentModelId")
+                        .HasColumnType("varchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommentId");
+
+                    b.HasIndex("CommentModelId");
+
+                    b.HasIndex("UserId", "CommentId")
+                        .IsUnique();
+
+                    b.ToTable("CommentFavorites", (string)null);
+                });
+
             modelBuilder.Entity("SocialNetwork.Write.API.Models.CommentModel", b =>
                 {
                     b.Property<string>("Id")
@@ -684,6 +719,29 @@ namespace SocialNetwork.Write.API.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("SocialNetwork.Write.API.Models.CommentFavoriteModel", b =>
+                {
+                    b.HasOne("SocialNetwork.Write.API.Models.CommentModel", "Comment")
+                        .WithMany()
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SocialNetwork.Write.API.Models.CommentModel", null)
+                        .WithMany("Favorites")
+                        .HasForeignKey("CommentModelId");
+
+                    b.HasOne("SocialNetwork.Write.API.Models.UserModel", "User")
+                        .WithMany("CommentFavorites")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Comment");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SocialNetwork.Write.API.Models.CommentModel", b =>
                 {
                     b.HasOne("SocialNetwork.Write.API.Models.CommentModel", "Parent")
@@ -798,6 +856,8 @@ namespace SocialNetwork.Write.API.Migrations
 
             modelBuilder.Entity("SocialNetwork.Write.API.Models.CommentModel", b =>
                 {
+                    b.Navigation("Favorites");
+
                     b.Navigation("Replies");
                 });
 
@@ -819,6 +879,8 @@ namespace SocialNetwork.Write.API.Migrations
 
             modelBuilder.Entity("SocialNetwork.Write.API.Models.UserModel", b =>
                 {
+                    b.Navigation("CommentFavorites");
+
                     b.Navigation("Favorites");
 
                     b.Navigation("Posts");
