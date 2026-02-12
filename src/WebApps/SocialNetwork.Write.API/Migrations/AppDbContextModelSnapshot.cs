@@ -264,6 +264,41 @@ namespace SocialNetwork.Write.API.Migrations
                     b.ToTable("PostCategory", (string)null);
                 });
 
+            modelBuilder.Entity("SocialNetwork.Write.API.Models.PostFavoriteModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(450)
+                        .HasColumnType("varchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("PostId")
+                        .IsRequired()
+                        .HasColumnType("varchar(450)");
+
+                    b.Property<string>("PostModelId")
+                        .HasColumnType("varchar(450)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("PostModelId");
+
+                    b.HasIndex("UserId", "PostId")
+                        .IsUnique();
+
+                    b.ToTable("PostFavorites", (string)null);
+                });
+
             modelBuilder.Entity("SocialNetwork.Write.API.Models.PostModel", b =>
                 {
                     b.Property<string>("Id")
@@ -694,6 +729,29 @@ namespace SocialNetwork.Write.API.Migrations
                     b.Navigation("Post");
                 });
 
+            modelBuilder.Entity("SocialNetwork.Write.API.Models.PostFavoriteModel", b =>
+                {
+                    b.HasOne("SocialNetwork.Write.API.Models.PostModel", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SocialNetwork.Write.API.Models.PostModel", null)
+                        .WithMany("Favorites")
+                        .HasForeignKey("PostModelId");
+
+                    b.HasOne("SocialNetwork.Write.API.Models.UserModel", "User")
+                        .WithMany("Favorites")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SocialNetwork.Write.API.Models.PostModel", b =>
                 {
                     b.HasOne("SocialNetwork.Write.API.Models.PostModel", "Parent")
@@ -747,6 +805,8 @@ namespace SocialNetwork.Write.API.Migrations
                 {
                     b.Navigation("Children");
 
+                    b.Navigation("Favorites");
+
                     b.Navigation("PostCategories");
 
                     b.Navigation("PostTags");
@@ -759,6 +819,8 @@ namespace SocialNetwork.Write.API.Migrations
 
             modelBuilder.Entity("SocialNetwork.Write.API.Models.UserModel", b =>
                 {
+                    b.Navigation("Favorites");
+
                     b.Navigation("Posts");
                 });
 #pragma warning restore 612, 618
