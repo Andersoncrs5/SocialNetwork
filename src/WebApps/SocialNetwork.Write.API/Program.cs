@@ -220,6 +220,7 @@ var mapperConfig = new MapperConfiguration(mc =>
     mc.AddMaps(typeof(PostTagMapper).Assembly); 
     mc.AddMaps(typeof(CommentMapper).Assembly); 
     mc.AddMaps(typeof(PostFavoriteMapper).Assembly); 
+    mc.AddMaps(typeof(CommentFavoriteMapper).Assembly); 
 }, builder.Logging.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>());
 
 IMapper mapper = mapperConfig.CreateMapper();
