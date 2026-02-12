@@ -24,6 +24,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<CommentModel> Comments { get; set; }
     public DbSet<PostFavoriteModel> PostFavorites { get; set; }
     public DbSet<CommentFavoriteModel> CommentFavorites { get; set; }
+    public DbSet<ReactionModel> Reactions { get; set; }
     
     public override int SaveChanges()
     {
@@ -49,6 +50,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
             else if (entry.State == EntityState.Added)
             {
                  entry.Entity.CreatedAt = DateTime.UtcNow;
+                 entry.Entity.Version++;
             }
         }
     }
@@ -57,6 +59,27 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<ReactionModel>(x =>
+        {
+            x.ToTable("Reactions");
+            x.HasKey(f => f.Id);
+
+            x.Property(p => p.Name).IsRequired().HasMaxLength(200);
+            
+            x.Property(p => p.Type)
+                .HasConversion<string>()
+                .IsRequired()
+                .HasMaxLength(30);
+            
+            x.Property(p => p.Active).IsRequired();
+            x.Property(p => p.Visible).IsRequired();
+            x.Property(p => p.EmojiUrl).IsRequired(false).HasColumnType("TEXT");
+            x.Property(p => p.EmojiUnicode).IsRequired(false).HasMaxLength(20);
+            x.Property(p => p.DisplayOrder).IsRequired(false);
+            
+            x.HasIndex(p => p.Name).IsUnique();
+        });
+        
         modelBuilder.Entity<CommentFavoriteModel>(x =>
         {
             x.ToTable("CommentFavorites");
