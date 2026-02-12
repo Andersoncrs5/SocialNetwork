@@ -42,11 +42,11 @@ public class PostFavoriteService(IUnitOfWork uow): IPostFavoriteService
         {
             PostFavoriteModel? favorite = await uow.PostFavoriteRepository.GetByPostIdAndUserId(post.Id, user.Id);
 
-            if (favorite is not null)
+            if (favorite != null)
             {
                 await uow.PostFavoriteRepository.DeleteAsync(favorite);
                 result.Action = AddedORRemoved.Removed;
-                result.Value = favorite;
+                result.Value = null;
             }
             else
             {
