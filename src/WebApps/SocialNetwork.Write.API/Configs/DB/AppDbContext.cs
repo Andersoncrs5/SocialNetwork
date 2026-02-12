@@ -22,6 +22,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<PostCategoryModel> PostCategories { get; set; }
     public DbSet<PostTagModel> PostTags { get; set; }
     public DbSet<CommentModel> Comments { get; set; }
+    public DbSet<PostFavoriteModel> PostFavorites { get; set; }
     
     public override int SaveChanges()
     {
@@ -55,6 +56,24 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<PostFavoriteModel>(x =>
+        {
+            x.ToTable("PostFavorites");
+            x.HasKey(f => f.Id);
+
+            x.HasIndex(f => new { f.UserId, f.PostId }).IsUnique();
+
+            x.HasOne(f => f.User)
+                .WithMany(u => u.Favorites)
+                .HasForeignKey(f => f.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            x.HasOne(f => f.Post)
+                .WithMany()
+                .HasForeignKey(f => f.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+        
         modelBuilder.Entity<CommentModel>(x =>
         {
             x.HasKey(c => c.Id);
