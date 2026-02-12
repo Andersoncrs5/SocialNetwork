@@ -33,5 +33,6 @@ public class PostModel: BaseModel
     public ICollection<PostModel> Children { get; set; } = new List<PostModel>();
     
     public ICollection<PostTagModel> PostTags { get; set; } = new List<PostTagModel>();
+    public ICollection<PostFavoriteModel> Favorites { get; set; } = new List<PostFavoriteModel>();
     
 }
