@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialNetwork.Contracts.Utils.Enums;
 using SocialNetwork.Write.API.Models.Bases;
+using SocialNetwork.Write.API.Modules.Category.Model;
+using SocialNetwork.Write.API.Modules.Comment.Model;
 using SocialNetwork.Write.API.Modules.Post.Model;
 
 namespace SocialNetwork.Write.API.Configs.DB;

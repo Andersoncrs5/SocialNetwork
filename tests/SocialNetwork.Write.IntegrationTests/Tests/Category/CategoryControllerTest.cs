@@ -5,7 +5,7 @@ using System.Text.Json;
 using FluentAssertions;
 using SocialNetwork.Contracts.DTOs.User;
 using SocialNetwork.Contracts.Utils.Res.http;
-using SocialNetwork.Write.API.dto.Category;
+using SocialNetwork.Write.API.Modules.Category.Dto;
 using SocialNetwork.Write.IntegrationTests.Config;
 using SocialNetwork.Write.IntegrationTests.Tests.Utils.Classes;
 using Xunit.Abstractions;

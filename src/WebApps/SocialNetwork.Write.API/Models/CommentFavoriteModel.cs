@@ -1,4 +1,5 @@
 using SocialNetwork.Write.API.Models.Bases;
+using SocialNetwork.Write.API.Modules.Comment.Model;
 
 namespace SocialNetwork.Write.API.Models;
 

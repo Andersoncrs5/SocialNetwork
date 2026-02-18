@@ -1,5 +1,4 @@
 using SocialNetwork.Contracts.Attributes.Globals;
-using SocialNetwork.Write.API.Utils.Valids.Annotations.Category;
 
 namespace SocialNetwork.Write.API.dto.PostCategory;
 

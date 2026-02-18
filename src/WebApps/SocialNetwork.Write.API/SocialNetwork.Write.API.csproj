@@ -39,6 +39,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="dto\Category\" />
+    <Folder Include="dto\Comment\" />
     <Folder Include="dto\PostFavorite\" />
     <Folder Include="dto\Posts\" />
     <Folder Include="Migrations\" />
@@ -50,8 +52,8 @@
     <Folder Include="Modules\PostReactions\Repository\Provider\" />
     <Folder Include="Modules\PostReactions\Service\Interface\" />
     <Folder Include="Modules\PostReactions\Service\Provider\" />
+    <Folder Include="Modules\PostReactions\Validations\" />
     <Folder Include="Utils\Valids\Annotations\Globals\" />
-    <Folder Include="Utils\Valids\Annotations\Post\" />
   </ItemGroup>
 
 </Project>

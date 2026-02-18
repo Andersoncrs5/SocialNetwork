@@ -13,6 +13,7 @@ using System.IdentityModel.Tokens.Jwt;
 using SocialNetwork.Contracts.DTOs.CommentFavorite;
 using SocialNetwork.Contracts.DTOs.PostFavorite;
 using SocialNetwork.Write.API.Models.Enums.Post;
+using SocialNetwork.Write.API.Modules.Comment.Service.Interface;
 using SocialNetwork.Write.API.Utils.Classes;
 
 namespace SocialNetwork.Write.API.Controllers;
