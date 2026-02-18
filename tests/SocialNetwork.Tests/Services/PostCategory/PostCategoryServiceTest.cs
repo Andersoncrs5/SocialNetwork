@@ -3,11 +3,14 @@ using FluentAssertions;
 using Moq;
 using SocialNetwork.Contracts.Enums.Post;
 using SocialNetwork.Write.API.Configs.Exception.classes;
-using SocialNetwork.Write.API.dto.PostCategory;
 using SocialNetwork.Write.API.Models;
 using SocialNetwork.Write.API.Models.Enums.Post;
 using SocialNetwork.Write.API.Modules.Category.Model;
 using SocialNetwork.Write.API.Modules.Post.Model;
+using SocialNetwork.Write.API.Modules.PostCategory.Dto;
+using SocialNetwork.Write.API.Modules.PostCategory.Model;
+using SocialNetwork.Write.API.Modules.PostCategory.Service.Provider;
+using SocialNetwork.Write.API.Modules.User.Model;
 using SocialNetwork.Write.API.Services.Providers;
 using SocialNetwork.Write.API.Utils.UnitOfWork;
 

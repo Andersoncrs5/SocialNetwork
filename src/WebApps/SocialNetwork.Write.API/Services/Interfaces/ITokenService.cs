@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using SocialNetwork.Contracts.Utils.Res.http;
 using SocialNetwork.Write.API.Models;
+using SocialNetwork.Write.API.Modules.User.Model;
 
 namespace SocialNetwork.Write.API.Services.Interfaces;
 

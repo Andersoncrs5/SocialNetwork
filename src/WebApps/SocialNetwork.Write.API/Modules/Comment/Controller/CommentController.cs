@@ -15,6 +15,8 @@ using SocialNetwork.Write.API.Modules.Comment.Dto;
 using SocialNetwork.Write.API.Modules.Comment.Model;
 using SocialNetwork.Write.API.Modules.Comment.Service.Interface;
 using SocialNetwork.Write.API.Modules.Post.Service.Interface;
+using SocialNetwork.Write.API.Modules.User.Model;
+using SocialNetwork.Write.API.Modules.User.Service.Interface;
 using SocialNetwork.Write.API.Services.Interfaces;
 
 namespace SocialNetwork.Write.API.Modules.Comment.Controller;

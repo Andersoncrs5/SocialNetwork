@@ -16,6 +16,7 @@ using SocialNetwork.Write.API.Modules.PostTag.Dto;
 using SocialNetwork.Write.API.Modules.PostTag.Model;
 using SocialNetwork.Write.API.Modules.PostTag.Service.Interface;
 using SocialNetwork.Write.API.Modules.Tag.Service.Interface;
+using SocialNetwork.Write.API.Modules.User.Service.Interface;
 using SocialNetwork.Write.API.Services.Interfaces;
 
 namespace SocialNetwork.Write.API.Modules.PostTag.Controller;

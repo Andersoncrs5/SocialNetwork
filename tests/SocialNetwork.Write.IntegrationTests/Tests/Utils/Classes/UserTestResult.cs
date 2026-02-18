@@ -1,6 +1,6 @@
 using SocialNetwork.Contracts.DTOs.User;
 using SocialNetwork.Contracts.Utils.Res.http;
-using SocialNetwork.Write.API.dto.User;
+using SocialNetwork.Write.API.Modules.User.Dto;
 
 namespace SocialNetwork.Write.IntegrationTests.Tests.Utils.Classes;
 

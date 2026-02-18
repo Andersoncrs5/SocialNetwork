@@ -10,6 +10,7 @@ using SocialNetwork.Write.API.Modules.PostTag.Dto;
 using SocialNetwork.Write.API.Modules.PostTag.Model;
 using SocialNetwork.Write.API.Modules.PostTag.Service.Provider;
 using SocialNetwork.Write.API.Modules.Tag.Model;
+using SocialNetwork.Write.API.Modules.User.Model;
 using SocialNetwork.Write.API.Services.Providers;
 using SocialNetwork.Write.API.Utils.UnitOfWork;
 

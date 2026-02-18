@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using SocialNetwork.Write.API.Models;
+using SocialNetwork.Write.API.Modules.User.Model;
 
 namespace SocialNetwork.Write.API.Utils;
 

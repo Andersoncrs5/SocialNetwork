@@ -3,6 +3,8 @@ using FluentAssertions;
 using Moq;
 using SocialNetwork.Write.API.Configs.Exception.classes;
 using SocialNetwork.Write.API.Models;
+using SocialNetwork.Write.API.Modules.Role.Model;
+using SocialNetwork.Write.API.Modules.Role.Service.Provider;
 using SocialNetwork.Write.API.Services.Providers;
 using SocialNetwork.Write.API.Utils.UnitOfWork;
 

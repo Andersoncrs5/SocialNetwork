@@ -40,7 +40,17 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="Models\Enums\" />
+    <Folder Include="Modules\Auth\Model\" />
+    <Folder Include="Modules\Auth\Repository\Interface\" />
+    <Folder Include="Modules\Auth\Repository\Provider\" />
+    <Folder Include="Modules\Auth\Service\Interface\" />
+    <Folder Include="Modules\Auth\Service\Provider\" />
+    <Folder Include="Modules\Auth\Validations\" />
+    <Folder Include="Modules\CommentFavorite\Dto\" />
+    <Folder Include="Modules\CommentFavorite\Validations\" />
+    <Folder Include="Modules\PostCategory\Validations\" />
+    <Folder Include="Modules\PostFavorite\Dto\" />
+    <Folder Include="Modules\PostFavorite\Validations\" />
     <Folder Include="Modules\PostReactions\Controller\" />
     <Folder Include="Modules\PostReactions\Dto\" />
     <Folder Include="Modules\PostReactions\Model\" />
@@ -50,7 +60,6 @@
     <Folder Include="Modules\PostReactions\Service\Provider\" />
     <Folder Include="Modules\PostReactions\Validations\" />
     <Folder Include="Modules\PostTag\Validations\" />
-    <Folder Include="Utils\Valids\Annotations\Globals\" />
   </ItemGroup>
 
 </Project>

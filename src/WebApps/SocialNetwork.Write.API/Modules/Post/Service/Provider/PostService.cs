@@ -7,6 +7,7 @@ using SocialNetwork.Write.API.Models.Enums.Post;
 using SocialNetwork.Write.API.Modules.Post.Dto;
 using SocialNetwork.Write.API.Modules.Post.Model;
 using SocialNetwork.Write.API.Modules.Post.Service.Interface;
+using SocialNetwork.Write.API.Modules.User.Model;
 using SocialNetwork.Write.API.Utils.UnitOfWork;
 
 namespace SocialNetwork.Write.API.Modules.Post.Service.Provider;

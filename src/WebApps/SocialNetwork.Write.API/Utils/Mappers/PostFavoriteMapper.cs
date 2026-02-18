@@ -1,6 +1,7 @@
 using AutoMapper;
 using SocialNetwork.Contracts.DTOs.PostFavorite;
 using SocialNetwork.Write.API.Models;
+using SocialNetwork.Write.API.Modules.PostFavorite.Model;
 
 namespace SocialNetwork.Write.API.Utils.Mappers;
 

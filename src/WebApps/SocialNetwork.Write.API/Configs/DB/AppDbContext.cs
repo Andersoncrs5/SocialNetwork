@@ -9,13 +9,18 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialNetwork.Contracts.Utils.Enums;
-using SocialNetwork.Write.API.Models.Bases;
 using SocialNetwork.Write.API.Modules.Category.Model;
 using SocialNetwork.Write.API.Modules.Comment.Model;
+using SocialNetwork.Write.API.Modules.CommentFavorite.Model;
 using SocialNetwork.Write.API.Modules.Post.Model;
+using SocialNetwork.Write.API.Modules.PostCategory.Model;
+using SocialNetwork.Write.API.Modules.PostFavorite.Model;
 using SocialNetwork.Write.API.Modules.PostTag.Model;
 using SocialNetwork.Write.API.Modules.Reaction.Model;
+using SocialNetwork.Write.API.Modules.Role.Model;
 using SocialNetwork.Write.API.Modules.Tag.Model;
+using SocialNetwork.Write.API.Modules.User.Model;
+using SocialNetwork.Write.API.Utils.Bases;
 
 namespace SocialNetwork.Write.API.Configs.DB;
 

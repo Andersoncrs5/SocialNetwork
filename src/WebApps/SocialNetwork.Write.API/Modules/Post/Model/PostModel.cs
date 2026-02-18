@@ -1,9 +1,12 @@
 using SocialNetwork.Contracts.Enums.Post;
 using SocialNetwork.Contracts.Utils.Enums;
 using SocialNetwork.Write.API.Models;
-using SocialNetwork.Write.API.Models.Bases;
 using SocialNetwork.Write.API.Models.Enums.Post;
+using SocialNetwork.Write.API.Modules.PostCategory.Model;
+using SocialNetwork.Write.API.Modules.PostFavorite.Model;
 using SocialNetwork.Write.API.Modules.PostTag.Model;
+using SocialNetwork.Write.API.Modules.User.Model;
+using SocialNetwork.Write.API.Utils.Bases;
 
 namespace SocialNetwork.Write.API.Modules.Post.Model;
 

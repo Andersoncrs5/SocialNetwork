@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using SocialNetwork.Contracts.Attributes.Globals;
 using SocialNetwork.Write.API.Configs.DB;
-using SocialNetwork.Write.API.Models.Bases;
 using SocialNetwork.Write.API.Repositories.Interfaces;
 using SocialNetwork.Write.API.Services.Interfaces;
+using SocialNetwork.Write.API.Utils.Bases;
 
 namespace SocialNetwork.Write.API.Repositories.Provider;
 

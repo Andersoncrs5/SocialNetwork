@@ -1,7 +1,8 @@
 using AutoMapper;
 using SocialNetwork.Contracts.DTOs.PostCategory;
-using SocialNetwork.Write.API.dto.PostCategory;
 using SocialNetwork.Write.API.Models;
+using SocialNetwork.Write.API.Modules.PostCategory.Dto;
+using SocialNetwork.Write.API.Modules.PostCategory.Model;
 
 namespace SocialNetwork.Write.API.Utils.Mappers;
 

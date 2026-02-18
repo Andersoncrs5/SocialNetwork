@@ -8,6 +8,7 @@ using SocialNetwork.Write.API.Modules.Comment.Dto;
 using SocialNetwork.Write.API.Modules.Comment.Model;
 using SocialNetwork.Write.API.Modules.Comment.Service.Provider;
 using SocialNetwork.Write.API.Modules.Post.Model;
+using SocialNetwork.Write.API.Modules.User.Model;
 using SocialNetwork.Write.API.Services.Providers;
 using SocialNetwork.Write.API.Utils.UnitOfWork;
 

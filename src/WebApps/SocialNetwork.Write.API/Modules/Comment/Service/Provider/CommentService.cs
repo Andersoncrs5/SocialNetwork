@@ -4,6 +4,7 @@ using SocialNetwork.Write.API.Models;
 using SocialNetwork.Write.API.Modules.Comment.Dto;
 using SocialNetwork.Write.API.Modules.Comment.Model;
 using SocialNetwork.Write.API.Modules.Comment.Service.Interface;
+using SocialNetwork.Write.API.Modules.User.Model;
 using SocialNetwork.Write.API.Utils.UnitOfWork;
 
 namespace SocialNetwork.Write.API.Modules.Comment.Service.Provider;

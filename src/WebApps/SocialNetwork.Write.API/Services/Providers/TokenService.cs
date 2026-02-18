@@ -11,6 +11,7 @@ using SocialNetwork.Contracts.configs.jwt;
 using SocialNetwork.Contracts.Utils.Res.http;
 using SocialNetwork.Write.API.Configs.InfoApp;
 using SocialNetwork.Write.API.Models;
+using SocialNetwork.Write.API.Modules.User.Model;
 using SocialNetwork.Write.API.Services.Interfaces;
 
 namespace SocialNetwork.Write.API.Services.Providers;

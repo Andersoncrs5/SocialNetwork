@@ -1,5 +1,6 @@
 using SocialNetwork.Write.API.Models;
-using SocialNetwork.Write.API.Models.Bases;
+using SocialNetwork.Write.API.Modules.PostCategory.Model;
+using SocialNetwork.Write.API.Utils.Bases;
 
 namespace SocialNetwork.Write.API.Modules.Category.Model;
 

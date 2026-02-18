@@ -1,5 +1,5 @@
 using SocialNetwork.Contracts.Enums.Reaction;
-using SocialNetwork.Write.API.Models.Bases;
+using SocialNetwork.Write.API.Utils.Bases;
 
 namespace SocialNetwork.Write.API.Modules.Reaction.Model;
 
