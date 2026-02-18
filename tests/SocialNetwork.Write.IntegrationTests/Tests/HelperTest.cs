@@ -11,12 +11,14 @@ using SocialNetwork.Contracts.DTOs.PostTag;
 using SocialNetwork.Contracts.DTOs.Tag;
 using SocialNetwork.Contracts.DTOs.User;
 using SocialNetwork.Contracts.Enums.Post;
+using SocialNetwork.Contracts.Enums.Reaction;
 using SocialNetwork.Contracts.Utils.Res.http;
 using SocialNetwork.Write.API.dto.Category;
 using SocialNetwork.Write.API.dto.Comment;
 using SocialNetwork.Write.API.dto.PostCategory;
 using SocialNetwork.Write.API.dto.Posts;
 using SocialNetwork.Write.API.dto.PostTag;
+using SocialNetwork.Write.API.dto.Reaction;
 using SocialNetwork.Write.API.dto.Tag;
 using SocialNetwork.Write.API.dto.User;
 using SocialNetwork.Write.API.Models.Enums.Post;
@@ -28,6 +30,47 @@ namespace SocialNetwork.Write.IntegrationTests.Tests;
 
 public class HelperTest(HttpClient client)
 {
+    public async Task<ReactionDto> CreateReaction(UserTestResult result)
+    {
+        
+        client.DefaultRequestHeaders.Authorization = 
+            new AuthenticationHeaderValue("Bearer", result.Tokens.Token);
+
+        CreateReactionDto dto = new CreateReactionDto()
+        {
+            Name = "reaction" + this.GenerateChars().ToLower(),
+            Type = ReactionTypeEnum.Action,
+            Active = true,
+            DisplayOrder = 1,
+            EmojiUnicode = "aaaaaaaa",
+            EmojiUrl = "https://github.com/andersoncrs5",
+            Visible = true
+        };
+
+        HttpResponseMessage message = await client.PostAsJsonAsync("api/v1/reaction", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<ReactionDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<ReactionDto>>();
+        
+        http.Should().NotBeNull();
+        http.Data.Should().NotBeNull();
+        
+        http.Success.Should().BeTrue();
+        http.TraceId.Should().NotBeNullOrWhiteSpace();
+        http.DetailsError.Should().BeNull();
+
+        http.Data.Id.Should().NotBeNullOrWhiteSpace();
+        http.Data.Name.Should().Be(dto.Name);
+        http.Data.Type.Should().Be(dto.Type);
+        http.Data.EmojiUrl.Should().Be(dto.EmojiUrl);
+        http.Data.EmojiUnicode.Should().Be(dto.EmojiUnicode);
+        http.Data.DisplayOrder.Should().Be(dto.DisplayOrder);
+        http.Data.Active.Should().Be(dto.Active);
+        http.Data.Visible.Should().Be(dto.Visible);
+        
+        return http.Data;
+    }
+    
     public async Task<PostFavoriteDto> CreatePostFavorite(UserTestResult user, PostDto postDto)
     {
         client.DefaultRequestHeaders.Authorization = 
