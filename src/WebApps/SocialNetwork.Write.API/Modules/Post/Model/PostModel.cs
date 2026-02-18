@@ -1,9 +1,10 @@
 using SocialNetwork.Contracts.Enums.Post;
 using SocialNetwork.Contracts.Utils.Enums;
+using SocialNetwork.Write.API.Models;
 using SocialNetwork.Write.API.Models.Bases;
 using SocialNetwork.Write.API.Models.Enums.Post;
 
-namespace SocialNetwork.Write.API.Models;
+namespace SocialNetwork.Write.API.Modules.Post.Model;
 
 public class PostModel: BaseModel
 {

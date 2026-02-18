@@ -40,10 +40,18 @@
 
   <ItemGroup>
     <Folder Include="dto\PostFavorite\" />
+    <Folder Include="dto\Posts\" />
     <Folder Include="Migrations\" />
     <Folder Include="Models\Enums\" />
-    <Folder Include="Modules\" />
+    <Folder Include="Modules\PostReactions\Controller\" />
+    <Folder Include="Modules\PostReactions\Dto\" />
+    <Folder Include="Modules\PostReactions\Model\" />
+    <Folder Include="Modules\PostReactions\Repository\Interface\" />
+    <Folder Include="Modules\PostReactions\Repository\Provider\" />
+    <Folder Include="Modules\PostReactions\Service\Interface\" />
+    <Folder Include="Modules\PostReactions\Service\Provider\" />
     <Folder Include="Utils\Valids\Annotations\Globals\" />
+    <Folder Include="Utils\Valids\Annotations\Post\" />
   </ItemGroup>
 
 </Project>

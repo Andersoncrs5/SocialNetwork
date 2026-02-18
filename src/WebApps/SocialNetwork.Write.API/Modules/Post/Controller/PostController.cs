@@ -1,6 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
-using System.Text;
 using Asp.Versioning;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,11 +10,13 @@ using SocialNetwork.Contracts.DTOs.Post;
 using SocialNetwork.Contracts.Utils.Exceptions;
 using SocialNetwork.Contracts.Utils.Res.http;
 using SocialNetwork.Write.API.Configs.Exception.classes;
-using SocialNetwork.Write.API.dto.Posts;
 using SocialNetwork.Write.API.Models;
+using SocialNetwork.Write.API.Modules.Post.Dto;
+using SocialNetwork.Write.API.Modules.Post.Model;
+using SocialNetwork.Write.API.Modules.Post.Service.Interface;
 using SocialNetwork.Write.API.Services.Interfaces;
 
-namespace SocialNetwork.Write.API.Controllers;
+namespace SocialNetwork.Write.API.Modules.Post.Controller;
 
 [ApiController]
 [Route("api/v{version:apiVersion}/post")]
@@ -25,7 +26,7 @@ public class PostController(
     IMapper mapper,
     IPostService service,
     IUserService userService
-    ) : Controller
+    ) : Microsoft.AspNetCore.Mvc.Controller
 {
     [HttpPost]
     [ProducesResponseType(typeof(ResponseHttp<object>), (int)HttpStatusCode.Forbidden)]

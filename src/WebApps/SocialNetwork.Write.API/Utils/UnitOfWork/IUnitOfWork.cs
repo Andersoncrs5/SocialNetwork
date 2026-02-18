@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore.Storage;
+using SocialNetwork.Write.API.Modules.Post.Repository.Interface;
 using SocialNetwork.Write.API.Repositories.Interfaces;
 using SocialNetwork.Write.API.Services.Interfaces;
 

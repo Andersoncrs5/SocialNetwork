@@ -14,6 +14,7 @@ using SocialNetwork.Contracts.DTOs.PostCategory;
 using SocialNetwork.Contracts.Utils.Exceptions;
 using SocialNetwork.Contracts.Utils.Res.http;
 using SocialNetwork.Write.API.Models;
+using SocialNetwork.Write.API.Modules.Post.Service.Interface;
 
 namespace SocialNetwork.Write.API.Controllers;
 

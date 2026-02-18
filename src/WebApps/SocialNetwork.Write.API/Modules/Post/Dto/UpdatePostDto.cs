@@ -1,9 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using SocialNetwork.Contracts.Enums.Post;
 using SocialNetwork.Contracts.Utils.Enums;
-using SocialNetwork.Write.API.Models.Enums.Post;
 
-namespace SocialNetwork.Write.API.dto.Posts;
+namespace SocialNetwork.Write.API.Modules.Post.Dto;
 
 public class UpdatePostDto
 {

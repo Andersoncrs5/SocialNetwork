@@ -14,6 +14,8 @@ using SocialNetwork.Write.API.Models;
 using SocialNetwork.Write.API.Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using SocialNetwork.Contracts.Attributes.Globals;
+using SocialNetwork.Write.API.Modules.Post.Model;
+using SocialNetwork.Write.API.Modules.Post.Service.Interface;
 
 namespace SocialNetwork.Write.API.Controllers;
 

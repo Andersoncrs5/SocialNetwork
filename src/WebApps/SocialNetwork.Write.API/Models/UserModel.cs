@@ -1,5 +1,6 @@
 using System;
 using Microsoft.AspNetCore.Identity;
+using SocialNetwork.Write.API.Modules.Post.Model;
 
 namespace SocialNetwork.Write.API.Models;
 

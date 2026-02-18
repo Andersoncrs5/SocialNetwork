@@ -1,5 +1,6 @@
 using SocialNetwork.Contracts.Attributes.Globals;
 using SocialNetwork.Write.API.Models;
+using SocialNetwork.Write.API.Modules.Post.Model;
 using SocialNetwork.Write.API.Utils.Classes;
 
 namespace SocialNetwork.Write.API.Services.Interfaces;

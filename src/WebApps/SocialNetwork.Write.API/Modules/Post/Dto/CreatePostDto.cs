@@ -2,10 +2,9 @@ using System.ComponentModel.DataAnnotations;
 using SocialNetwork.Contracts.Attributes.Globals;
 using SocialNetwork.Contracts.Enums.Post;
 using SocialNetwork.Contracts.Utils.Enums;
-using SocialNetwork.Write.API.Models.Enums.Post;
-using SocialNetwork.Write.API.Utils.Valids.Annotations.Post;
+using SocialNetwork.Write.API.Modules.Post.Validations;
 
-namespace SocialNetwork.Write.API.dto.Posts;
+namespace SocialNetwork.Write.API.Modules.Post.Dto;
 
 public class CreatePostDto
 {

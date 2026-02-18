@@ -1,15 +1,15 @@
-
 using AutoMapper;
 using SocialNetwork.Contracts.Attributes.Globals;
 using SocialNetwork.Contracts.Enums.Post;
 using SocialNetwork.Write.API.Configs.Exception.classes;
-using SocialNetwork.Write.API.dto.Posts;
 using SocialNetwork.Write.API.Models;
 using SocialNetwork.Write.API.Models.Enums.Post;
-using SocialNetwork.Write.API.Services.Interfaces;
+using SocialNetwork.Write.API.Modules.Post.Dto;
+using SocialNetwork.Write.API.Modules.Post.Model;
+using SocialNetwork.Write.API.Modules.Post.Service.Interface;
 using SocialNetwork.Write.API.Utils.UnitOfWork;
 
-namespace SocialNetwork.Write.API.Services.Providers;
+namespace SocialNetwork.Write.API.Modules.Post.Service.Provider;
 
 public class PostService(IUnitOfWork uow, IMapper mapper): IPostService
 {

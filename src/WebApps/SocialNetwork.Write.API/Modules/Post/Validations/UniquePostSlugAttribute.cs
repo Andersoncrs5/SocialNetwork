@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using SocialNetwork.Write.API.Repositories.Interfaces;
+using SocialNetwork.Write.API.Modules.Post.Repository.Interface;
 
-namespace SocialNetwork.Write.API.Utils.Valids.Annotations.Post;
+namespace SocialNetwork.Write.API.Modules.Post.Validations;
 
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Parameter )]
 public class UniquePostSlugAttribute: ValidationAttribute

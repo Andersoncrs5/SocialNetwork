@@ -1,8 +1,9 @@
 using SocialNetwork.Contracts.Attributes.Globals;
-using SocialNetwork.Write.API.dto.Posts;
 using SocialNetwork.Write.API.Models;
+using SocialNetwork.Write.API.Modules.Post.Dto;
+using SocialNetwork.Write.API.Modules.Post.Model;
 
-namespace SocialNetwork.Write.API.Services.Interfaces;
+namespace SocialNetwork.Write.API.Modules.Post.Service.Interface;
 
 public interface IPostService
 {

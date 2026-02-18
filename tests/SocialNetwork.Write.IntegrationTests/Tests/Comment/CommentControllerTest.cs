@@ -6,7 +6,6 @@ using SocialNetwork.Contracts.DTOs.Comment;
 using SocialNetwork.Contracts.DTOs.Post;
 using SocialNetwork.Contracts.Utils.Res.http;
 using SocialNetwork.Write.API.dto.Comment;
-using SocialNetwork.Write.API.dto.Posts;
 using SocialNetwork.Write.IntegrationTests.Config;
 using SocialNetwork.Write.IntegrationTests.Tests.Utils.Classes;
 using Xunit.Abstractions;

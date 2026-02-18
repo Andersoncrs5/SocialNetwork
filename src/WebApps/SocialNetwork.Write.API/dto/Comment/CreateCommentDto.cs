@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using SocialNetwork.Contracts.Attributes.Globals;
+using SocialNetwork.Write.API.Modules.Post.Validations;
 using SocialNetwork.Write.API.Utils.Valids.Annotations.Comment;
-using SocialNetwork.Write.API.Utils.Valids.Annotations.Post;
 
 namespace SocialNetwork.Write.API.dto.Comment;
 

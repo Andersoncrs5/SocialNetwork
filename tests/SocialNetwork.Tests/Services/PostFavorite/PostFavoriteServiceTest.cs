@@ -3,6 +3,7 @@ using Moq;
 using SocialNetwork.Contracts.Enums.Post;
 using SocialNetwork.Write.API.Models;
 using SocialNetwork.Write.API.Models.Enums.Post;
+using SocialNetwork.Write.API.Modules.Post.Model;
 using SocialNetwork.Write.API.Services.Providers;
 using SocialNetwork.Write.API.Utils.Classes;
 using SocialNetwork.Write.API.Utils.UnitOfWork;
