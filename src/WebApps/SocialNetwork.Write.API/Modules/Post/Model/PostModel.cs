@@ -3,6 +3,7 @@ using SocialNetwork.Contracts.Utils.Enums;
 using SocialNetwork.Write.API.Models;
 using SocialNetwork.Write.API.Models.Bases;
 using SocialNetwork.Write.API.Models.Enums.Post;
+using SocialNetwork.Write.API.Modules.PostTag.Model;
 
 namespace SocialNetwork.Write.API.Modules.Post.Model;
 

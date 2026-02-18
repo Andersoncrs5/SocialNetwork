@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore.Storage;
 using SocialNetwork.Write.API.Modules.Category.Repository.Interface;
 using SocialNetwork.Write.API.Modules.Comment.Repository.Interface;
 using SocialNetwork.Write.API.Modules.Post.Repository.Interface;
+using SocialNetwork.Write.API.Modules.PostTag.Repository.Interface;
+using SocialNetwork.Write.API.Modules.Reaction.Repository.Interface;
+using SocialNetwork.Write.API.Modules.Tag.Repository.Interface;
 using SocialNetwork.Write.API.Repositories.Interfaces;
 using SocialNetwork.Write.API.Services.Interfaces;
 

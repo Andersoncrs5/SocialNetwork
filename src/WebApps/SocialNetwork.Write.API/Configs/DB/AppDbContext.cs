@@ -13,6 +13,9 @@ using SocialNetwork.Write.API.Models.Bases;
 using SocialNetwork.Write.API.Modules.Category.Model;
 using SocialNetwork.Write.API.Modules.Comment.Model;
 using SocialNetwork.Write.API.Modules.Post.Model;
+using SocialNetwork.Write.API.Modules.PostTag.Model;
+using SocialNetwork.Write.API.Modules.Reaction.Model;
+using SocialNetwork.Write.API.Modules.Tag.Model;
 
 namespace SocialNetwork.Write.API.Configs.DB;
 

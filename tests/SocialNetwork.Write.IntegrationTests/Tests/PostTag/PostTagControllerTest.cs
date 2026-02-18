@@ -6,7 +6,7 @@ using SocialNetwork.Contracts.DTOs.Post;
 using SocialNetwork.Contracts.DTOs.PostTag;
 using SocialNetwork.Contracts.DTOs.Tag;
 using SocialNetwork.Contracts.Utils.Res.http;
-using SocialNetwork.Write.API.dto.PostTag;
+using SocialNetwork.Write.API.Modules.PostTag.Dto;
 using SocialNetwork.Write.IntegrationTests.Config;
 using SocialNetwork.Write.IntegrationTests.Tests.Utils.Classes;
 using Xunit.Abstractions;

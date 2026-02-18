@@ -2,8 +2,10 @@ using FluentAssertions;
 using Moq;
 using SocialNetwork.Contracts.Enums.Reaction;
 using SocialNetwork.Write.API.Configs.Exception.classes;
-using SocialNetwork.Write.API.dto.Reaction;
 using SocialNetwork.Write.API.Models;
+using SocialNetwork.Write.API.Modules.Reaction.Dto;
+using SocialNetwork.Write.API.Modules.Reaction.Model;
+using SocialNetwork.Write.API.Modules.Reaction.Service.Provider;
 using SocialNetwork.Write.API.Services.Providers;
 using SocialNetwork.Write.API.Utils.UnitOfWork;
 

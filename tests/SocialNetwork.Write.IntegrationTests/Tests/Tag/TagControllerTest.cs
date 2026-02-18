@@ -4,7 +4,7 @@ using System.Net.Http.Json;
 using FluentAssertions;
 using SocialNetwork.Contracts.DTOs.Tag;
 using SocialNetwork.Contracts.Utils.Res.http;
-using SocialNetwork.Write.API.dto.Tag;
+using SocialNetwork.Write.API.Modules.Tag.Dto;
 using SocialNetwork.Write.IntegrationTests.Config;
 using SocialNetwork.Write.IntegrationTests.Tests.Utils.Classes;
 using Xunit.Abstractions;

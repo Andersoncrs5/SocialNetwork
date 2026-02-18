@@ -1,6 +1,8 @@
 using AutoMapper;
-using SocialNetwork.Write.API.dto.Reaction;
+using SocialNetwork.Contracts.DTOs.Reaction;
 using SocialNetwork.Write.API.Models;
+using SocialNetwork.Write.API.Modules.Reaction.Dto;
+using SocialNetwork.Write.API.Modules.Reaction.Model;
 
 namespace SocialNetwork.Write.API.Utils.Mappers;
 

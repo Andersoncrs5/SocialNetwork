@@ -2,8 +2,10 @@ using AutoMapper;
 using FluentAssertions;
 using Moq;
 using SocialNetwork.Write.API.Configs.Exception.classes;
-using SocialNetwork.Write.API.dto.Tag;
 using SocialNetwork.Write.API.Models;
+using SocialNetwork.Write.API.Modules.Tag.Dto;
+using SocialNetwork.Write.API.Modules.Tag.Model;
+using SocialNetwork.Write.API.Modules.Tag.Service.Provider;
 using SocialNetwork.Write.API.Services.Providers;
 using SocialNetwork.Write.API.Utils.UnitOfWork;
 
