@@ -45,15 +45,15 @@ public class CommentFavoriteController(
 
         ResultToggle<CommentFavoriteModel?> toggle = await service.ToggleAsync(commentId, userId);
         
-        string message = toggle.Action == AddedORRemoved.Added
+        string message = toggle.Action == ToggleStatus.Added
             ? "Comment added with favorite successfully"
             : "Comment removed with favorite successfully";
     
-        int status = toggle.Action == AddedORRemoved.Added
+        int status = toggle.Action == ToggleStatus.Added
             ? StatusCodes.Status201Created
             : StatusCodes.Status200OK;
     
-        CommentFavoriteDto? data = toggle.Action == AddedORRemoved.Added
+        CommentFavoriteDto? data = toggle.Action == ToggleStatus.Added
             ? mapper.Map<CommentFavoriteDto>(toggle.Value)
             : null;
         
