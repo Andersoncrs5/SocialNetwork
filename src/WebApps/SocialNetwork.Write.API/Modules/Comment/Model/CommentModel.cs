@@ -1,6 +1,7 @@
 using SocialNetwork.Write.API.Models;
 using SocialNetwork.Write.API.Models.Enums.Post;
 using SocialNetwork.Write.API.Modules.CommentFavorite.Model;
+using SocialNetwork.Write.API.Modules.CommentReactions.Model;
 using SocialNetwork.Write.API.Modules.Post.Model;
 using SocialNetwork.Write.API.Modules.User.Model;
 using SocialNetwork.Write.API.Utils.Bases;
@@ -24,5 +25,5 @@ public class CommentModel: BaseModel
     public ModerationStatusEnum ModerationStatus { get; set; }
     public ICollection<CommentModel> Replies { get; set; } = new List<CommentModel>();
     public ICollection<CommentFavoriteModel> Favorites { get; set; } = new List<CommentFavoriteModel>();
-    
+    public ICollection<CommentReactionModel> CommentReactions { get; set; } = new List<CommentReactionModel>();
 }

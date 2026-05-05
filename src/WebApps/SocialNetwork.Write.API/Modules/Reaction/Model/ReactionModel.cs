@@ -1,4 +1,5 @@
 using SocialNetwork.Contracts.Enums.Reaction;
+using SocialNetwork.Write.API.Modules.CommentReactions.Model;
 using SocialNetwork.Write.API.Utils.Bases;
 
 namespace SocialNetwork.Write.API.Modules.Reaction.Model;
@@ -12,4 +13,6 @@ public class ReactionModel: BaseModel
     public long? DisplayOrder { get; set; }
     public bool Active { get; set; }
     public bool Visible { get; set; }
+    
+    public ICollection<CommentReactionModel> CommentReactions { get; set; } = new List<CommentReactionModel>();
 }
