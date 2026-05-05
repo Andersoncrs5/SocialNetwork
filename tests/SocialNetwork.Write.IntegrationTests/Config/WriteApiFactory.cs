@@ -13,7 +13,7 @@ namespace SocialNetwork.Write.IntegrationTests.Config;
 public class WriteApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly MySqlContainer _dbContainer = new MySqlBuilder()
-        .WithImage("mysql:8.0") 
+        .WithImage("mysql:8.4.9") 
         .WithDatabase("social_network_test")
         .WithUsername("root")
         .WithPassword("123456")
