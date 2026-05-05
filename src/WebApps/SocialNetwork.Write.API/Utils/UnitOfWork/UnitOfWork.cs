@@ -13,6 +13,8 @@ using SocialNetwork.Write.API.Modules.Comment.Repository.Interface;
 using SocialNetwork.Write.API.Modules.Comment.Repository.Provider;
 using SocialNetwork.Write.API.Modules.CommentFavorite.Repository.Interface;
 using SocialNetwork.Write.API.Modules.CommentFavorite.Repository.Provider;
+using SocialNetwork.Write.API.Modules.CommentReactions.Repository.Interface;
+using SocialNetwork.Write.API.Modules.CommentReactions.Repository.Provider;
 using SocialNetwork.Write.API.Modules.Post.Repository.Interface;
 using SocialNetwork.Write.API.Modules.Post.Repository.Provider;
 using SocialNetwork.Write.API.Modules.PostCategory.Repository.Interface;
@@ -57,6 +59,7 @@ public class UnitOfWork(
     private PostFavoriteRepository? _postFavoriteRepository;
     private CommentFavoriteRepository? _commentFavoriteRepository;
     private ReactionRepository? _reactionRepository;
+    private CommentReactionRepository? _commentReactionRepository;
     
     public IUserRepository UserRepository
         => _userRepository ??= new UserRepository(context, userManager);
@@ -80,6 +83,8 @@ public class UnitOfWork(
         => _commentFavoriteRepository ??= new CommentFavoriteRepository(context, redisService);
     public IReactionRepository ReactionRepository
         => _reactionRepository ??= new ReactionRepository(context, redisService);
+    public ICommentReactionRepository CommentReactionRepository 
+        => _commentReactionRepository ??= new CommentReactionRepository(context, redisService);
     public IRedisService RedisService => redisService;
     public IMapper Mapper => mapper;
     
