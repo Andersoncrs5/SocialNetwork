@@ -144,7 +144,7 @@ public class PostFavoriteServiceTest
         ResultToggle<PostFavoriteModel> toggle = await _service.ToggleAsync(_postMock, _user);
         toggle.Should().NotBeNull();
 
-        toggle.Action.Should().Be(AddedORRemoved.Added);
+        toggle.Action.Should().Be(ToggleStatus.Added);
         toggle.Value.Should().NotBeNull();
         toggle.Value.Id.Should().Be(favorite.Id);
         
@@ -165,7 +165,7 @@ public class PostFavoriteServiceTest
         ResultToggle<PostFavoriteModel> toggle = await _service.ToggleAsync(_postMock, _user);
         toggle.Should().NotBeNull();
 
-        toggle.Action.Should().Be(AddedORRemoved.Removed);
+        toggle.Action.Should().Be(ToggleStatus.Removed);
         toggle.Value.Should().BeNull();
         
         _uowMock.Verify(x => x.PostFavoriteRepository.DeleteAsync(favorite), Times.Once);

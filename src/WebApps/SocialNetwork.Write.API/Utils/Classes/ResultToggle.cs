@@ -4,6 +4,6 @@ namespace SocialNetwork.Write.API.Utils.Classes;
 
 public class ResultToggle<T>
 {
-    public AddedORRemoved Action { get; set; }
+    public ToggleStatus Action { get; set; }
     public T? Value { get; set; }
 }

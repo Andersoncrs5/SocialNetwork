@@ -47,7 +47,7 @@ public class PostFavoriteService(IUnitOfWork uow): IPostFavoriteService
             if (favorite != null)
             {
                 await uow.PostFavoriteRepository.DeleteAsync(favorite);
-                result.Action = AddedORRemoved.Removed;
+                result.Action = ToggleStatus.Removed;
                 result.Value = null;
             }
             else
@@ -59,7 +59,7 @@ public class PostFavoriteService(IUnitOfWork uow): IPostFavoriteService
                 };
 
                 PostFavoriteModel model = await uow.PostFavoriteRepository.AddAsync(newFavorite);
-                result.Action = AddedORRemoved.Added;
+                result.Action = ToggleStatus.Added;
                 result.Value = model;
             }
         });

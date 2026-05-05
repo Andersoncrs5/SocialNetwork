@@ -95,7 +95,7 @@ public class CommentFavoriteServiceTest
         toggle.Value.Should().NotBeNull();
         toggle.Value.Should().BeEquivalentTo(_favorite);
         
-        toggle.Action.Should().Be(AddedORRemoved.Added);
+        toggle.Action.Should().Be(ToggleStatus.Added);
 
         _uowMock.Verify(x => x.CommentFavoriteRepository.AddAsync(It.IsAny<CommentFavoriteModel>()), Times.Once);
         _uowMock.Verify(x => x.CommentFavoriteRepository.GetByCommentIdAndUserId(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
@@ -117,7 +117,7 @@ public class CommentFavoriteServiceTest
         toggle.Should().NotBeNull();
         toggle.Value.Should().BeNull();
         
-        toggle.Action.Should().Be(AddedORRemoved.Removed);
+        toggle.Action.Should().Be(ToggleStatus.Removed);
 
         _uowMock.Verify(x => x.CommentFavoriteRepository.DeleteAsync(It.IsAny<CommentFavoriteModel>()), Times.Once);
         _uowMock.Verify(x => x.CommentFavoriteRepository.GetByCommentIdAndUserId(It.IsAny<string>(), It.IsAny<string>()), Times.Once);

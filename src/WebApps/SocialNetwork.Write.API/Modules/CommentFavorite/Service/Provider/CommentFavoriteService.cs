@@ -42,7 +42,7 @@ public class CommentFavoriteService(IUnitOfWork uow): ICommentFavoriteService
             if (commit) await uow.CommitAsync();
             return new ResultToggle<CommentFavoriteModel?>()
             {
-                Action = AddedORRemoved.Removed,
+                Action = ToggleStatus.Removed,
                 Value = null
             };
         }
@@ -58,7 +58,7 @@ public class CommentFavoriteService(IUnitOfWork uow): ICommentFavoriteService
         if (commit) await uow.CommitAsync();
         return new ResultToggle<CommentFavoriteModel?>()
         {
-            Action = AddedORRemoved.Added,
+            Action = ToggleStatus.Added,
             Value = addAsync
         };
     }
