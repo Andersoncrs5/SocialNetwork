@@ -4,6 +4,7 @@ using System.Net.Http.Json;
 using FluentAssertions;
 using MySqlX.XDevAPI;
 using SocialNetwork.Contracts.DTOs.Comment;
+using SocialNetwork.Contracts.DTOs.CommentReaction;
 using SocialNetwork.Contracts.DTOs.Post;
 using SocialNetwork.Contracts.DTOs.PostCategory;
 using SocialNetwork.Contracts.DTOs.PostFavorite;
@@ -18,6 +19,7 @@ using SocialNetwork.Write.API.Models.Enums.Post;
 using SocialNetwork.Write.API.Modules.Auth.Dto;
 using SocialNetwork.Write.API.Modules.Category.Dto;
 using SocialNetwork.Write.API.Modules.Comment.Dto;
+using SocialNetwork.Write.API.Modules.CommentReactions.Dto;
 using SocialNetwork.Write.API.Modules.Post.Dto;
 using SocialNetwork.Write.API.Modules.PostCategory.Dto;
 using SocialNetwork.Write.API.Modules.PostTag.Dto;
@@ -32,6 +34,40 @@ namespace SocialNetwork.Write.IntegrationTests.Tests;
 
 public class HelperTest(HttpClient client)
 {
+    public async Task<CommentReactionDto> CreateCommentReaction(
+        ReactionDto reactionDto,
+        UserTestResult user,
+        CommentDto commentDto
+    )
+    {
+        string _url = "api/v1/comment-reaction";
+        ToggleCommentReactionDto dto = new ToggleCommentReactionDto()
+        {
+            CommentId = commentDto.Id,
+            ReactionId = reactionDto.Id
+        };
+        
+        client.DefaultRequestHeaders.Authorization = 
+            new AuthenticationHeaderValue("Bearer", user.Tokens.Token);
+
+        HttpResponseMessage message = await client.PostAsJsonAsync($"{_url}/toggle", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+        
+        ResponseHttp<CommentReactionDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<CommentReactionDto>>();
+        
+        http.Should().NotBeNull();
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.TraceId.Should().NotBeNullOrWhiteSpace();
+        http.Success.Should().BeTrue();
+
+        http.Data.Should().NotBeNull();
+        http.Data.CommentId.Should().Be(commentDto.Id);
+        http.Data.ReactionId.Should().Be(reactionDto.Id);
+        http.Data.UserId.Should().Be(user.User.Id);
+        
+        return http.Data;
+    }
+    
     public async Task<ReactionDto> CreateReaction(UserTestResult result)
     {
         
@@ -95,7 +131,6 @@ public class HelperTest(HttpClient client)
     
     public async Task<CommentDto> CreateComment(UserTestResult user, PostDto postDto, string? parentId = null)
     {
-        
         CreateCommentDto dto = new()
         {
             PostId = postDto.Id,
