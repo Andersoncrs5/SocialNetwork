@@ -5,13 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Write.API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialNetwork.Contracts.Utils.Enums;
 using SocialNetwork.Write.API.Modules.Category.Model;
 using SocialNetwork.Write.API.Modules.Comment.Model;
 using SocialNetwork.Write.API.Modules.CommentFavorite.Model;
+using SocialNetwork.Write.API.Modules.CommentReactions.Model;
 using SocialNetwork.Write.API.Modules.Post.Model;
 using SocialNetwork.Write.API.Modules.PostCategory.Model;
 using SocialNetwork.Write.API.Modules.PostFavorite.Model;
@@ -36,6 +34,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<PostFavoriteModel> PostFavorites { get; set; }
     public DbSet<CommentFavoriteModel> CommentFavorites { get; set; }
     public DbSet<ReactionModel> Reactions { get; set; }
+    public DbSet<CommentReactionModel> CommentReactions { get; set; }
     
     public override int SaveChanges()
     {
@@ -70,6 +69,32 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<CommentReactionModel>(x =>
+        {
+            x.ToTable("CommentReactions");
+            x.HasKey(p => p.Id);
+            
+            x.HasIndex(f => new { f.UserId, f.CommentId }).IsUnique();
+            
+            x.HasOne(f => f.User)
+                .WithMany(u => u.CommentReactions)
+                .HasForeignKey(f => f.UserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            x.HasOne(f => f.Reaction)
+                .WithMany(u => u.CommentReactions)
+                .HasForeignKey(f => f.ReactionId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            x.HasOne(f => f.Comment)
+                .WithMany(u => u.CommentReactions)
+                .HasForeignKey(f => f.CommentId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+        
         modelBuilder.Entity<ReactionModel>(x =>
         {
             x.ToTable("Reactions");
