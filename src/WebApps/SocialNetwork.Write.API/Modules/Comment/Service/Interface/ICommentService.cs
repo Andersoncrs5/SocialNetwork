@@ -3,11 +3,13 @@ using SocialNetwork.Write.API.Models;
 using SocialNetwork.Write.API.Modules.Comment.Dto;
 using SocialNetwork.Write.API.Modules.Comment.Model;
 using SocialNetwork.Write.API.Modules.User.Model;
+using SocialNetwork.Write.API.Utils.result;
 
 namespace SocialNetwork.Write.API.Modules.Comment.Service.Interface;
 
 public interface ICommentService
 {
+    Task<Result<CommentModel>> GetByIdResult([IsId] string id);
     Task<bool> ExistsById([IsId] string id);
     Task<CommentModel> GetByIdSimpleAsync([IsId] string id);
     Task DeleteAsync(CommentModel comment, bool commit = true);

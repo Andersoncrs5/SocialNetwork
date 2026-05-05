@@ -5,6 +5,7 @@ using SocialNetwork.Write.API.Modules.Comment.Dto;
 using SocialNetwork.Write.API.Modules.Comment.Model;
 using SocialNetwork.Write.API.Modules.Comment.Service.Interface;
 using SocialNetwork.Write.API.Modules.User.Model;
+using SocialNetwork.Write.API.Utils.result;
 using SocialNetwork.Write.API.Utils.UnitOfWork;
 
 namespace SocialNetwork.Write.API.Modules.Comment.Service.Provider;
@@ -14,6 +15,16 @@ public class CommentService(IUnitOfWork uow): ICommentService
     public async Task<CommentModel> GetByIdSimpleAsync([IsId] string id)
         => await uow.CommentRepository.GetByIdAsync(id) 
            ?? throw new ModelNotFoundException("Comment not found");
+
+    public async Task<Result<CommentModel>> GetByIdResult([IsId] string id)
+    {
+        CommentModel? comment = await uow.CommentRepository.GetByIdAsync(id);
+        
+        if (comment == null)
+            return Result<CommentModel>.NotFound("Comment not found");
+        
+        return Result<CommentModel>.Ok(comment);
+    }
 
     public async Task DeleteAsync(CommentModel comment, bool commit = true)
     {
