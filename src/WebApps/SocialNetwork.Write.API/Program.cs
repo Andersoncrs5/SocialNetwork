@@ -27,6 +27,10 @@ using SocialNetwork.Write.API.Modules.CommentFavorite.Repository.Interface;
 using SocialNetwork.Write.API.Modules.CommentFavorite.Repository.Provider;
 using SocialNetwork.Write.API.Modules.CommentFavorite.Service.Interface;
 using SocialNetwork.Write.API.Modules.CommentFavorite.Service.Provider;
+using SocialNetwork.Write.API.Modules.CommentReactions.Repository.Interface;
+using SocialNetwork.Write.API.Modules.CommentReactions.Repository.Provider;
+using SocialNetwork.Write.API.Modules.CommentReactions.Service.Interface;
+using SocialNetwork.Write.API.Modules.CommentReactions.Service.Provider;
 using SocialNetwork.Write.API.Modules.Post.Repository.Interface;
 using SocialNetwork.Write.API.Modules.Post.Repository.Provider;
 using SocialNetwork.Write.API.Modules.Post.Service.Interface;
@@ -238,6 +242,7 @@ builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IPostFavoriteRepository, PostFavoriteRepository>();
 builder.Services.AddScoped<ICommentFavoriteRepository, CommentFavoriteRepository>();
 builder.Services.AddScoped<IReactionRepository, ReactionRepository>();
+builder.Services.AddScoped<ICommentReactionRepository, CommentReactionRepository>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -252,6 +257,7 @@ builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IPostFavoriteService, PostFavoriteService>();
 builder.Services.AddScoped<ICommentFavoriteService, CommentFavoriteService>();
 builder.Services.AddScoped<IReactionService, ReactionService>();
+builder.Services.AddScoped<ICommentReactionService, CommentReactionService>();
 
 // ===================================================================================
 // AUTO MAPPER
@@ -270,6 +276,7 @@ var mapperConfig = new MapperConfiguration(mc =>
     mc.AddMaps(typeof(PostFavoriteMapper).Assembly); 
     mc.AddMaps(typeof(CommentFavoriteMapper).Assembly); 
     mc.AddMaps(typeof(ReactionMapper).Assembly); 
+    mc.AddMaps(typeof(CommentReactionMapper).Assembly); 
 }, builder.Logging.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>());
 
 IMapper mapper = mapperConfig.CreateMapper();
