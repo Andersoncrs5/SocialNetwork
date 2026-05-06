@@ -9,6 +9,7 @@ namespace SocialNetwork.Write.API.Repositories.Interfaces;
 
 public interface IGenericRepository<T> where T: class
 {
+    Task<bool> DeleteById([IsId] string id);
     Task<T?> GetByIdInCache([IsId] string id, TimeSpan? cacheExpiry = null);
     Task<IEnumerable<T>> GetAllAsync();
     Task<bool> ExistsById([IsId] string Id);

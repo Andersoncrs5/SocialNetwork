@@ -17,6 +17,15 @@ public class GenericRepository<T>(AppDbContext context, IRedisService redisServi
 {
     protected readonly AppDbContext Context = context;
     private readonly DbSet<T> _dbSet = context.Set<T>();
+    
+    public async Task<bool> DeleteById([IsId] string id)
+    {
+        int affected = await _dbSet
+            .Where(x => x.Id == id)
+            .ExecuteDeleteAsync();
+
+        return affected > 0;
+    }
 
     public async Task<T?> GetByIdInCache([IsId] string id, TimeSpan? cacheExpiry = null)
     {
