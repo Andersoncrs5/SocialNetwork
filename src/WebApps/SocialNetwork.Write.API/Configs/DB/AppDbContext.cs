@@ -14,6 +14,7 @@ using SocialNetwork.Write.API.Modules.Post.Model;
 using SocialNetwork.Write.API.Modules.PostCategory.Model;
 using SocialNetwork.Write.API.Modules.PostFavorite.Model;
 using SocialNetwork.Write.API.Modules.PostTag.Model;
+using SocialNetwork.Write.API.Modules.PostVote.Model;
 using SocialNetwork.Write.API.Modules.Reaction.Model;
 using SocialNetwork.Write.API.Modules.Role.Model;
 using SocialNetwork.Write.API.Modules.Tag.Model;
@@ -35,6 +36,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<CommentFavoriteModel> CommentFavorites { get; set; }
     public DbSet<ReactionModel> Reactions { get; set; }
     public DbSet<CommentReactionModel> CommentReactions { get; set; }
+    public DbSet<PostVoteModel> PostVotes { get; set; }
     
     public override int SaveChanges()
     {
@@ -69,6 +71,28 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<PostVoteModel>(x =>
+        {
+            x.ToTable("PostVotes");
+            x.HasKey(p => p.Id);
+            
+            x.HasIndex(f => new { f.UserId, f.PostId })
+                .IsUnique()
+                .HasDatabaseName("UK_PostVotes_User_Post");
+            
+            x.HasOne(f => f.User)
+                .WithMany(u => u.Votes)
+                .HasForeignKey(f => f.UserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            x.HasOne(f => f.Post)
+                .WithMany(u => u.Votes)
+                .HasForeignKey(f => f.PostId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+        
         modelBuilder.Entity<CommentReactionModel>(x =>
         {
             x.ToTable("CommentReactions");
@@ -141,7 +165,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
             x.ToTable("PostFavorites");
             x.HasKey(f => f.Id);
 
-            x.HasIndex(f => new { f.UserId, f.PostId }).IsUnique();
+            x.HasIndex(f => new { f.UserId, f.PostId })
+                .IsUnique()
+                .HasDatabaseName("UK_PostFavorites_User_Post");
 
             x.HasOne(f => f.User)
                 .WithMany(u => u.Favorites)

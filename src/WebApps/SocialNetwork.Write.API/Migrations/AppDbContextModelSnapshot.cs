@@ -503,7 +503,8 @@ namespace SocialNetwork.Write.API.Migrations
                     b.HasIndex("PostModelId");
 
                     b.HasIndex("UserId", "PostId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("UK_PostFavorites_User_Post");
 
                     b.ToTable("PostFavorites", (string)null);
                 });
@@ -539,6 +540,44 @@ namespace SocialNetwork.Write.API.Migrations
                     b.HasIndex("TagId");
 
                     b.ToTable("PostTags", (string)null);
+                });
+
+            modelBuilder.Entity("SocialNetwork.Write.API.Modules.PostVote.Model.PostVoteModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(450)
+                        .HasColumnType("varchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("PostId")
+                        .IsRequired()
+                        .HasColumnType("varchar(450)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Vote")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId", "PostId")
+                        .IsUnique()
+                        .HasDatabaseName("UK_PostVotes_User_Post");
+
+                    b.ToTable("PostVotes", (string)null);
                 });
 
             modelBuilder.Entity("SocialNetwork.Write.API.Modules.Reaction.Model.ReactionModel", b =>
@@ -996,6 +1035,25 @@ namespace SocialNetwork.Write.API.Migrations
                     b.Navigation("Tag");
                 });
 
+            modelBuilder.Entity("SocialNetwork.Write.API.Modules.PostVote.Model.PostVoteModel", b =>
+                {
+                    b.HasOne("SocialNetwork.Write.API.Modules.Post.Model.PostModel", "Post")
+                        .WithMany("Votes")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SocialNetwork.Write.API.Modules.User.Model.UserModel", "User")
+                        .WithMany("Votes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SocialNetwork.Write.API.Modules.Category.Model.CategoryModel", b =>
                 {
                     b.Navigation("Children");
@@ -1021,6 +1079,8 @@ namespace SocialNetwork.Write.API.Migrations
                     b.Navigation("PostCategories");
 
                     b.Navigation("PostTags");
+
+                    b.Navigation("Votes");
                 });
 
             modelBuilder.Entity("SocialNetwork.Write.API.Modules.Reaction.Model.ReactionModel", b =>
@@ -1042,6 +1102,8 @@ namespace SocialNetwork.Write.API.Migrations
                     b.Navigation("Favorites");
 
                     b.Navigation("Posts");
+
+                    b.Navigation("Votes");
                 });
 #pragma warning restore 612, 618
         }
