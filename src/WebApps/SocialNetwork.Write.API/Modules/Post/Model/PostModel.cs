@@ -5,6 +5,7 @@ using SocialNetwork.Write.API.Models.Enums.Post;
 using SocialNetwork.Write.API.Modules.PostCategory.Model;
 using SocialNetwork.Write.API.Modules.PostFavorite.Model;
 using SocialNetwork.Write.API.Modules.PostTag.Model;
+using SocialNetwork.Write.API.Modules.PostVote.Model;
 using SocialNetwork.Write.API.Modules.User.Model;
 using SocialNetwork.Write.API.Utils.Bases;
 
@@ -39,5 +40,6 @@ public class PostModel: BaseModel
     
     public ICollection<PostTagModel> PostTags { get; set; } = new List<PostTagModel>();
     public ICollection<PostFavoriteModel> Favorites { get; set; } = new List<PostFavoriteModel>();
+    public ICollection<PostVoteModel> Votes { get; set; } = new List<PostVoteModel>();
     
 }

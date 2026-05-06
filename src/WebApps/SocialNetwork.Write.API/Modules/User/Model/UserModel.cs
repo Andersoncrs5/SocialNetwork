@@ -3,6 +3,7 @@ using SocialNetwork.Write.API.Modules.CommentFavorite.Model;
 using SocialNetwork.Write.API.Modules.CommentReactions.Model;
 using SocialNetwork.Write.API.Modules.Post.Model;
 using SocialNetwork.Write.API.Modules.PostFavorite.Model;
+using SocialNetwork.Write.API.Modules.PostVote.Model;
 
 namespace SocialNetwork.Write.API.Modules.User.Model;
 
@@ -28,4 +29,5 @@ public class UserModel: IdentityUser
     public ICollection<PostFavoriteModel> Favorites { get; set; } = new List<PostFavoriteModel>();
     public ICollection<CommentFavoriteModel> CommentFavorites { get; set; } = new List<CommentFavoriteModel>();
     public ICollection<CommentReactionModel> CommentReactions { get; set; } = new List<CommentReactionModel>();
+    public ICollection<PostVoteModel> Votes { get; set; } = new List<PostVoteModel>();
 }
