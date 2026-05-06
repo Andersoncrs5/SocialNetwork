@@ -23,9 +23,11 @@ using SocialNetwork.Write.API.Modules.CommentReactions.Dto;
 using SocialNetwork.Write.API.Modules.Post.Dto;
 using SocialNetwork.Write.API.Modules.PostCategory.Dto;
 using SocialNetwork.Write.API.Modules.PostTag.Dto;
+using SocialNetwork.Write.API.Modules.PostVote.Dto;
 using SocialNetwork.Write.API.Modules.Reaction.Dto;
 using SocialNetwork.Write.API.Modules.Tag.Dto;
 using SocialNetwork.Write.API.Modules.User.Dto;
+using SocialNetwork.Write.API.Utils.Enums;
 using SocialNetwork.Write.IntegrationTests.Config;
 using SocialNetwork.Write.IntegrationTests.Tests.Utils.Classes;
 using Xunit.Abstractions;
@@ -34,6 +36,32 @@ namespace SocialNetwork.Write.IntegrationTests.Tests;
 
 public class HelperTest(HttpClient client)
 {
+    public async Task AddVoteInPost(
+        UserTestResult user,
+        string postId, VoteEnum voteEnum
+    )
+    {
+        string _url = "api/v1/post-vote";
+        
+        TogglePostVoteDto dto = new TogglePostVoteDto(postId, voteEnum);
+        
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", user.Tokens.Token);
+
+        HttpResponseMessage message = await client.PostAsJsonAsync($"{_url}/toggle", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<object>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<object>>();
+        
+        http.Should().NotBeNull();
+        http.Message.Should().NotBeNullOrEmpty();
+        http.TraceId.Should().NotBeNullOrEmpty();
+
+        http.Success.Should().BeTrue();
+
+        http.Data.Should().BeNull();
+    }
+    
     public async Task<CommentReactionDto> CreateCommentReaction(
         ReactionDto reactionDto,
         UserTestResult user,
