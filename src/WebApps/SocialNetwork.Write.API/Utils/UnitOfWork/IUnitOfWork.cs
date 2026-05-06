@@ -10,6 +10,7 @@ using SocialNetwork.Write.API.Modules.Post.Repository.Interface;
 using SocialNetwork.Write.API.Modules.PostCategory.Repository.Interface;
 using SocialNetwork.Write.API.Modules.PostFavorite.Repository.Interface;
 using SocialNetwork.Write.API.Modules.PostTag.Repository.Interface;
+using SocialNetwork.Write.API.Modules.PostVote.Repository.Interface;
 using SocialNetwork.Write.API.Modules.Reaction.Repository.Interface;
 using SocialNetwork.Write.API.Modules.Role.Repository.Interfaces;
 using SocialNetwork.Write.API.Modules.Tag.Repository.Interface;
@@ -22,6 +23,7 @@ namespace SocialNetwork.Write.API.Utils.UnitOfWork;
 public interface IUnitOfWork: IDisposable
 {
     IUserRepository UserRepository { get; }
+    IPostVoteRepository PostVoteRepository { get; }
     IRoleRepository RoleRepository { get; }
     ICategoryRepository CategoryRepository { get; }
     ITagRepository TagRepository { get; }
