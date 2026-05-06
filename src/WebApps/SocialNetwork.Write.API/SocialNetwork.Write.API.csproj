@@ -46,6 +46,13 @@
     <Folder Include="Modules\Auth\Service\Interface\" />
     <Folder Include="Modules\Auth\Service\Provider\" />
     <Folder Include="Modules\Auth\Validations\" />
+    <Folder Include="Modules\Base\Controller\" />
+    <Folder Include="Modules\Base\Dto\" />
+    <Folder Include="Modules\Base\Gateway\" />
+    <Folder Include="Modules\Base\Model\" />
+    <Folder Include="Modules\Base\Repository\" />
+    <Folder Include="Modules\Base\Service\Interface\" />
+    <Folder Include="Modules\Base\Service\provider\" />
     <Folder Include="Modules\CommentFavorite\Dto\" />
     <Folder Include="Modules\CommentFavorite\Validations\" />
     <Folder Include="Modules\CommentReactions\Validations\" />
