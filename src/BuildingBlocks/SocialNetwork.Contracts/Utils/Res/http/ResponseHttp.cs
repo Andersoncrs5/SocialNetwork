@@ -10,5 +10,6 @@ public record ResponseHttp<T>(
     DateTime Timestamp,
     string? DetailsError = null,
     string? Path = null,
-    UInt16 ApiVersion = 1
-);
+    UInt16 ApiVersion = 1,
+    IReadOnlyList<string>? Errors = null
+    );
