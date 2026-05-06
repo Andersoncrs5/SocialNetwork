@@ -47,6 +47,10 @@ using SocialNetwork.Write.API.Modules.PostTag.Repository.Interface;
 using SocialNetwork.Write.API.Modules.PostTag.Repository.Provider;
 using SocialNetwork.Write.API.Modules.PostTag.Service.Interface;
 using SocialNetwork.Write.API.Modules.PostTag.Service.Provider;
+using SocialNetwork.Write.API.Modules.PostVote.Repository.Interface;
+using SocialNetwork.Write.API.Modules.PostVote.Repository.Provider;
+using SocialNetwork.Write.API.Modules.PostVote.Service.Interface;
+using SocialNetwork.Write.API.Modules.PostVote.Service.provider;
 using SocialNetwork.Write.API.Modules.Reaction.Repository.Interface;
 using SocialNetwork.Write.API.Modules.Reaction.Repository.Provider;
 using SocialNetwork.Write.API.Modules.Reaction.Service.Interface;
@@ -243,6 +247,7 @@ builder.Services.AddScoped<IPostFavoriteRepository, PostFavoriteRepository>();
 builder.Services.AddScoped<ICommentFavoriteRepository, CommentFavoriteRepository>();
 builder.Services.AddScoped<IReactionRepository, ReactionRepository>();
 builder.Services.AddScoped<ICommentReactionRepository, CommentReactionRepository>();
+builder.Services.AddScoped<IPostVoteRepository, PostVoteRepository>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -258,6 +263,7 @@ builder.Services.AddScoped<IPostFavoriteService, PostFavoriteService>();
 builder.Services.AddScoped<ICommentFavoriteService, CommentFavoriteService>();
 builder.Services.AddScoped<IReactionService, ReactionService>();
 builder.Services.AddScoped<ICommentReactionService, CommentReactionService>();
+builder.Services.AddScoped<IPostVoteService, PostVoteService>();
 
 // ===================================================================================
 // AUTO MAPPER
@@ -373,7 +379,6 @@ app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader())
 
 app.UseAuthentication();
 app.UseAuthorization();
-
 
 app.MapControllers(); 
 
