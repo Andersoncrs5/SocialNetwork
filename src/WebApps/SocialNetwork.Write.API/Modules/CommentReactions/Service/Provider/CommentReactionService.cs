@@ -2,7 +2,6 @@ using SocialNetwork.Contracts.Attributes.Globals;
 using SocialNetwork.Write.API.Configs.DB;
 using SocialNetwork.Write.API.Configs.Exception.classes;
 using SocialNetwork.Write.API.Models.Enums.Post;
-using SocialNetwork.Write.API.Modules.CommentFavorite.Model;
 using SocialNetwork.Write.API.Modules.CommentReactions.Dto;
 using SocialNetwork.Write.API.Modules.CommentReactions.Model;
 using SocialNetwork.Write.API.Modules.CommentReactions.Service.Interface;
@@ -38,7 +37,6 @@ public class CommentReactionService(IUnitOfWork uow): ICommentReactionService
         {
             throw new ConflictValueException("You've already reacted to this comment!");
         }
-        
     }
 
     public async Task<ResultToggle<CommentReactionModel?>> ToggleAsync(ToggleCommentReactionDto dto, [IsId] string userId, bool commit = true)
