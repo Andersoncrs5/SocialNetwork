@@ -1,12 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Renci.SshNet.Security;
 using SocialNetwork.Contracts.configs.jwt;
 using SocialNetwork.Contracts.Utils.Res.http;
 using SocialNetwork.Write.API.Configs.InfoApp;
@@ -28,8 +25,8 @@ public class TokenService(
     public string GenerateAccessToken(IEnumerable<Claim> claims)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey));
-        var creds = new SigningCredentials(key, _alg);
-        
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
         var token = new JwtSecurityToken(
             issuer: _options.ValidIssuer,
             audience: _options.ValidAudience,
@@ -81,11 +78,9 @@ public class TokenService(
             new Claim(JwtRegisteredClaimNames.Name, user.UserName!),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(JwtRegisteredClaimNames.Sid, user.Id),
-            new Claim(JwtRegisteredClaimNames.Iss, _appOptions.Domain),
-            new Claim(JwtRegisteredClaimNames.Aud, _options.ValidAudience),
             new Claim("country", user.Country ?? string.Empty),
             new Claim("language", user.Language ?? string.Empty),
-            new Claim("lockoutEnd", user.LockoutEnd.ToString() ?? string.Empty),
+            new Claim("lockoutEnd", user.LockoutEnd?.ToString() ?? string.Empty),
         };
 
         foreach (var role in userRoles)
