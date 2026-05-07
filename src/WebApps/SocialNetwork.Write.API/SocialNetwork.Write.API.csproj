@@ -14,7 +14,6 @@
     <PackageReference Include="IdGen" Version="3.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
       <PrivateAssets>all</PrivateAssets>
@@ -26,10 +25,12 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.1" />
+    <PackageReference Include="Microsoft.OpenApi" Version="2.3.0" />
     <PackageReference Include="MySql.EntityFrameworkCore" Version="10.0.0-rc" />
     <PackageReference Include="StackExchange.Redis" Version="2.10.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="10.1.0" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="9.0.1" />
     <PackageReference Include="Testcontainers.Redis" Version="4.10.0" />
   </ItemGroup>
 
@@ -59,13 +60,6 @@
     <Folder Include="Modules\PostCategory\Validations\" />
     <Folder Include="Modules\PostFavorite\Dto\" />
     <Folder Include="Modules\PostFavorite\Validations\" />
-    <Folder Include="Modules\PostReactions\Controller\" />
-    <Folder Include="Modules\PostReactions\Dto\" />
-    <Folder Include="Modules\PostReactions\Model\" />
-    <Folder Include="Modules\PostReactions\Repository\Interface\" />
-    <Folder Include="Modules\PostReactions\Repository\Provider\" />
-    <Folder Include="Modules\PostReactions\Service\Interface\" />
-    <Folder Include="Modules\PostReactions\Service\Provider\" />
     <Folder Include="Modules\PostReactions\Validations\" />
     <Folder Include="Modules\PostTag\Validations\" />
   </ItemGroup>
