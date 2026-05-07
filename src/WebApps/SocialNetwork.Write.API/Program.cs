@@ -1,4 +1,5 @@
 using System;
+using System.Security.Claims;
 using System.Text;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -43,10 +44,15 @@ using SocialNetwork.Write.API.Modules.PostFavorite.Repository.Interface;
 using SocialNetwork.Write.API.Modules.PostFavorite.Repository.Provider;
 using SocialNetwork.Write.API.Modules.PostFavorite.Service.Interface;
 using SocialNetwork.Write.API.Modules.PostFavorite.Service.Provider;
+using SocialNetwork.Write.API.Modules.PostReactions.Repository.Interface;
+using SocialNetwork.Write.API.Modules.PostReactions.Repository.Provider;
+using SocialNetwork.Write.API.Modules.PostReactions.Service.Interface;
+using SocialNetwork.Write.API.Modules.PostReactions.Service.Provider;
 using SocialNetwork.Write.API.Modules.PostTag.Repository.Interface;
 using SocialNetwork.Write.API.Modules.PostTag.Repository.Provider;
 using SocialNetwork.Write.API.Modules.PostTag.Service.Interface;
 using SocialNetwork.Write.API.Modules.PostTag.Service.Provider;
+using SocialNetwork.Write.API.Modules.PostVote.Gateway;
 using SocialNetwork.Write.API.Modules.PostVote.Repository.Interface;
 using SocialNetwork.Write.API.Modules.PostVote.Repository.Provider;
 using SocialNetwork.Write.API.Modules.PostVote.Service.Interface;
@@ -78,7 +84,6 @@ using SocialNetwork.Write.API.Utils.UnitOfWork;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 // ===================================================================================
 // BANCAS DE DADOS (TiDB & Redis)
 // ===================================================================================
@@ -106,10 +111,7 @@ builder.Services.Configure<InfoAppOptions>(builder.Configuration.GetSection("Inf
 // ===================================================================================
 // IDENTITY & JWT
 // ===================================================================================
-builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("jwt"));
 
-var jwtSettings = builder.Configuration.GetSection("jwt");
-var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey is missing");
 
 builder.Services.AddIdentity<UserModel, RoleModel>(options =>
 {
@@ -120,6 +122,24 @@ builder.Services.AddIdentity<UserModel, RoleModel>(options =>
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("jwt"));
+
+JwtOptions jwt = builder.Configuration
+    .GetSection("jwt")
+    .Get<JwtOptions>()!;
+
+var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.SecretKey!));
+
+Console.WriteLine($"SECRET LENGTH: {jwt.SecretKey?.Length}");
+Console.WriteLine($"SECRET : {jwt.SecretKey}");
+Console.WriteLine($"ISSUER: {jwt.ValidIssuer}");
+Console.WriteLine($"AUDIENCE: {jwt.ValidAudience}");
+
+Console.WriteLine($"Key Bytes: {key.Key.ToArray().Select(x => x)}");
+Console.WriteLine($"Key Id: {key.KeyId}");
+Console.WriteLine($"Key Size: {key.KeySize}");
+Console.WriteLine($"Key Crypto: {key.CryptoProviderFactory}");
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -127,16 +147,52 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
+    
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
+        ValidIssuer = jwt.ValidIssuer,
+
         ValidateAudience = true,
-        ValidateLifetime = true,
+        ValidAudience = jwt.ValidAudience,
+
         ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings["ValidIssuer"],
-        ValidAudience = jwtSettings["ValidAudience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.SecretKey)),
+
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero,
+
+        RoleClaimType = ClaimTypes.Role
     };
+    
+    options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            Console.WriteLine("=== FAIL DEBUG ===");
+            Console.WriteLine(context.Exception.ToString());
+            Console.WriteLine($"KEY: {options.TokenValidationParameters.IssuerSigningKey != null}");
+            return Task.CompletedTask;
+        },
+        OnTokenValidated = context =>
+        {
+            Console.WriteLine("\n\n\n\n======================================================================");
+            Console.WriteLine("Token validado com sucesso!");
+            Console.WriteLine("======================================================================\n\n\n\n");
+            return Task.CompletedTask;
+        },
+        OnMessageReceived = context => 
+        {
+            Console.WriteLine("=== JWT DEBUG ===");
+            Console.WriteLine($"IssuerSigningKey: {options.TokenValidationParameters.IssuerSigningKey}");
+            Console.WriteLine($"ValidIssuer: {options.TokenValidationParameters.ValidIssuer}");
+            Console.WriteLine($"ValidAudience: {options.TokenValidationParameters.ValidAudience}");
+            return Task.CompletedTask;
+        },
+        
+    };
+    
+    
 });
 
 // ===================================================================================
@@ -159,9 +215,6 @@ apiVersioningBuilder.AddApiExplorer(options =>
 // ===================================================================================
 // SWAGGER & CONTROLLERS
 // ===================================================================================
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddOpenApi();
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
@@ -199,18 +252,24 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new() { Title = "Social Network API", Version = "v1" });
-    options.EnableAnnotations();
-
-    var securityScheme = new OpenApiSecurityScheme
+    options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Name = "JWT Authentication",
-        Description = "Enter JWT Bearer token **_only_**",
-        In = ParameterLocation.Header,
+        Title = "Social Network API",
+        Version = "v1"
+    });
+
+    options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+    {
         Type = SecuritySchemeType.Http,
         Scheme = "bearer",
         BearerFormat = "JWT",
-    };
+        Description = "JWT Authorization header using the Bearer scheme."
+    });
+
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("bearer", document)] = []
+    }); 
 });
 
 // ===================================================================================
@@ -223,7 +282,6 @@ builder.Services.AddRateLimiter(options =>
         opt.PermitLimit = 30;
         opt.Window = TimeSpan.FromSeconds(5);
     });
-    
 });
 
 // ===================================================================================
@@ -248,6 +306,7 @@ builder.Services.AddScoped<ICommentFavoriteRepository, CommentFavoriteRepository
 builder.Services.AddScoped<IReactionRepository, ReactionRepository>();
 builder.Services.AddScoped<ICommentReactionRepository, CommentReactionRepository>();
 builder.Services.AddScoped<IPostVoteRepository, PostVoteRepository>();
+builder.Services.AddScoped<IPostReactionRepository, PostReactionRepository>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -264,6 +323,9 @@ builder.Services.AddScoped<ICommentFavoriteService, CommentFavoriteService>();
 builder.Services.AddScoped<IReactionService, ReactionService>();
 builder.Services.AddScoped<ICommentReactionService, CommentReactionService>();
 builder.Services.AddScoped<IPostVoteService, PostVoteService>();
+builder.Services.AddScoped<IPostReactionService, PostReactionService>();
+
+builder.Services.AddScoped<PostVoteModuleGateway>();
 
 // ===================================================================================
 // AUTO MAPPER
@@ -271,7 +333,6 @@ builder.Services.AddScoped<IPostVoteService, PostVoteService>();
 
 var mapperConfig = new MapperConfiguration(mc =>
 {
-    
     mc.AddMaps(typeof(UserMapper).Assembly); 
     mc.AddMaps(typeof(CategoryMapper).Assembly); 
     mc.AddMaps(typeof(TagMapper).Assembly); 
