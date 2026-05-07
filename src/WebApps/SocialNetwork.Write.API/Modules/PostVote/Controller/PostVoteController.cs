@@ -46,7 +46,7 @@ public class PostVoteController(
                 Data: null,
                 Message: result.Message,
                 TraceId: HttpContext.TraceIdentifier,
-                Success: true,
+                Success: false,
                 Timestamp: DateTime.UtcNow,
                 Errors: result.Errors
             ));
