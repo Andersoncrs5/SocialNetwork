@@ -13,6 +13,7 @@ using SocialNetwork.Write.API.Modules.CommentReactions.Model;
 using SocialNetwork.Write.API.Modules.Post.Model;
 using SocialNetwork.Write.API.Modules.PostCategory.Model;
 using SocialNetwork.Write.API.Modules.PostFavorite.Model;
+using SocialNetwork.Write.API.Modules.PostReactions.Model;
 using SocialNetwork.Write.API.Modules.PostTag.Model;
 using SocialNetwork.Write.API.Modules.PostVote.Model;
 using SocialNetwork.Write.API.Modules.Reaction.Model;
@@ -37,6 +38,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<ReactionModel> Reactions { get; set; }
     public DbSet<CommentReactionModel> CommentReactions { get; set; }
     public DbSet<PostVoteModel> PostVotes { get; set; }
+    public DbSet<PostReactionModel> PostReactions { get; set; }
     
     public override int SaveChanges()
     {
@@ -115,6 +117,37 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
             x.HasOne(f => f.Comment)
                 .WithMany(u => u.CommentReactions)
                 .HasForeignKey(f => f.CommentId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+        
+        modelBuilder.Entity<PostReactionModel>(x =>
+        {
+            x.ToTable("PostReactions");
+            x.HasKey(p => p.Id);
+            
+            x.HasIndex(f => new { f.UserId, f.PostId })
+                .IsUnique()
+                .HasDatabaseName("UK_PostReactions_UserId_PostId");
+            
+            x.HasOne(f => f.User)
+                .WithMany(u => u.PostReactions)
+                .HasForeignKey(f => f.UserId)
+                .IsRequired()
+                .HasConstraintName("FK_PostReactions_User_Post")
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            x.HasOne(f => f.Reaction)
+                .WithMany(u => u.PostReactions)
+                .HasForeignKey(f => f.ReactionId)
+                .HasConstraintName("FK_PostReactions_Reaction_Post")
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            x.HasOne(f => f.Post)
+                .WithMany(u => u.PostReactions)
+                .HasForeignKey(f => f.PostId)
+                .HasConstraintName("FK_PostReactions_Post_Post")
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
         });
