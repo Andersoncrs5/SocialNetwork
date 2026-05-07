@@ -1,5 +1,6 @@
 using SocialNetwork.Contracts.Enums.Reaction;
 using SocialNetwork.Write.API.Modules.CommentReactions.Model;
+using SocialNetwork.Write.API.Modules.PostReactions.Model;
 using SocialNetwork.Write.API.Utils.Bases;
 
 namespace SocialNetwork.Write.API.Modules.Reaction.Model;
@@ -15,4 +16,5 @@ public class ReactionModel: BaseModel
     public bool Visible { get; set; }
     
     public ICollection<CommentReactionModel> CommentReactions { get; set; } = new List<CommentReactionModel>();
+    public ICollection<PostReactionModel> PostReactions { get; set; } = new List<PostReactionModel>();
 }
