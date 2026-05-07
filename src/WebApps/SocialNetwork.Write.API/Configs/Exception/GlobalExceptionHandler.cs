@@ -8,10 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SocialNetwork.Contracts.Utils.Exceptions;
 using SocialNetwork.Contracts.Utils.Res.http;
+using SocialNetwork.Write.API.Configs.DB;
 using SocialNetwork.Write.API.Configs.Exception.classes;
 
 namespace SocialNetwork.Write.API.Configs.Exception;
 
+/*
 public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(
@@ -78,144 +80,205 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
     }
 }
 
-/*
-
-public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
-   {
-       public async ValueTask<bool> TryHandleAsync(
-           HttpContext httpContext,
-           Exception exception,
-           CancellationToken cancellationToken)
-       {
-           var (statusCode, message, isBusinessError) = exception switch
-           {
-               ModelNotFoundException => (HttpStatusCode.NotFound, exception.Message, true),
-   
-               DbUpdateConcurrencyException => (
-                   HttpStatusCode.Conflict,
-                   "Este registro foi atualizado por outro usuário.",
-                   false
-               ),
-   
-               DbUpdateException dbEx when dbEx.IsForeignKeyViolation() => HandleForeignKey(dbEx),
-   
-               DbUpdateException dbEx when dbEx.IsDuplicateEntry() => (
-                   HttpStatusCode.Conflict,
-                   "Já existe um registro com esses dados.",
-                   true
-               ),
-   
-               DbUpdateException dbEx when dbEx.IsDataTooLong() => (
-                   HttpStatusCode.BadRequest,
-                   "Um dos campos excede o tamanho permitido.",
-                   true
-               ),
-   
-               InternalServerErrorException => (
-                   HttpStatusCode.InternalServerError,
-                   "Erro interno no servidor.",
-                   false
-               ),
-   
-               BadHttpRequestException => (
-                   HttpStatusCode.BadRequest,
-                   "Falha na validação da requisição.",
-                   true
-               ),
-   
-               ConflictValueException => (
-                   HttpStatusCode.BadRequest,
-                   exception.Message,
-                   true
-               ),
-   
-               UnauthenticatedException => (
-                   HttpStatusCode.Unauthorized,
-                   exception.Message,
-                   true
-               ),
-   
-               SelfReferencingHierarchyException => (
-                   HttpStatusCode.UnprocessableEntity,
-                   exception.Message,
-                   true
-               ),
-   
-               IdentityOperationException => (
-                   HttpStatusCode.UnprocessableEntity,
-                   exception.Message,
-                   true
-               ),
-   
-               ForbiddenException => (
-                   HttpStatusCode.Forbidden,
-                   exception.Message,
-                   true
-               ),
-   
-               ResourceOwnerMismatchException => (
-                   HttpStatusCode.Forbidden,
-                   exception.Message,
-                   true
-               ),
-   
-               _ => (
-                   HttpStatusCode.InternalServerError,
-                   "Ocorreu um erro inesperado no servidor.",
-                   false
-               )
-           };
-   
-           if (isBusinessError)
-           {
-               logger.LogWarning(
-                   "Business Violation: {Message} | TraceId: {TraceId}",
-                   message,
-                   httpContext.TraceIdentifier
-               );
-           }
-           else
-           {
-               logger.LogError(
-                   exception,
-                   "Critical Error: {Message} | TraceId: {TraceId}",
-                   exception.Message,
-                   httpContext.TraceIdentifier
-               );
-           }
-   
-           var response = new ResponseHttp<object>(
-               Data: null,
-               Message: message,
-               TraceId: httpContext.TraceIdentifier,
-               Success: false,
-               Timestamp: DateTime.UtcNow,
-               DetailsError: exception.Message
-           );
-   
-           httpContext.Response.StatusCode = (int)statusCode;
-           httpContext.Response.ContentType = "application/json";
-   
-           await httpContext.Response.WriteAsJsonAsync(response, cancellationToken);
-           return true;
-       }
-   
-       private static (HttpStatusCode StatusCode, string Message, bool IsBusinessError) HandleForeignKey(DbUpdateException ex)
-       {
-           var current = ex as Exception;
-           while (current?.InnerException != null)
-               current = current.InnerException;
-   
-           var message = current?.Message ?? ex.Message;
-   
-           if (message.Contains("FK_PostVotes_Posts_PostId", StringComparison.OrdinalIgnoreCase))
-               return (HttpStatusCode.NotFound, "Post not found.", true);
-   
-           if (message.Contains("FK_PostVotes_Users_UserId", StringComparison.OrdinalIgnoreCase))
-               return (HttpStatusCode.NotFound, "User not found.", true);
-   
-           return (HttpStatusCode.NotFound, "User or post not found.", true);
-       }
-   }
-   
 */
+
+using System.Net;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.EntityFrameworkCore;
+
+public sealed class GlobalExceptionHandler(
+    ILogger<GlobalExceptionHandler> logger,
+    IHostEnvironment environment
+) : IExceptionHandler
+{
+    public async ValueTask<bool> TryHandleAsync(
+        HttpContext httpContext,
+        System.Exception exception,
+        CancellationToken cancellationToken)
+    {
+        var (statusCode, message, isBusinessError) = exception switch
+        {
+            ModelNotFoundException => (
+                HttpStatusCode.NotFound,
+                exception.Message,
+                true
+            ),
+
+            DbUpdateConcurrencyException => (
+                HttpStatusCode.Conflict,
+                "Este registro foi atualizado por outro usuário.",
+                false
+            ),
+
+            DbUpdateException dbEx when dbEx.IsDuplicateEntry() => (
+                HttpStatusCode.Conflict,
+                "Já existe um registro com esses dados.",
+                true
+            ),
+
+            DbUpdateException dbEx when dbEx.IsDataTooLong() => (
+                HttpStatusCode.BadRequest,
+                "Um dos campos excede o tamanho permitido.",
+                true
+            ),
+
+            DbUpdateException dbEx when dbEx.IsForeignKeyViolation() => HandleForeignKey(dbEx),
+
+            InvalidOperationException invEx when invEx.HasForeignKeyViolation() => HandleForeignKey(invEx),
+
+            InternalServerErrorException => (
+                HttpStatusCode.InternalServerError,
+                "Erro interno no servidor.",
+                false
+            ),
+
+            BadHttpRequestException => (
+                HttpStatusCode.BadRequest,
+                "Falha na validação da requisição.",
+                true
+            ),
+
+            ConflictValueException => (
+                HttpStatusCode.BadRequest,
+                exception.Message,
+                true
+            ),
+
+            UnauthenticatedException => (
+                HttpStatusCode.Unauthorized,
+                exception.Message,
+                true
+            ),
+
+            SelfReferencingHierarchyException => (
+                HttpStatusCode.UnprocessableEntity,
+                exception.Message,
+                true
+            ),
+
+            IdentityOperationException => (
+                HttpStatusCode.UnprocessableEntity,
+                exception.Message,
+                true
+            ),
+
+            ForbiddenException => (
+                HttpStatusCode.Forbidden,
+                exception.Message,
+                true
+            ),
+
+            ResourceOwnerMismatchException => (
+                HttpStatusCode.Forbidden,
+                exception.Message,
+                true
+            ),
+
+            _ => (
+                HttpStatusCode.InternalServerError,
+                "Ocorreu um erro inesperado no servidor.",
+                false
+            )
+        };
+
+        if (isBusinessError)
+        {
+            logger.LogWarning(
+                "Business violation: {Message} | TraceId: {TraceId}",
+                message,
+                httpContext.TraceIdentifier
+            );
+        }
+        else
+        {
+            logger.LogError(
+                exception,
+                "Critical error: {Message} | TraceId: {TraceId}",
+                exception.Message,
+                httpContext.TraceIdentifier
+            );
+        }
+
+        var response = new ResponseHttp<object>(
+            Data: null,
+            Message: message,
+            TraceId: httpContext.TraceIdentifier,
+            Success: false,
+            Timestamp: DateTime.UtcNow,
+            DetailsError: environment.IsDevelopment() ? exception.ToString() : null
+        );
+
+        httpContext.Response.StatusCode = (int)statusCode;
+        httpContext.Response.ContentType = "application/json";
+
+        await httpContext.Response.WriteAsJsonAsync(response, cancellationToken);
+        return true;
+    }
+
+    private static (HttpStatusCode StatusCode, string Message, bool IsBusinessError) HandleForeignKey(System.Exception ex)
+    {
+        var message = GetDeepMessage(ex);
+
+        if (message.Contains("FK_PostVotes_Posts_PostId", StringComparison.OrdinalIgnoreCase))
+            return (HttpStatusCode.NotFound, "Post not found.", true);
+
+        if (message.Contains("FK_PostVotes_Users_UserId", StringComparison.OrdinalIgnoreCase))
+            return (HttpStatusCode.NotFound, "User not found.", true);
+
+        if (message.Contains("FK_PostReactions_User_Post", StringComparison.OrdinalIgnoreCase))
+            return (HttpStatusCode.NotFound, "User not found.", true);
+
+        if (message.Contains("FK_PostReactions_Reaction_Post", StringComparison.OrdinalIgnoreCase))
+            return (HttpStatusCode.NotFound, "Reaction not found.", true);
+
+        if (message.Contains("FK_PostReactions_Post_Post", StringComparison.OrdinalIgnoreCase))
+            return (HttpStatusCode.NotFound, "Post not found.", true);
+
+        if (message.Contains("Cannot add or update a child row", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("foreign key constraint fails", StringComparison.OrdinalIgnoreCase))
+        {
+            return (HttpStatusCode.NotFound, "Recurso relacionado não encontrado.", true);
+        }
+
+        return (HttpStatusCode.NotFound, "Recurso relacionado não encontrado.", true);
+    }
+
+    private static string GetDeepMessage(System.Exception ex)
+    {
+        var current = ex;
+        while (current.InnerException is not null)
+            current = current.InnerException;
+
+        return current.Message ?? ex.Message;
+    }
+}
+
+public static class ExceptionExtensions
+{
+    public static bool HasForeignKeyViolation(this System.Exception ex)
+    {
+        return GetAllMessages(ex).Any(message =>
+            message.Contains("foreign key constraint fails", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("Cannot add or update a child row", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("FK_", StringComparison.OrdinalIgnoreCase));
+    }
+
+    public static bool IsDuplicateEntry(this DbUpdateException ex)
+    {
+        return GetAllMessages(ex).Any(message =>
+            message.Contains("duplicate", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("Duplicate entry", StringComparison.OrdinalIgnoreCase));
+    }
+
+    public static bool IsDataTooLong(this DbUpdateException ex)
+    {
+        return GetAllMessages(ex).Any(message =>
+            message.Contains("Data too long", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static IEnumerable<string> GetAllMessages(System.Exception ex)
+    {
+        for (var current = ex; current is not null; current = current.InnerException)
+            yield return current.Message ?? string.Empty;
+    }
+}
