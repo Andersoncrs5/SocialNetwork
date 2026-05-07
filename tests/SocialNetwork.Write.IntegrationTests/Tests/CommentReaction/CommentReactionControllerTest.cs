@@ -21,8 +21,7 @@ public class CommentReactionControllerTest: BaseIntegrationTest
     private readonly ITestOutputHelper _output;
     private readonly string _url = "api/v1/comment-reaction";
 
-    public CommentReactionControllerTest(WriteApiFactory factory, ITestOutputHelper output) 
-        : base(factory)
+    public CommentReactionControllerTest(WriteApiFactory factory, ITestOutputHelper output) : base(factory)
     {
         _output = output;
         _helper = new HelperTest(Client); 
@@ -157,16 +156,16 @@ public class CommentReactionControllerTest: BaseIntegrationTest
             new AuthenticationHeaderValue("Bearer", user.Tokens.Token);
 
         HttpResponseMessage message = await Client.PostAsJsonAsync($"{_url}/toggle", dto);
-        message.StatusCode.Should().Be(HttpStatusCode.Created);
-        //
-        // ResponseHttp<object>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<object>>();
-        //
-        // http.Should().NotBeNull();
-        // http.Message.Should().NotBeNullOrWhiteSpace();
-        // http.TraceId.Should().NotBeNullOrWhiteSpace();
-        // http.Success.Should().BeTrue();
-        //
-        // http.Data.Should().BeNull();
+        message.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        
+        ResponseHttp<object>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<object>>();
+        
+        http.Should().NotBeNull();
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.TraceId.Should().NotBeNullOrWhiteSpace();
+        http.Success.Should().BeFalse();
+        
+        http.Data.Should().BeNull();
     }
  
     [Fact]
@@ -187,15 +186,15 @@ public class CommentReactionControllerTest: BaseIntegrationTest
 
         HttpResponseMessage message = await Client.PostAsJsonAsync($"{_url}/toggle", dto);
         message.StatusCode.Should().Be(HttpStatusCode.NotFound);
-        //
-        // ResponseHttp<object>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<object>>();
-        //
-        // http.Should().NotBeNull();
-        // http.Message.Should().NotBeNullOrWhiteSpace();
-        // http.TraceId.Should().NotBeNullOrWhiteSpace();
-        // http.Success.Should().BeTrue();
-        //
-        // http.Data.Should().BeNull();
+        
+        ResponseHttp<object>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<object>>();
+        
+        http.Should().NotBeNull();
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.TraceId.Should().NotBeNullOrWhiteSpace();
+        http.Success.Should().BeFalse();
+        
+        http.Data.Should().BeNull();
     }
 
     

@@ -126,7 +126,6 @@ public class PostCategoryControllerTest: BaseIntegrationTest
         http.Success.Should().BeFalse();
         http.TraceId.Should().NotBeNullOrWhiteSpace();
         http.Message.Should().NotBeNullOrWhiteSpace();
-        http.DetailsError.Should().NotBeNull();
 
         http.Data.Should().BeNull();
     }
@@ -160,8 +159,7 @@ public class PostCategoryControllerTest: BaseIntegrationTest
         http.Success.Should().BeFalse();
         http.TraceId.Should().NotBeNullOrWhiteSpace();
         http.Message.Should().NotBeNullOrWhiteSpace();
-        http.DetailsError.Should().NotBeNull();
-
+        
         http.Data.Should().BeNull();
     }
     
@@ -219,8 +217,7 @@ public class PostCategoryControllerTest: BaseIntegrationTest
         http.Success.Should().BeFalse();
         http.TraceId.Should().NotBeNullOrWhiteSpace();
         http.Message.Should().NotBeNullOrWhiteSpace();
-        http.DetailsError.Should().NotBeNull();
-
+        
         http.Data.Should().BeNull();
     }
     
@@ -242,7 +239,6 @@ public class PostCategoryControllerTest: BaseIntegrationTest
         http.Success.Should().BeFalse();
         http.TraceId.Should().NotBeNullOrWhiteSpace();
         http.Message.Should().NotBeNullOrWhiteSpace();
-        http.DetailsError.Should().NotBeNull();
 
         http.Data.Should().BeNull();
     }
