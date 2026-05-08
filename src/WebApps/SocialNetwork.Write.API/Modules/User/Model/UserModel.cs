@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using SocialNetwork.Write.API.Modules.CommentFavorite.Model;
 using SocialNetwork.Write.API.Modules.CommentReactions.Model;
+using SocialNetwork.Write.API.Modules.CommentVote.Model;
 using SocialNetwork.Write.API.Modules.Post.Model;
 using SocialNetwork.Write.API.Modules.PostFavorite.Model;
 using SocialNetwork.Write.API.Modules.PostReactions.Model;
@@ -31,5 +32,6 @@ public class UserModel: IdentityUser
     public ICollection<CommentFavoriteModel> CommentFavorites { get; set; } = new List<CommentFavoriteModel>();
     public ICollection<CommentReactionModel> CommentReactions { get; set; } = new List<CommentReactionModel>();
     public ICollection<PostVoteModel> Votes { get; set; } = new List<PostVoteModel>();
+    public ICollection<CommentVoteModel> CommentVotes { get; set; } = new List<CommentVoteModel>();
     public ICollection<PostReactionModel> PostReactions { get; set; } = new List<PostReactionModel>();
 }
