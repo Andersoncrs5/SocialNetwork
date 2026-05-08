@@ -6,6 +6,7 @@ using SocialNetwork.Write.API.Modules.Category.Repository.Interface;
 using SocialNetwork.Write.API.Modules.Comment.Repository.Interface;
 using SocialNetwork.Write.API.Modules.CommentFavorite.Repository.Interface;
 using SocialNetwork.Write.API.Modules.CommentReactions.Repository.Interface;
+using SocialNetwork.Write.API.Modules.CommentVote.Repository.Interface;
 using SocialNetwork.Write.API.Modules.Post.Repository.Interface;
 using SocialNetwork.Write.API.Modules.PostCategory.Repository.Interface;
 using SocialNetwork.Write.API.Modules.PostFavorite.Repository.Interface;
@@ -38,6 +39,7 @@ public interface IUnitOfWork: IDisposable
     IReactionRepository ReactionRepository { get; }
     ICommentReactionRepository CommentReactionRepository { get; }
     IPostReactionRepository PostReactionRepository { get; }
+    ICommentVoteRepository CommentVoteRepository { get; }
     IMapper Mapper { get; }
     
     Task CommitAsync();
