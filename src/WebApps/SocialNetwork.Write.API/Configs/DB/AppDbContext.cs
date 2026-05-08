@@ -10,6 +10,7 @@ using SocialNetwork.Write.API.Modules.Category.Model;
 using SocialNetwork.Write.API.Modules.Comment.Model;
 using SocialNetwork.Write.API.Modules.CommentFavorite.Model;
 using SocialNetwork.Write.API.Modules.CommentReactions.Model;
+using SocialNetwork.Write.API.Modules.CommentVote.Model;
 using SocialNetwork.Write.API.Modules.Post.Model;
 using SocialNetwork.Write.API.Modules.PostCategory.Model;
 using SocialNetwork.Write.API.Modules.PostFavorite.Model;
@@ -39,6 +40,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<CommentReactionModel> CommentReactions { get; set; }
     public DbSet<PostVoteModel> PostVotes { get; set; }
     public DbSet<PostReactionModel> PostReactions { get; set; }
+    public DbSet<CommentVoteModel> CommentVoteModels { get; set; }
     
     public override int SaveChanges()
     {
@@ -92,6 +94,30 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
                 .WithMany(u => u.Votes)
                 .HasForeignKey(f => f.PostId)
                 .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+        
+        modelBuilder.Entity<CommentVoteModel>(x =>
+        {
+            x.ToTable("CommentVotes");
+            x.HasKey(p => p.Id);
+            
+            x.HasIndex(f => new { f.UserId, f.CommentId })
+                .IsUnique()
+                .HasDatabaseName("UK_CommentVotes_User_Post");
+            
+            x.HasOne(f => f.User)
+                .WithMany(u => u.CommentVotes)
+                .HasForeignKey(f => f.UserId)
+                .IsRequired()
+                .HasConstraintName("FK_CommentVotes_User_Comment")
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            x.HasOne(f => f.Comment)
+                .WithMany(u => u.CommentVotes)
+                .HasForeignKey(f => f.CommentId)
+                .IsRequired()
+                .HasConstraintName("FK_CommentVotes_Comment_Comment")
                 .OnDelete(DeleteBehavior.Cascade);
         });
         
