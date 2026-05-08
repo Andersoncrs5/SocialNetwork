@@ -234,6 +234,9 @@ public sealed class GlobalExceptionHandler(
         if (message.Contains("FK_PostReactions_Post_Post", StringComparison.OrdinalIgnoreCase))
             return (HttpStatusCode.NotFound, "Post not found.", true);
 
+        if (message.Contains("FK_CommentVotes_Comment_Comment", StringComparison.OrdinalIgnoreCase))
+            return (HttpStatusCode.NotFound, "Comment not found.", true);
+
         if (message.Contains("Cannot add or update a child row", StringComparison.OrdinalIgnoreCase) ||
             message.Contains("foreign key constraint fails", StringComparison.OrdinalIgnoreCase))
         {
