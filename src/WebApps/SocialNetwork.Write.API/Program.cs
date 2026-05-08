@@ -32,6 +32,9 @@ using SocialNetwork.Write.API.Modules.CommentReactions.Repository.Interface;
 using SocialNetwork.Write.API.Modules.CommentReactions.Repository.Provider;
 using SocialNetwork.Write.API.Modules.CommentReactions.Service.Interface;
 using SocialNetwork.Write.API.Modules.CommentReactions.Service.Provider;
+using SocialNetwork.Write.API.Modules.CommentVote.Repository.Interface;
+using SocialNetwork.Write.API.Modules.CommentVote.Service.Interface;
+using SocialNetwork.Write.API.Modules.CommentVote.Service.provider;
 using SocialNetwork.Write.API.Modules.Post.Repository.Interface;
 using SocialNetwork.Write.API.Modules.Post.Repository.Provider;
 using SocialNetwork.Write.API.Modules.Post.Service.Interface;
@@ -307,6 +310,7 @@ builder.Services.AddScoped<IReactionRepository, ReactionRepository>();
 builder.Services.AddScoped<ICommentReactionRepository, CommentReactionRepository>();
 builder.Services.AddScoped<IPostVoteRepository, PostVoteRepository>();
 builder.Services.AddScoped<IPostReactionRepository, PostReactionRepository>();
+builder.Services.AddScoped<ICommentVoteRepository, ICommentVoteRepository>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -324,6 +328,7 @@ builder.Services.AddScoped<IReactionService, ReactionService>();
 builder.Services.AddScoped<ICommentReactionService, CommentReactionService>();
 builder.Services.AddScoped<IPostVoteService, PostVoteService>();
 builder.Services.AddScoped<IPostReactionService, PostReactionService>();
+builder.Services.AddScoped<ICommentVoteService, CommentVoteService>();
 
 builder.Services.AddScoped<PostVoteModuleGateway>();
 
