@@ -57,11 +57,14 @@
     <Folder Include="Modules\CommentFavorite\Dto\" />
     <Folder Include="Modules\CommentFavorite\Validations\" />
     <Folder Include="Modules\CommentReactions\Validations\" />
+    <Folder Include="Modules\CommentVote\Controller\" />
+    <Folder Include="Modules\CommentVote\Gateway\" />
     <Folder Include="Modules\PostCategory\Validations\" />
     <Folder Include="Modules\PostFavorite\Dto\" />
     <Folder Include="Modules\PostFavorite\Validations\" />
     <Folder Include="Modules\PostReactions\Validations\" />
     <Folder Include="Modules\PostTag\Validations\" />
+    <Folder Include="Utils\Annotations\Api\" />
   </ItemGroup>
 
 </Project>

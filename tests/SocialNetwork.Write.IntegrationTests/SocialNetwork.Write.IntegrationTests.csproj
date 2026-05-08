@@ -26,4 +26,8 @@
     <ProjectReference Include="..\..\src\WebApps\SocialNetwork.Write.API\SocialNetwork.Write.API.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Tests\CommentVote\" />
+  </ItemGroup>
+
 </Project>
